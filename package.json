@@ -1,0 +1,28 @@
+{
+  "name": "iniettore",
+  "version": "0.0.1",
+  "description": "A light and simple IoC container",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ioc",
+    "di",
+    "container"
+  ],
+  "author": "Cesare Naldi",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "~3.8.0",
+    "gulp-mocha": "~0.4.1",
+    "tmp": "0.0.23",
+    "es6-module-jstransform": "~0.1.4",
+    "gulp-jstransform": "~0.1.0",
+    "gulp-rename": "~1.2.0",
+    "gulp-filter": "~0.4.1",
+    "sinon": "~1.10.2",
+    "chai": "~1.9.1",
+    "sinon-chai": "~2.5.0"
+  }
+}
