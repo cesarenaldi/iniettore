@@ -32,7 +32,7 @@ describe('Given a container', function () {
 				function testCase() {
 					container.get('foo')
 				}
-				expect(testCase).to.throw(Error, /`foo`/)
+				expect(testCase).to.throw(Error, /'foo'/)
 			})
 		})
 	})
@@ -56,7 +56,7 @@ describe('Given a container', function () {
 				function testCase() {
 					container.release('bar')
 				}
-				expect(testCase).to.throw(Error, /`bar`/)
+				expect(testCase).to.throw(Error, /'bar'/)
 			})
 		})
 
@@ -67,7 +67,7 @@ describe('Given a container', function () {
 				function testCase() {
 					container.dispose()
 				}
-				expect(testCase).to.throw(Error, /`bar`/)
+				expect(testCase).to.throw(Error, /'bar'/)
 			})
 		})
 	})

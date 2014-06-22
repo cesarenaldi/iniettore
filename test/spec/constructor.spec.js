@@ -8,7 +8,7 @@ describe('Given a container with a registered constructor', function () {
 
 	var container
 
-	before(function () {
+	beforeEach(function () {
 		container = iniettore.create()
 	})
 
@@ -29,11 +29,41 @@ describe('Given a container with a registered constructor', function () {
 
 			container.get('foo')
 		})
+
+		describe('with some extra parameters', function () {
+
+			var EXTRA_PARAM_1 = {}
+			var EXTRA_PARAM_2 = {}
+
+			beforeEach(function () {
+				container
+					.bind('bar', 42)
+					.as(VALUE)
+					.done()
+			})
+
+			it('should create a new instance passing dependencies and extra params', function () {
+
+				class Foo {
+					constructor (bar, param1, param2) {
+						expect(bar).to.equal(42)
+						expect(param1).to.equal(EXTRA_PARAM_1)
+						expect(param2).to.equal(EXTRA_PARAM_2)
+					}
+				}
+
+				container
+					.bind('foo', Foo)
+					.as(CONSTRUCTOR)
+					.inject('bar')
+					.done()
+
+				container.get('foo', EXTRA_PARAM_1, EXTRA_PARAM_2)
+			})
+		})
 	})
 
 	describe('marked as singleton', function () {
-
-		var container = iniettore.create()
 
 		describe('when requesting the corresponding alias', function () {
 
@@ -69,10 +99,7 @@ describe('Given a container with a registered constructor', function () {
 
 	describe('with dependencies', function () {
 
-		var container
-
-		before(function () {
-			container = iniettore.create()
+		beforeEach(function () {
 			container.bind('foo', 42).as(VALUE).done()
 		})
 
@@ -106,8 +133,6 @@ describe('Given a container with a registered constructor', function () {
 		describe('when requesting the corresponding alias', function () {
 
 			it('should throw an Error', function () {
-
-				var container = iniettore.create()
 
 				class Bar {}
 

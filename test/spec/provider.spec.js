@@ -14,21 +14,36 @@ describe('Given a container with a registered provider', function () {
 
 	var BAR_1 = { bar: 1, dispose: sinon.spy() }
 	var BAR_2 = { bar: 2, dispose: sinon.spy() }
+	var providerStub = sinon.stub()
 
 	beforeEach(function () {
 		container = iniettore.create()
 		container.bind('foo', 42).as(VALUE).done()
+		providerStub.reset()
+		providerStub
+			.onFirstCall().returns(BAR_1)
+			.onSecondCall().returns(BAR_2)
+		BAR_1.dispose.reset()
+		BAR_2.dispose.reset()
+	})
+
+	describe('when requesting the corresponding alias with some extra parameters', function () {
+
+		var EXTRA_PARAM_1 = {}
+		var EXTRA_PARAM_2 = {}
+
+		it('should invoke the provider passing dependencies and extra params', function () {
+			container
+				.bind('bar', providerStub)
+				.as(PROVIDER)
+				.inject('foo')
+				.done()
+			container.get('bar', EXTRA_PARAM_1, EXTRA_PARAM_2)
+			expect(providerStub).to.be.calledWith(42, EXTRA_PARAM_1, EXTRA_PARAM_2)
+		})
 	})
 
 	describe('when requesting multiple times the corresponding alias', function () {
-
-		var providerStub = sinon.stub()
-
-		before(function () {
-			providerStub
-				.onFirstCall().returns(BAR_1)
-				.onSecondCall().returns(BAR_2)
-		})
 
 		it('should invoke the provider at every request with his dependencies', function () {
 			
@@ -58,20 +73,12 @@ describe('Given a container with a registered provider', function () {
 
 	describe('marked as singleton provider', function () {
 
-		var providerStub
-
 		beforeEach(function () {
-			providerStub = sinon.stub()
-			providerStub
-				.onFirstCall().returns(BAR_1)
-				.onSecondCall().returns(BAR_2)
 			container
 				.bind('bar', providerStub)
 				.as(SINGLETON, PROVIDER)
 				.inject('foo')
 				.done()
-			BAR_1.dispose.reset()
-			BAR_2.dispose.reset()
 		})
 
 		describe('when requesting the corresponding alias', function () {
