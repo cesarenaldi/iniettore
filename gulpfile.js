@@ -49,7 +49,6 @@ require.extensions['.js'] = function(module, filename) {
 
 	try {
 		src = jstransform.transform(visitors, src, { minify: false })
-		// console.log(src.code)
 	} catch (e) {
 		throw new Error('Error transforming ' + filename + ' to ES6: ' + e.toString())
 	}
@@ -58,7 +57,7 @@ require.extensions['.js'] = function(module, filename) {
 
 gulp.task('test', function () {
 	return gulp.src([ 'test/spec/**/*.spec.js' ], { read: false })
-		.pipe(mocha({reporter: 'spec'}))
+		.pipe(mocha({reporter: 'progress'}))
 })
 
 

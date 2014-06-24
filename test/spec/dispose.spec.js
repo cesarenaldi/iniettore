@@ -118,4 +118,89 @@ describe('Given a container with registered providers and constructor', function
 			})
 		})
 	})
+
+	describe('and child container', function () {
+
+		var PARENT_INSTANCE = { dispose: sinon.spy() }
+		var CHILD_INSTANCE = { dispose: sinon.spy() }
+		var parentProviderStub = sinon.stub().returns(PARENT_INSTANCE)
+		var chilProviderStub = sinon.stub().returns(CHILD_INSTANCE)
+		var child
+
+		beforeEach(function () {
+			child = container.createChild()
+		})
+
+		describe('when disposing an instance in the child container', function () {
+
+			describe('with a dependency in the parent container', function () {
+
+				beforeEach(function () {
+					PARENT_INSTANCE.dispose.reset()
+					CHILD_INSTANCE.dispose.reset()
+					container
+						.bind('bar', parentProviderStub)
+						.as(SINGLETON, PROVIDER)
+						.done()
+					child
+						.bind('baz', chilProviderStub)
+						.as(SINGLETON, PROVIDER)
+						.inject('bar')
+						.done()
+					child.get('baz')
+				})
+
+				it('should dispose both in the corresponding containers', function (done) {
+					child.release('baz')
+					expect(CHILD_INSTANCE.dispose).to.be.calledOnce
+					expect(PARENT_INSTANCE.dispose).to.be.calledOnce
+					done()
+				})
+
+				it('should dispose only the child one if the parent one is still in use', function () {
+					container.get('bar')
+					child.release('baz')
+					expect(CHILD_INSTANCE.dispose).to.be.calledOnce
+					expect(PARENT_INSTANCE.dispose).to.not.be.called
+				})
+			})
+		})
+
+		describe('when disposing the child container itself', function () {
+
+			beforeEach(function () {
+				PARENT_INSTANCE.dispose.reset()
+				CHILD_INSTANCE.dispose.reset()
+				container
+					.bind('bar', parentProviderStub)
+					.as(SINGLETON, PROVIDER)
+					.done()
+				child
+					.bind('baz', chilProviderStub)
+					.as(SINGLETON, PROVIDER)
+					.inject('bar')
+					.done()
+			})
+
+			it('should dispose the registered singleton instances', function () {
+				child.get('baz')
+				child.dispose()
+				expect(CHILD_INSTANCE.dispose).to.be.calledOnce
+				expect(PARENT_INSTANCE.dispose).to.be.calledOnce
+			})
+		})
+	})
+
+	describe.skip('when disposing the instance outside of the container lifecycle management', function () {
+		
+		it('should throw an Error', function () {
+			
+			var instance = container.get('baz')
+
+			function testCase() {
+				instance.dispose()
+			}
+			expect(testCase).to.throw(Error)
+		})
+	})
 })

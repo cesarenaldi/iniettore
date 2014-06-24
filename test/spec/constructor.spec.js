@@ -145,7 +145,7 @@ describe('Given a container with a registered constructor', function () {
 				function testCase () {
 					container.get('bar')
 				}
-				expect(testCase).to.throw(Error)
+				expect(testCase).to.throw(Error, /Circular dependency/)
 			})
 		})
 	})
