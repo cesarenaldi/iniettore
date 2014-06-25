@@ -23,6 +23,25 @@
     "gulp-filter": "~0.4.1",
     "sinon": "~1.10.2",
     "chai": "~1.9.1",
-    "sinon-chai": "~2.5.0"
+    "sinon-chai": "~2.5.0",
+    "gulp-cached": "0.0.3",
+    "gulp-debug": "~0.3.0",
+    "gulp-browserify": "~0.5.0",
+    "karma": "~0.12.16",
+    "gulp-karma": "0.0.4",
+    "mocha": "~1.20.1",
+    "karma-mocha": "~0.1.4",
+    "karma-chrome-launcher": "~0.1.4",
+    "karma-spec-reporter": "0.0.13",
+    "karma-coverage": "~0.2.4",
+    "karma-sinon": "~1.0.3",
+    "karma-chai": "~0.1.0",
+    "karma-sinon-chai": "~0.2.0",
+    "jstransformify": "~0.2.2",
+    "browserify": "~4.1.11",
+    "through2": "~0.5.1",
+    "vinyl-source-stream": "~0.1.1",
+    "glob": "~4.0.2",
+    "gulp-streamify": "0.0.5"
   }
 }

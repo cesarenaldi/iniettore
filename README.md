@@ -15,6 +15,7 @@
 - [ ] test case when singletons do NOT implement a dispose method
 - [ ] cleanup
 	- [ ] remove memoize if not used
+	- [ ] remove merge if not used
 
 - [ ] DOCS
 	- [ ] Features
