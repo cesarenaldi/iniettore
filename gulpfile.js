@@ -4,7 +4,7 @@ var gulp = require('./gulp')([
 ])
 
 gulp.task('watch', function() {
-	gulp.watch(['test/spec/**/*.spec.js', 'lib/**/*.js'], ['test'])
+	gulp.watch(['test/spec/**/*.spec.js', 'lib/**/*.js'], ['test-node'])
 })
 
 gulp.task('dev', ['watch', 'test-node'])

@@ -1,11 +1,7 @@
 var jstransform = require('jstransform')
 var fs = require('fs')
-var loader = require.extensions['.js']
 var visitors = require('./visitors')
-
-global.expect = require('chai').expect,
-global.sinon = require('sinon')
-require('chai').use(require('sinon-chai'))
+var loader = require.extensions['.js']
 
 function stripBOM(content) {
 	// Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)

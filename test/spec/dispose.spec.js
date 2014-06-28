@@ -189,6 +189,12 @@ describe('Given a container with registered providers and constructor', function
 				expect(PARENT_INSTANCE.dispose).to.be.calledOnce
 			})
 		})
+
+		describe('when disposing the parent container', function () {
+			it('should dispose the child container as well', function () {
+				expect(false).to.be.true
+			})
+		})
 	})
 
 	describe.skip('when disposing the instance outside of the container lifecycle management', function () {
