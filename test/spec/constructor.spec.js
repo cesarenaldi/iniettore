@@ -1,7 +1,7 @@
 'use strict'
 
-import iniettore from '../../lib/iniettore'
-import { VALUE, CONSTRUCTOR, SINGLETON } from '../../lib/options'
+import iniettore from '../../src/iniettore'
+import { VALUE, CONSTRUCTOR, SINGLETON } from '../../src/options'
 
 
 describe('Given a container with a registered constructor', function () {

@@ -1,12 +1,12 @@
 'use strict'
 
-import iniettore from '../../lib/iniettore'
+import iniettore from '../../src/iniettore'
 import {
 	VALUE,
 	PROVIDER,
 	CONSTRUCTOR,
 	SINGLETON
-} from '../../lib/options'
+} from '../../src/options'
 
 
 describe('Given a container with registered providers and constructor', function () {
@@ -129,6 +129,8 @@ describe('Given a container with registered providers and constructor', function
 
 		beforeEach(function () {
 			child = container.createChild()
+			PARENT_INSTANCE.dispose.reset()
+				CHILD_INSTANCE.dispose.reset()
 		})
 
 		describe('when disposing an instance in the child container', function () {
@@ -136,8 +138,6 @@ describe('Given a container with registered providers and constructor', function
 			describe('with a dependency in the parent container', function () {
 
 				beforeEach(function () {
-					PARENT_INSTANCE.dispose.reset()
-					CHILD_INSTANCE.dispose.reset()
 					container
 						.bind('bar', parentProviderStub)
 						.as(SINGLETON, PROVIDER)
@@ -169,8 +169,6 @@ describe('Given a container with registered providers and constructor', function
 		describe('when disposing the child container itself', function () {
 
 			beforeEach(function () {
-				PARENT_INSTANCE.dispose.reset()
-				CHILD_INSTANCE.dispose.reset()
 				container
 					.bind('bar', parentProviderStub)
 					.as(SINGLETON, PROVIDER)
@@ -190,7 +188,7 @@ describe('Given a container with registered providers and constructor', function
 			})
 		})
 
-		describe('when disposing the parent container', function () {
+		describe.skip('when disposing the parent container', function () {
 			it('should dispose the child container as well', function () {
 				expect(false).to.be.true
 			})

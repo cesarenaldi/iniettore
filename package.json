@@ -2,14 +2,16 @@
   "name": "iniettore",
   "version": "0.0.1",
   "description": "A light and simple IoC container",
-  "main": "index.js",
+  "main": "lib/iniettore.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/gulp/bin/gulp.js test",
+    "build": "node_modules/gulp/bin/gulp.js"
   },
   "keywords": [
     "ioc",
     "di",
-    "container"
+    "container",
+    "dependency injection"
   ],
   "author": "Cesare Naldi",
   "license": "ISC",
@@ -45,6 +47,13 @@
     "gulp-streamify": "0.0.5",
     "gulp-foreach": "0.0.1",
     "watchify": "~0.10.2",
-    "gulp-watch": "~0.6.8"
+    "gulp-watch": "~0.6.8",
+    "gulp-util": "~2.2.19",
+    "gulp-uglify": "~0.3.1",
+    "envify": "~2.0.0",
+    "karma-phantomjs-launcher": "~0.1.4",
+    "karma-es5-shim": "https://github.com/pokehanai/karma-es5-shim/archive/v2.1.0.tar.gz",
+    "require-dir": "~0.1.0",
+    "run-sequence": "~0.3.6"
   }
 }

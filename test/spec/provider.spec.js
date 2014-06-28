@@ -1,11 +1,11 @@
 'use strict'
 
-import iniettore from '../../lib/iniettore'
+import iniettore from '../../src/iniettore'
 import {
 	VALUE,
 	PROVIDER,
 	SINGLETON
-} from '../../lib/options'
+} from '../../src/options'
 
 
 describe('Given a container with a registered provider', function () {

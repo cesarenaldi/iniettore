@@ -1,7 +1,7 @@
 'use strict'
 
-import iniettore from '../../lib/iniettore'
-import { VALUE } from '../../lib/options'
+import iniettore from '../../src/iniettore'
+import { VALUE } from '../../src/options'
 
 describe('Given a container with a registered value', function () {
 

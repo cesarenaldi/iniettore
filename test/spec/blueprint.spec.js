@@ -1,7 +1,7 @@
 'use strict'
 
-import iniettore from '../../lib/iniettore'
-import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON } from '../../lib/options'
+import iniettore from '../../src/iniettore'
+import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON } from '../../src/options'
 
 describe('Given a container', function () {
 

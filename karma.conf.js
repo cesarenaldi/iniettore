@@ -3,7 +3,7 @@ module.exports = function(config) {
 
 		basePath: '.',
 
-		frameworks: ['mocha', 'chai', 'sinon', 'sinon-chai'],
+		frameworks: ['mocha', 'chai', 'sinon', 'sinon-chai', 'es5-shim'],
 
 		exclude: [],
 
@@ -23,10 +23,10 @@ module.exports = function(config) {
 
 		logLevel: config.LOG_INFO,
 
-		autoWatch: true,
+		autoWatch: false,
 
-		browsers: ['Chrome'],
+		browsers: ['PhantomJS'],
 
-		singleRun: false,
+		singleRun: true,
 	})
 }
