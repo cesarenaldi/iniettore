@@ -13,19 +13,6 @@ export function leftCurryTwice(fn) {
 	}
 }
 
-// not used
-export function memoize(fn) {
-
-	var value
-
-	return function (...args) {
-		if (typeof value === 'undefined') {
-			value = fn.apply(this, args)
-		}
-		return value
-	}
-}
-
 export function compose(...funcs) {
 	return function (...args) {
 
@@ -46,16 +33,6 @@ export function resolveDeps(fn) {
 
 export function invoke(fn, deps, args) {
 	return fn.apply(null, deps.concat(args))
-}
-
-// not used
-export function merge(first, ...sources) {
-	return sources.reduce(function (out, source) {
-		for (var k in source) {
-			out[k] = source[k]
-		}
-		return out
-	}, first)
 }
 
 export { instanciate, singletonify }

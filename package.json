@@ -1,6 +1,6 @@
 {
   "name": "iniettore",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A light and simple IoC container",
   "main": "lib/iniettore.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "container",
     "dependency injection"
   ],
-  "engines": { 
+  "engines": {
     "node": ">=0.10.25"
   },
   "author": {
@@ -68,6 +68,7 @@
     "require-dir": "~0.1.0",
     "run-sequence": "~0.3.6",
     "jstransform": "~5.0.0",
-    "gulp-size": "~0.4.0"
+    "gulp-size": "~0.4.0",
+    "browserify-istanbul": "~0.1.0"
   }
 }

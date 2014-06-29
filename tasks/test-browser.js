@@ -1,6 +1,7 @@
 var gulp = require('gulp')
 var debug = require('gulp-debug')
 var karma = require('gulp-karma')
+var istanbul = require('browserify-istanbul')
 var browserify = require('browserify')
 var watchify = require('watchify')
 var glob = require('glob')
@@ -16,9 +17,19 @@ gulp.task('test-browser', function() {
 		.pipe(foreach(function (stream, file) {
 			return browserify(file.path)
 				.transform({
-					visitors: visitors
+					visitors: visitors,
+					minify: true
 				}, jstransformify)
-				.bundle({ debug: true, minify: true })
+				.transform(istanbul({
+					ignore: ['**/node_modules/**', '**/test/**'],
+					defaultIgnore: true
+				}))
+				.bundle({
+					debug: true,
+					insertGlobals: false,
+					detectGlobals: true,
+					noBuiltins: true
+				})
 				.pipe(source(file.path))
 		}))
 		.pipe(gulp.dest('./.tmp'))

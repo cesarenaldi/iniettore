@@ -14,7 +14,11 @@ module.exports = function(config) {
 			watch: true
 		},
 
-		reporters: ['spec'],
+		reporters: ['spec', 'coverage'],
+
+		coverageReporter: {
+			type: 'lcov'
+		},
 
 		// web server port
 		port: 9876,
