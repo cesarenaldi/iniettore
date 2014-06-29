@@ -18,7 +18,7 @@ gulp.task('send-coverage-report', function (done) {
 gulp.task('test', function (done) {
 	runSequence(
 		'test-node',
-		'test-browser'
+		'test-browser',
 		done
 	)
 })
@@ -26,7 +26,7 @@ gulp.task('test', function (done) {
 gulp.task('test-ci', function (done) {
 	runSequence(
 		'test',
-		'send-coverage-report'
+		'send-coverage-report',
 		done
 	)
 })
