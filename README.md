@@ -1,4 +1,6 @@
-# TODO
+# Iniettore [![Build Status](https://travis-ci.org/cesarenaldi/iniettore.png?branch=master)](https://travis-ci.org/cesarenaldi/iniettore)
+
+## TODO
 - [x] Dispose sub dependencies
 - [x] Child context support
 - [x] Bind container itself
