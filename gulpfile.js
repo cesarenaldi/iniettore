@@ -8,10 +8,18 @@ gulp.task('watch', function() {
 })
 
 gulp.task('dev', ['watch', 'test-node'])
-gulp.task('default', function (done) {
+
+gulp.task('test', function (done) {
 	runSequence(
 		'test-node',
 		'test-browser',
+		done
+	)
+})
+
+gulp.task('default', function (done) {
+	runSequence(
+		'test',
 		'build',
 		done
 	)
