@@ -4,7 +4,7 @@
   "description": "A light and simple IoC container",
   "main": "lib/iniettore.js",
   "scripts": {
-    "test": "node_modules/.bin/gulp test",
+    "test": "node_modules/.bin/gulp test-ci",
     "build": "node_modules/.bin/gulp default",
     "prepublish": "node_modules/.bin/gulp build"
   },
@@ -69,6 +69,7 @@
     "run-sequence": "~0.3.6",
     "jstransform": "~5.0.0",
     "gulp-size": "~0.4.0",
-    "browserify-istanbul": "~0.1.0"
+    "browserify-istanbul": "~0.1.0",
+    "gulp-coveralls": "~0.1.2"
   }
 }

@@ -35,5 +35,5 @@ gulp.task('test-browser', function() {
 		.pipe(gulp.dest('./.tmp'))
 		.pipe(karma({
 			configFile: 'karma.conf.js'
-		}))		
+		}))
 })
