@@ -1,6 +1,6 @@
 {
   "name": "iniettore",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A light and simple IoC container",
   "main": "lib/iniettore.js",
   "scripts": {
