@@ -4,8 +4,8 @@
   "description": "A light and simple IoC container",
   "main": "lib/iniettore.js",
   "scripts": {
-    "test": "node_modules/gulp/bin/gulp.js test",
-    "build": "node_modules/gulp/bin/gulp.js"
+    "test": "node_modules/.bin/gulp test",
+    "build": "node_modules/.bin/gulp default"
   },
   "keywords": [
     "ioc",
