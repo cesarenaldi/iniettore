@@ -1,11 +1,12 @@
 {
   "name": "iniettore",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A light and simple IoC container",
   "main": "lib/iniettore.js",
   "scripts": {
     "test": "node_modules/.bin/gulp test",
-    "build": "node_modules/.bin/gulp default"
+    "build": "node_modules/.bin/gulp default",
+    "prepublish": "node_modules/.bin/gulp build"
   },
   "keywords": [
     "ioc",
