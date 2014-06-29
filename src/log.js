@@ -1,18 +1,17 @@
 'use strict'
 
 var count = 0
-var indentation = Array(count).join('\s')
-var message
+var indentation, message
 
 function log(msg) {
 	count++
 	message = msg
+	indentation = Array(count * 2).join(' ')
 	// console.log(`${indentation}${message}: BEGIN`)
-	indentation = Array(count).join(' ')
 }
 
 log.done = function () {
-	// console.log(`${indentation}${message}: DONE`)
+	// console.log(`${indentation}${message}: DONE`)npm
 	count--
 }
 

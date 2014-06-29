@@ -13,7 +13,18 @@
     "container",
     "dependency injection"
   ],
-  "author": "Cesare Naldi",
+  "engines": { 
+    "node": ">=0.10.25"
+  },
+  "author": {
+    "name": "Cesare Naldi",
+    "url": "https://github.com/cesarenaldi"
+  },
+  "homepage": "https://github.com/cesarenaldi/iniettore.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cesarenaldi/iniettore.git"
+  },
   "license": "ISC",
   "devDependencies": {
     "gulp": "~3.8.0",
@@ -54,6 +65,8 @@
     "karma-phantomjs-launcher": "~0.1.4",
     "karma-es5-shim": "https://github.com/pokehanai/karma-es5-shim/archive/v2.1.0.tar.gz",
     "require-dir": "~0.1.0",
-    "run-sequence": "~0.3.6"
+    "run-sequence": "~0.3.6",
+    "jstransform": "~5.0.0",
+    "gulp-size": "~0.4.0"
   }
 }
