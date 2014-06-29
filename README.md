@@ -1,4 +1,8 @@
-# Iniettore [![Build Status](https://travis-ci.org/cesarenaldi/iniettore.png?branch=master)](https://travis-ci.org/cesarenaldi/iniettore)
+![Iniettore](https://github.com/cesarenaldi/iniettore/raw/master/logo.png)
+# Iniettore
+
+[![Build Status](https://travis-ci.org/cesarenaldi/iniettore.svg?branch=master)](https://travis-ci.org/cesarenaldi/iniettore)
+[![GitHub version](https://badge.fury.io/gh/cesarenaldi%2Finiettore.svg)](http://badge.fury.io/gh/cesarenaldi%2Finiettore)
 
 ## TODO
 - [x] Dispose sub dependencies
