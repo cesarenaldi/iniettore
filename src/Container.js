@@ -17,15 +17,19 @@ var CONTAINER_ALIAS = '$container'
 
 class Container {
 
-	constructor(mappings) {
+	constructor(conf, mappings) {
 		this._resolvers = createResolvers()
 		this._mappings = mappings || {}
 		this._resolving = {}
 		this._pending = []
 		
-		this.bind(CONTAINER_ALIAS, this)
-			.as(VALUE)
-			.done()
+		this.bind(CONTAINER_ALIAS, this).as(VALUE).done()
+		if (typeof conf === 'function') {
+			conf(this)
+			if (this._pending.length) {
+				this._done()
+			}
+		}
 	}
 
 	bind(alias, value) {
@@ -95,20 +99,12 @@ class Container {
 		}
 	}
 
-	createChild() {
-		return new Container(Object.create(this._mappings))
+	createChild(conf) {
+		return new Container(conf, Object.create(this._mappings))
 	}
 
 	createBlueprint(alias, blueprint) {
-		this.bind(alias, () => {
-
-				var child = this.createChild()
-
-				blueprint(child)
-				return child
-			})
-			.as(PROVIDER)
-			.done()
+		this.bind(alias, () => this.createChild(blueprint)).as(PROVIDER).done()
 	}
 
 	dispose() {

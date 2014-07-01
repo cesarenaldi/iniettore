@@ -22,6 +22,7 @@ describe('Given a container', function () {
 
 		beforeEach(function () {
 			container.createBlueprint('foo', function (container) {
+
 				container
 					.bind('baz', blueprintProviderStub)
 					.as(SINGLETON, PROVIDER)

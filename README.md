@@ -19,11 +19,11 @@
 - [ ] Handle errors in case of wrong api calls
 - [ ] Make dispose method name configurable
 - [ ] Improve fluid API
-	- [ ] remove done call
+	- [ ] remove done call, should I segregate the contribution phase into a revealing construction pattern?
 - [ ] test case when singletons do NOT implement a dispose method
-- [ ] cleanup
-	- [ ] remove memoize if not used
-	- [ ] remove merge if not used
+- [x] cleanup
+	- [x] remove memoize if not used
+	- [x] remove merge if not used
 
 - [ ] DOCS
 	- [ ] Features

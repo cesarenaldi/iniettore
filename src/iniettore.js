@@ -2,6 +2,6 @@
 
 import Container from './Container'
 
-export function create() {
-	return new Container()
+export function create(conf) {
+	return new Container(conf)
 }

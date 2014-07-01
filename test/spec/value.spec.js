@@ -9,11 +9,11 @@ describe('Given a container with a registered value', function () {
 	var DUMMY_VALUE = {}
 
 	before(function () {
-		container = iniettore.create()
-		container
-			.bind('bar', DUMMY_VALUE)
-			.as(VALUE)
-			.done()
+		container = iniettore.create(function (container) {
+			container
+				.bind('bar', DUMMY_VALUE)
+				.as(VALUE)
+		})
 	})
 
 	it('should be possible to retrieve the value', function () {
