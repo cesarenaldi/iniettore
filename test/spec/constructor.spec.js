@@ -95,6 +95,48 @@ describe('Given a container with a registered constructor', function () {
 				expect(secondGet).to.equal(firstGet)
 			})
 		})
+
+		describe('with some other singleton constructors shared dependencies', function () {
+
+			describe('when requesting the corresponding alias', function () {
+
+				it('should create singletons from the respective constructors', function () {
+					var commonInstance
+
+					class Common {
+						constructor() {
+							commonInstance = this
+						}
+					}
+
+					class Bar {
+						constructor(common) {
+							expect(common).to.be.instanceof(Common)
+						}
+					}
+
+					class Foo {
+						constructor(common, bar) {
+							expect(common).to.be.instanceof(Common)
+							expect(bar).to.be.instanceof(Bar)
+						}
+					}
+
+					container
+						.bind('common', Common)
+						.as(SINGLETON, CONSTRUCTOR)
+						.bind('bar', Bar)
+						.as(SINGLETON, CONSTRUCTOR)
+						.inject('common')
+						.bind('foo', Foo)
+						.as(SINGLETON, CONSTRUCTOR)
+						.inject('common', 'bar')
+						.done()
+
+					expect(container.get('foo')).to.be.instanceof(Foo)
+				})
+			})
+		})
 	})
 
 	describe('with dependencies', function () {

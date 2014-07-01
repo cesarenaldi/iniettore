@@ -2,42 +2,45 @@
 
 import {ACQUIRE, RELEASE, DISPOSE} from './signals'
 
-export default function singletonify(fn) {
+export default function singletonify(create) {
 
-	var handlers = {}
-	var count = 0
-	var instance
+	return function (value, resolveDeps, releaseDeps) {
 
-	function dispose() {
-		if (typeof instance.dispose === 'function') {
-			instance.dispose()
+		var handlers = {}
+		var count = 0
+		var instance
+
+		function dispose() {
+			if (typeof instance.dispose === 'function') {
+				instance.dispose()
+			}
+			instance = undefined
+			count = 0
 		}
-		instance = undefined
-		count = 0
-	}
 
-	handlers[ACQUIRE] = function (value, resolveDeps, releaseDeps, args) {
-		if (typeof instance === 'undefined') {
-			instance = fn.call(this, value, resolveDeps(), args)
+		handlers[ACQUIRE] = function (value, args) {
+			if (typeof instance === 'undefined') {
+				instance = create.call(this, value, resolveDeps(), args)
+			}
+			count++
+			return instance
 		}
-		count++
-		return instance
-	}
 
-	handlers[RELEASE] = function (value, resolveDeps, releaseDeps) {
-		count--
-		if (count <= 0) {
+		handlers[RELEASE] = function (value) {
+			count--
+			if (count <= 0) {
+				releaseDeps()
+				dispose()
+			}
+		}
+
+		handlers[DISPOSE] = function (value) {
 			releaseDeps()
 			dispose()
 		}
-	}
 
-	handlers[DISPOSE] = function (value, resolveDeps, releaseDeps) {
-		releaseDeps()
-		dispose()
-	}
-
-	return function (value, resolveDeps, releaseDeps, signal, args) {
-		return handlers[signal].call(this, value, resolveDeps, releaseDeps, args)
+		return function (signal, args) {
+			return handlers[signal].call(this, value, args)
+		}
 	}
 }

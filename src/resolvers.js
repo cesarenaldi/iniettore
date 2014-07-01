@@ -26,9 +26,9 @@ export default function createResolvers() {
 
 	resolvers[ generateType([VALUE]) ] = compose(leftCurryTwice, resolveDeps)(identity)
 	resolvers[ generateType([CONSTRUCTOR]) ] = compose(leftCurryTwice, resolveDeps)(instanciate)
-	resolvers[ generateType([CONSTRUCTOR, SINGLETON]) ] = compose(leftCurryTwice, singletonify)(instanciate)
+	resolvers[ generateType([CONSTRUCTOR, SINGLETON]) ] = singletonify(instanciate)
 	resolvers[ generateType([PROVIDER]) ] = compose(leftCurryTwice, resolveDeps)(invoke)
-	resolvers[ generateType([SINGLETON, PROVIDER]) ] = compose(leftCurryTwice, singletonify)(invoke)
+	resolvers[ generateType([SINGLETON, PROVIDER]) ] = singletonify(invoke)
 
 	return resolvers
 }
