@@ -19,16 +19,13 @@ import {
 	CONSTRUCTOR,
 	SINGLETON
 } from './options'
-
-export default function createResolvers() {
 	
-	var resolvers = {}
+var resolvers = {}
 
-	resolvers[ generateType([VALUE]) ] = compose(leftCurryTwice, resolveDeps)(identity)
-	resolvers[ generateType([CONSTRUCTOR]) ] = compose(leftCurryTwice, resolveDeps)(instanciate)
-	resolvers[ generateType([CONSTRUCTOR, SINGLETON]) ] = singletonify(instanciate)
-	resolvers[ generateType([PROVIDER]) ] = compose(leftCurryTwice, resolveDeps)(invoke)
-	resolvers[ generateType([SINGLETON, PROVIDER]) ] = singletonify(invoke)
+resolvers[ generateType([VALUE]) ] = compose(leftCurryTwice, resolveDeps)(identity)
+resolvers[ generateType([CONSTRUCTOR]) ] = compose(leftCurryTwice, resolveDeps)(instanciate)
+resolvers[ generateType([CONSTRUCTOR, SINGLETON]) ] = singletonify(instanciate)
+resolvers[ generateType([PROVIDER]) ] = compose(leftCurryTwice, resolveDeps)(invoke)
+resolvers[ generateType([SINGLETON, PROVIDER]) ] = singletonify(invoke)
 
-	return resolvers
-}
+export default resolvers

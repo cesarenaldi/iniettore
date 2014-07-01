@@ -4,7 +4,7 @@ import generateType from './generateType'
 import invariant from './invariant'
 import {ACQUIRE, RELEASE, DISPOSE} from './signals'
 import { PROVIDER } from './options'
-import createResolvers from './resolvers'
+import resolvers from './resolvers'
 import VALUE from './options'
 import log from './log'
 
@@ -18,7 +18,7 @@ var CONTAINER_ALIAS = '$container'
 class Container {
 
 	constructor(conf, mappings) {
-		this._resolvers = createResolvers()
+		this._resolvers = resolvers
 		this._mappings = mappings || {}
 		this._resolving = {}
 		this._pending = []
