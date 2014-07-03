@@ -32,14 +32,14 @@ describe('Given a container', function () {
 				function testCase() {
 					container.get('foo')
 				}
-				expect(testCase).to.throw(Error, /'foo'/)
+				expect(testCase).to.throw(Error, 'Failed while resolving \'foo\' due to:\n\tUnexpected issue')
 			})
 		})
 	})
 
 	describe('with a registered singleton', function () {
 
-		var DUMMY_INSTANCE = { dispose: function () { throw new Error } }
+		var DUMMY_INSTANCE = { dispose: function () { throw new Error('Unexpected issue') } }
 		var providerStub = sinon.stub().returns(DUMMY_INSTANCE)
 
 		beforeEach(function () {
@@ -56,7 +56,7 @@ describe('Given a container', function () {
 				function testCase() {
 					container.release('bar')
 				}
-				expect(testCase).to.throw(Error, /'bar'/)
+				expect(testCase).to.throw(Error, 'Failed while disposing \'bar\' due to:\n\tUnexpected issue')
 			})
 		})
 
@@ -67,7 +67,7 @@ describe('Given a container', function () {
 				function testCase() {
 					container.dispose()
 				}
-				expect(testCase).to.throw(Error, /'bar'/)
+				expect(testCase).to.throw(Error, 'Failed while disposing \'bar\' due to:\n\tUnexpected issue')
 			})
 		})
 	})

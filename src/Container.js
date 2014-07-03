@@ -72,7 +72,7 @@ class Container {
 
 		var value, error
 
-		invariant(!this._resolving[alias], 'Circular dependency detected while resolving `%s`.', alias)
+		invariant(!this._resolving[alias], `Circular dependency detected while resolving '${alias}'`)
 
 		log(`Resolving ${alias}`)
 
@@ -80,7 +80,7 @@ class Container {
 		try {
 			value = this._mappings[alias](ACQUIRE, params)
 		} catch(err) {
-			err.message = `Failed while resolving '${alias}' due to ${err.message}`
+			err.message = `Failed while resolving '${alias}' due to:\n\t${err.message}`
 			throw err
 		}
 		this._resolving[alias] = false
@@ -94,7 +94,7 @@ class Container {
 		try {
 			this._mappings[alias](RELEASE)
 		} catch(err) {
-			err.message = `Failed while disposing '${alias}' due to ${err.message}`
+			err.message = `Failed while disposing '${alias}' due to:\n\t${err.message}`
 			throw err
 		}
 	}
@@ -117,7 +117,7 @@ class Container {
 				try {
 					mappings[alias](DISPOSE)
 				} catch(err) {
-					err.message = `Failed while disposing '${alias}' due to ${err.message}`
+					err.message = `Failed while disposing '${alias}' due to:\n\t${err.message}`
 					throw err
 				}
 			}
