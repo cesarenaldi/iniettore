@@ -35,4 +35,10 @@ export function invoke(fn, deps) {
 	return fn.apply(null, deps)
 }
 
+export function partial(func, boundArgs) {
+	return function (...args) {
+		return func.apply(this, boundArgs.concat(args))
+	}
+}
+
 export { instanciate, singletonify }
