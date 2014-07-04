@@ -6,7 +6,8 @@ export default = [
 	'CONSTRUCTOR',
 	'SINGLETON',
 	'FUNCTION',
-	'INSTANCE'
+	'INSTANCE',
+	'BLUEPRINT'
 ].reduce(function (options, flag, idx) {
 	options[flag] = Math.pow(2, idx)
 	return options

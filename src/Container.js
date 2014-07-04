@@ -102,7 +102,14 @@ class Container {
 	}
 
 	createBlueprint(alias, blueprint) {
-		this.bind(alias, () => this.createChild(blueprint)).as(PROVIDER).done()
+		return {
+			exports: (mapping) => {
+				return {
+					done: () => this.bind(alias, () => this.createChild(blueprint).get(mapping)).as(PROVIDER).done()
+				}
+			},
+			done: () => this.bind(alias, () => this.createChild(blueprint)).as(PROVIDER).done()
+		}
 	}
 
 	dispose() {

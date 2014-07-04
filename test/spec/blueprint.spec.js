@@ -9,7 +9,7 @@ describe('Given a container', function () {
 	var parentProvideStub = sinon.stub().returns(42)
 	var container
 
-	beforeEach(function () {
+	before(function () {
 		container = iniettore.create()
 			.bind('bar', VALUE_A).as(VALUE)
 			.bind('pluto', parentProvideStub).as(SINGLETON, PROVIDER)
@@ -20,18 +20,18 @@ describe('Given a container', function () {
 
 		var blueprintProviderStub = sinon.stub().returns(84)
 
-		beforeEach(function () {
-			container.createBlueprint('foo', function (container) {
-
-				container
-					.bind('baz', blueprintProviderStub)
-					.as(SINGLETON, PROVIDER)
-					.inject('bar')
-					.done()
-			})
-		})
-
 		describe('when requesting a copy of the blueprint', function () {
+
+			before(function () {
+				container.createBlueprint('foo', function (container) {
+
+					container
+						.bind('baz', blueprintProviderStub)
+						.as(SINGLETON, PROVIDER)
+						.inject('bar')
+						.done()
+				}).done()
+			})
 
 			it('should create a child container', function () {
 				var child = container.get('foo')
@@ -44,14 +44,35 @@ describe('Given a container', function () {
 					.to.be.calledOnce
 					.and.to.be.calledWith(VALUE_A)
 			})
+
+			describe('multiple times', function () {
+				it('should create a new child container each time', function () {
+					var first = container.get('foo')
+					var second = container.get('foo')
+
+					expect(first).to.not.equal(second)
+				})
+			})
 		})
 
-		describe('when requesting a copy of the blueprint multiple times', function () {
-			it('should create a new child container each time', function () {
-				var first = container.get('foo')
-				var second = container.get('foo')
+		describe('and a specified export', function () {
 
-				expect(first).to.not.equal(second)
+			before(function () {
+				container.createBlueprint('foo', function (container) {
+
+					container
+						.bind('baz', blueprintProviderStub)
+						.as(SINGLETON, PROVIDER)
+						.inject('bar')
+						.done()
+				}).exports('baz').done()
+			})
+
+			describe('when requesting a copy of the blueprint', function () {
+
+				it('should return an instance of the export', function () {
+					expect(container.get('foo')).to.equal(84)
+				})
 			})
 		})
 	})
