@@ -26,13 +26,13 @@ export function compose(...funcs) {
 }
 
 export function resolveDeps(fn) {
-	return function (value, resolve, release, signal, args) {
-		return fn.call(this, value, resolve(), args)
+	return function (value, resolve, release, signal) {
+		return fn.call(this, value, resolve())
 	}
 }
 
-export function invoke(fn, deps, args) {
-	return fn.apply(null, deps.concat(args))
+export function invoke(fn, deps) {
+	return fn.apply(null, deps)
 }
 
 export { instanciate, singletonify }

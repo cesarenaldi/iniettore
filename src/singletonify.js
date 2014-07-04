@@ -18,9 +18,9 @@ export default function singletonify(create) {
 			count = 0
 		}
 
-		handlers[ACQUIRE] = function (value, args) {
+		handlers[ACQUIRE] = function (value) {
 			if (typeof instance === 'undefined') {
-				instance = create.call(this, value, resolveDeps(), args)
+				instance = create.call(this, value, resolveDeps())
 			}
 			count++
 			return instance
@@ -39,8 +39,8 @@ export default function singletonify(create) {
 			dispose()
 		}
 
-		return function (signal, args) {
-			return handlers[signal].call(this, value, args)
+		return function (signal) {
+			return handlers[signal].call(this, value)
 		}
 	}
 }

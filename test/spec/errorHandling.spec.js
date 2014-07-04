@@ -71,4 +71,26 @@ describe('Given a container', function () {
 			})
 		})
 	})
+
+	describe('with a circular dependency', function () {
+
+		describe('when requesting the corresponding alias', function () {
+
+			it('should throw an Error', function () {
+
+				class Bar {}
+
+				container
+					.bind('bar', Bar)
+					.as(CONSTRUCTOR)
+					.inject('bar')
+					.done()
+
+				function testCase () {
+					container.get('bar')
+				}
+				expect(testCase).to.throw(Error, /Circular dependency/)
+			})
+		})
+	})
 })

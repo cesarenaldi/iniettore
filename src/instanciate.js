@@ -1,6 +1,6 @@
 'use strict'
 
-export default function instanciate(Ctor, deps, args) {
+export default function instanciate(Ctor, deps) {
 	var Surrogate, instance
 	
 	Surrogate = function () {}
@@ -8,7 +8,7 @@ export default function instanciate(Ctor, deps, args) {
 
 	instance = new Surrogate()
 
-	Ctor.apply(instance, deps.concat(args))
+	Ctor.apply(instance, deps)
 
 	return instance
 }

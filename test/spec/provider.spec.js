@@ -27,22 +27,6 @@ describe('Given a container with a registered provider', function () {
 		BAR_2.dispose.reset()
 	})
 
-	describe('when requesting the corresponding alias with some extra parameters', function () {
-
-		var EXTRA_PARAM_1 = {}
-		var EXTRA_PARAM_2 = {}
-
-		it('should invoke the provider passing dependencies and extra params', function () {
-			container
-				.bind('bar', providerStub)
-				.as(PROVIDER)
-				.inject('foo')
-				.done()
-			container.get('bar', EXTRA_PARAM_1, EXTRA_PARAM_2)
-			expect(providerStub).to.be.calledWith(42, EXTRA_PARAM_1, EXTRA_PARAM_2)
-		})
-	})
-
 	describe('when requesting multiple times the corresponding alias', function () {
 
 		it('should invoke the provider at every request with his dependencies', function () {

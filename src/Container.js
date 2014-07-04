@@ -62,13 +62,11 @@ class Container {
 
 					done: () => this._done()
 				}
-			},
-
-			done: () => this._done()
+			}
 		}
 	}
 
-	get(alias, ...params) {
+	get(alias) {
 
 		var value, error
 
@@ -78,7 +76,7 @@ class Container {
 
 		this._resolving[alias] = true
 		try {
-			value = this._mappings[alias](ACQUIRE, params)
+			value = this._mappings[alias](ACQUIRE)
 		} catch(err) {
 			err.message = `Failed while resolving '${alias}' due to:\n\t${err.message}`
 			throw err
