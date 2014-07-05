@@ -64,7 +64,7 @@ describe('Given a container', function () {
 						.bind('baz', blueprintProviderStub)
 						.as(SINGLETON, PROVIDER)
 						.inject('bar')
-						.done()
+
 				}).exports('baz').done()
 			})
 

@@ -12,7 +12,7 @@ describe('Given a container', function () {
 		
 	})
 
-	describe('with a registered value', function () {
+	describe('with a registered object as value', function () {
 
 		before(function () {
 			container = iniettore.create(function (container) {
@@ -29,7 +29,7 @@ describe('Given a container', function () {
 		})
 	})
 
-	describe('with a registered instance', function () {
+	describe('with a registered object as instance', function () {
 
 		before(function () {
 			container = iniettore.create(function (container) {

@@ -1,7 +1,6 @@
 'use strict'
 
 import generateType from './generateType'
-import invariant from './invariant'
 import {ACQUIRE, RELEASE, DISPOSE} from './signals'
 import { PROVIDER } from './options'
 import resolvers from './resolvers'
@@ -70,7 +69,9 @@ class Container {
 
 		var value, error
 
-		invariant(!this._resolving[alias], `Circular dependency detected while resolving '${alias}'`)
+		if (this._resolving[alias]) {
+			throw new Error(`Circular dependency detected while resolving '${alias}'`)
+		}
 
 		log(`Resolving ${alias}`)
 
