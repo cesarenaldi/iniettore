@@ -11,6 +11,15 @@ describe('Given a container', function () {
 		container = iniettore.create()
 	})
 
+	describe('when requesting an alias that has never registered before', function () {
+		it('should throw an Error', function () {
+			function testCase() {
+				container.get('pluto')
+			}
+			expect(testCase).to.throw(Error, '\pluto\' is not available. Has it ever been registered?.')
+		})
+	})
+
 	describe('with a registered constructor', function () {
 
 		class Foo {

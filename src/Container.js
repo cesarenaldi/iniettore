@@ -75,6 +75,10 @@ class Container {
 
 		log(`Resolving ${alias}`)
 
+		if (!(alias in this._mappings)) {
+			throw new Error(`'${alias}' is not available. Has it ever been registered?.`)
+		}
+
 		this._resolving[alias] = true
 		try {
 			value = this._mappings[alias](ACQUIRE)
