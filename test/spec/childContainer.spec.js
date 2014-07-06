@@ -16,7 +16,7 @@ describe('Given a child container', function () {
 		child = parent.createChild()
 	})
 
-	it('should be possible to request registered value of the parent container', function () {
+	it('should be possible to request registered alias of the parent container', function () {
 		parent
 			.bind('foo', OBJECT)
 			.as(VALUE)
@@ -31,7 +31,7 @@ describe('Given a child container', function () {
 		expect(parent.get('$container')).to.not.equal(child.get('$container'))
 	})
 
-	describe('with a registered value that shadows the parent one', function () {
+	describe('with a registered alias that shadows the parent one', function () {
 
 		describe('when requesting its alias from the child container', function () {
 

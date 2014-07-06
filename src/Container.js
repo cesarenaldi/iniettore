@@ -4,13 +4,13 @@ import generateType from './generateType'
 import {ACQUIRE, RELEASE, DISPOSE} from './signals'
 import { PROVIDER } from './options'
 import resolvers from './resolvers'
-import VALUE from './options'
+import { VALUE } from './options'
 import log from './log'
 
-var ALIAS = 0
-var VALUE = 1
-var TYPE = 2
-var DEPS = 3
+var ALIAS_IDX = 0
+var VALUE_IDX = 1
+var TYPE_IDX = 2
+var DEPS_IDX = 3
 
 var CONTAINER_ALIAS = '$container'
 
@@ -37,7 +37,7 @@ class Container {
 		return {
 			
 			as: (...flags) => {
-				this._pending[TYPE] = generateType(flags)
+				this._pending[TYPE_IDX] = generateType(flags)
 
 				return {
 
@@ -47,7 +47,7 @@ class Container {
 					},
 
 					inject: (...deps) => {
-						this._pending[DEPS] = deps
+						this._pending[DEPS_IDX] = deps
 
 						return {
 							bind: (...args) => {
@@ -65,19 +65,14 @@ class Container {
 		}
 	}
 
-	get(alias) {
+	get(alias, transients) {
 
 		var value, error
 
-		if (this._resolving[alias]) {
-			throw new Error(`Circular dependency detected while resolving '${alias}'`)
-		}
-
 		log(`Resolving ${alias}`)
 
-		if (!(alias in this._mappings)) {
-			throw new Error(`'${alias}' is not available. Has it ever been registered?.`)
-		}
+		if (this._resolving[alias]) { throw new Error(`Circular dependency detected while resolving '${alias}'`) }
+		if (!(alias in this._mappings)) { throw new Error(`'${alias}' is not available. Has it ever been registered?.`) }
 
 		this._resolving[alias] = true
 		try {
@@ -91,6 +86,22 @@ class Container {
 		log.done()
 
 		return value
+	}
+
+	using(transientsDeps) {
+		return {
+			get: (alias) => {
+				var dep
+
+				for (dep in transientsDeps) {
+					this.bind(dep, transientsDeps[dep]).as(VALUE).done()
+				}
+				this.get(alias)
+				for (dep in transientsDeps) {
+					this._unbind(dep)
+				}
+			}
+		}
 	}
 
 	release(alias) {
@@ -137,13 +148,18 @@ class Container {
 	_done() {
 
 		var pending = this._pending
-		var deps = pending[DEPS] ? pending[DEPS] : []
-		var resolver = this._resolvers[ pending[TYPE] ](pending[VALUE], this._resolve.bind(this, deps), this._release.bind(this, deps))
+		var deps = pending[DEPS_IDX] ? pending[DEPS_IDX] : []
+		var resolver = this._resolvers[ pending[TYPE_IDX] ](pending[VALUE_IDX], this._resolve.bind(this, deps), this._release.bind(this, deps))
 
-		this._mappings[pending[ALIAS]] = resolver
+		this._mappings[pending[ALIAS_IDX]] = resolver
 
 		this._pending = []
 		return this
+	}
+
+	_unbind(alias) {
+		this._mappings[alias](DISPOSE)
+		delete this._mappings[alias]
 	}
 
 	_release(deps) {
