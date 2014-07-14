@@ -5,7 +5,8 @@
   "main": "lib/iniettore.js",
   "scripts": {
     "test": "node_modules/.bin/gulp test-ci",
-    "build": "node_modules/.bin/gulp default"
+    "build": "node_modules/.bin/gulp default",
+    "prepublish": "node_modules/.bin/gulp build"
   },
   "keywords": [
     "ioc",
