@@ -5,8 +5,7 @@
   "main": "lib/iniettore.js",
   "scripts": {
     "test": "node_modules/.bin/gulp test-ci",
-    "build": "node_modules/.bin/gulp default",
-    "prepublish": "node_modules/.bin/gulp build"
+    "build": "node_modules/.bin/gulp default"
   },
   "keywords": [
     "ioc",
@@ -50,8 +49,8 @@
     "gulp-uglify": "~0.3.1",
     "gulp-util": "~2.2.19",
     "gulp-watch": "~0.6.8",
-    "jstransform": "^6.0.1",
-    "jstransformify": "^0.3.0",
+    "jstransform": "~5.0.0",
+    "jstransformify": "~0.2.2",
     "karma": "~0.12.16",
     "karma-chai": "~0.1.0",
     "karma-chrome-launcher": "~0.1.4",
