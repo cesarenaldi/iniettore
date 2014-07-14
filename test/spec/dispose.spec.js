@@ -123,12 +123,13 @@ describe('Given a container with registered providers and constructor', function
 		})
 	})
 
-	describe.only('when releasing a persistent singleton', function () {
+	describe('when releasing a persistent singleton', function () {
 
 		beforeEach(function () {
 			container
 				.bind('baz', Baz)
 				.as(PERSISTENT, SINGLETON, CONSTRUCTOR)
+				.done()
 		})
 
 		it('should have test coverage', function () {

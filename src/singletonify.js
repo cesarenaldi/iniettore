@@ -30,7 +30,6 @@ export default function singletonify(create, persistent) {
 
 		handlers[RELEASE] = function (value) {
 			count--
-			console.log(count, !persistent)
 			if (count <= 0 && !persistent) {
 				releaseDeps()
 				dispose()
