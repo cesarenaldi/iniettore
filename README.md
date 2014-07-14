@@ -63,7 +63,7 @@ class UltimateQuestion {
 	}
 }
 
-var container = iniettore.create(function () {
+var container = iniettore.create(function (context) {
 	context
 		.map('answer')
 		.to(42)
