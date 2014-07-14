@@ -2,7 +2,9 @@
 
 import {ACQUIRE, RELEASE, DISPOSE} from './signals'
 
-export default function singletonify(create) {
+export default function singletonify(create, persistent) {
+
+	persistent = persistent || false
 
 	return function (value, resolveDeps, releaseDeps) {
 
@@ -28,7 +30,8 @@ export default function singletonify(create) {
 
 		handlers[RELEASE] = function (value) {
 			count--
-			if (count <= 0) {
+			console.log(count, !persistent)
+			if (count <= 0 && !persistent) {
 				releaseDeps()
 				dispose()
 			}

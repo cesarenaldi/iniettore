@@ -5,7 +5,9 @@ import {
 	VALUE,
 	PROVIDER,
 	CONSTRUCTOR,
-	SINGLETON
+	SINGLETON,
+	TRANSIENT,
+	PERSISTENT
 } from '../../src/options'
 
 
@@ -43,20 +45,22 @@ describe('Given a container with registered providers and constructor', function
 			.done()
 		container
 			.bind('baz', Baz)
-			.as(SINGLETON, CONSTRUCTOR)
+			.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
 			.inject('foo')
 			.done()
 		container
 			.bind('bar', providerStub)
-			.as(SINGLETON, PROVIDER)
+			.as(TRANSIENT, SINGLETON, PROVIDER)
 			.inject('foo', 'baz')
 			.done()
+		container
+			.bind
 
 		BAR_1.dispose.reset()
 		BAR_2.dispose.reset()
 	})
 
-	describe('when releasing a singleton', function () {
+	describe('when releasing a transient singleton', function () {
 
 		it('should not release the instance if still in use', function () {
 			var firstRequest = container.get('bar')
@@ -119,7 +123,22 @@ describe('Given a container with registered providers and constructor', function
 		})
 	})
 
-	describe('and child container', function () {
+	describe.only('when releasing a persistent singleton', function () {
+
+		beforeEach(function () {
+			container
+				.bind('baz', Baz)
+				.as(PERSISTENT, SINGLETON, CONSTRUCTOR)
+		})
+
+		it('should have test coverage', function () {
+			container.get('baz')
+			container.release('baz')
+			expect(BazDisposeSpy).to.not.be.called
+		})
+	})
+
+	describe('and a child container', function () {
 
 		var PARENT_INSTANCE = { dispose: sinon.spy() }
 		var CHILD_INSTANCE = { dispose: sinon.spy() }
@@ -130,7 +149,7 @@ describe('Given a container with registered providers and constructor', function
 		beforeEach(function () {
 			child = container.createChild()
 			PARENT_INSTANCE.dispose.reset()
-				CHILD_INSTANCE.dispose.reset()
+			CHILD_INSTANCE.dispose.reset()
 		})
 
 		describe('when disposing an instance in the child container', function () {
@@ -140,11 +159,11 @@ describe('Given a container with registered providers and constructor', function
 				beforeEach(function () {
 					container
 						.bind('bar', parentProviderStub)
-						.as(SINGLETON, PROVIDER)
+						.as(TRANSIENT, SINGLETON, PROVIDER)
 						.done()
 					child
 						.bind('baz', chilProviderStub)
-						.as(SINGLETON, PROVIDER)
+						.as(TRANSIENT, SINGLETON, PROVIDER)
 						.inject('bar')
 						.done()
 					child.get('baz')
@@ -171,11 +190,11 @@ describe('Given a container with registered providers and constructor', function
 			beforeEach(function () {
 				container
 					.bind('bar', parentProviderStub)
-					.as(SINGLETON, PROVIDER)
+					.as(TRANSIENT, SINGLETON, PROVIDER)
 					.done()
 				child
 					.bind('baz', chilProviderStub)
-					.as(SINGLETON, PROVIDER)
+					.as(TRANSIENT, SINGLETON, PROVIDER)
 					.inject('bar')
 					.done()
 			})

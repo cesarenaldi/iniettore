@@ -4,7 +4,8 @@ import iniettore from '../../src/iniettore'
 import {
 	VALUE,
 	PROVIDER,
-	SINGLETON
+	SINGLETON,
+	TRANSIENT
 } from '../../src/options'
 
 
@@ -60,7 +61,7 @@ describe('Given a container with a registered provider', function () {
 		beforeEach(function () {
 			container
 				.bind('bar', providerStub)
-				.as(SINGLETON, PROVIDER)
+				.as(TRANSIENT, SINGLETON, PROVIDER)
 				.inject('foo')
 				.done()
 		})

@@ -19,7 +19,8 @@
 - [ ] Improve fluid API
 	- [ ] remove done call
 	- [x] add experimental contribution phase into a revealing construction pattern
-- [ ] test case when singletons do NOT implement a dispose method
+	- [ ] refactor APIs to be more explicit
+- [ ] test case when singletons do NOT implement a dispose method (see test coverage)
 - [x] cleanup
 	- [x] remove memoize if not used
 	- [x] remove merge if not used
@@ -30,7 +31,69 @@
 	- [ ] Quick usage
 	- [ ] Detailed examples
 
-DEFER
+### DEFER
 - [ ] ~~Detect invalid singleton destroy calls.~~ Too complex for a minor benefit.
-WONT DO IT
+### WONT DO IT
 - [ ] ~~Consider derring the release in case the object will be required in the short term~~ - complicated and no real benefits - the container consumer should do that before calling release
+
+## Features
+
+## Specify ECMA Script 5 required features or polyfills
+- `Object.create`
+- `Function.prototype.bind`
+
+## Quick start
+
+### Installation
+
+node.js:
+
+```bash
+npm install iniettore --save
+```
+
+### Usage
+```javascript
+import iniettore from 'iniettore'
+import { VALUE, SINGLETON, CONSTRUCTOR } from 'iniettore/lib/options'
+
+class UltimateQuestion {
+	constructor(answer) {
+		console.log(answer) // 42
+	}
+}
+
+var container = iniettore.create(function () {
+	context
+		.map('answer')
+		.to(42)
+		.as(VALUE)
+
+		.map('question')
+		.to(UltimateQuestion)
+		.as(SINGLETON, CONSTRUCTOR)
+		.injecting('answer')
+})
+
+var question = container.get('question')
+
+console.log(question instanceof UltimateQuestion) // true
+```
+
+## Advanced usage
+
+### Value objects and instances
+### Functions
+### Providers
+### Constructor
+### Child context
+### Blueprint
+### Transient dependencies 
+
+## Notes on singletons
+## Notes on lifecycle
+### Instances `dispose`
+### Context `dispose`
+
+
+## Throubleshooting

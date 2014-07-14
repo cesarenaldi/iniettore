@@ -1,7 +1,7 @@
 'use strict'
 
 import iniettore from '../../src/iniettore'
-import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON } from '../../src/options'
+import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../../src/options'
 
 
 describe('Given a child container', function () {
@@ -64,11 +64,11 @@ describe('Given a child container', function () {
 			beforeEach(function () {
 				parent
 					.bind('bar', parentProviderStub)
-					.as(SINGLETON, PROVIDER)
+					.as(TRANSIENT, SINGLETON, PROVIDER)
 					.done()
 				child
 					.bind('baz', chilProviderStub)
-					.as(SINGLETON, PROVIDER)
+					.as(TRANSIENT, SINGLETON, PROVIDER)
 					.inject('bar')
 					.done()
 			})

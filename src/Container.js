@@ -1,7 +1,7 @@
 'use strict'
 
-import generateType from './generateType'
-import {ACQUIRE, RELEASE, DISPOSE} from './signals'
+import { generateMask } from './utils'
+import { ACQUIRE, RELEASE, DISPOSE } from './signals'
 import { PROVIDER } from './options'
 import resolvers from './resolvers'
 import { VALUE } from './options'
@@ -37,7 +37,7 @@ class Container {
 		return {
 			
 			as: (...flags) => {
-				this._pending[TYPE_IDX] = generateType(flags)
+				this._pending[TYPE_IDX] = generateMask(flags)
 
 				return {
 
@@ -149,7 +149,13 @@ class Container {
 
 		var pending = this._pending
 		var deps = pending[DEPS_IDX] ? pending[DEPS_IDX] : []
-		var resolver = this._resolvers[ pending[TYPE_IDX] ](pending[VALUE_IDX], this._resolve.bind(this, deps), this._release.bind(this, deps))
+		var resolver
+
+		if ( !(pending[TYPE_IDX] in this._resolvers) ) {
+			throw new Error('Invalid flags combination. See documentation for valid flags combinations.')
+		}
+
+		resolver = this._resolvers[ pending[TYPE_IDX] ](pending[VALUE_IDX], this._resolve.bind(this, deps), this._release.bind(this, deps))
 
 		this._mappings[pending[ALIAS_IDX]] = resolver
 

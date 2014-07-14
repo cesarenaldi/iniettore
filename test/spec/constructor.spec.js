@@ -1,7 +1,7 @@
 'use strict'
 
 import iniettore from '../../src/iniettore'
-import { VALUE, CONSTRUCTOR, SINGLETON } from '../../src/options'
+import { VALUE, CONSTRUCTOR, SINGLETON, TRANSIENT } from '../../src/options'
 
 
 describe('Given a container with a registered constructor', function () {
@@ -50,7 +50,7 @@ describe('Given a container with a registered constructor', function () {
 
 				container
 					.bind('foo', Foo)
-					.as(SINGLETON, CONSTRUCTOR)
+					.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
 					.done()
 
 				expect(constructorSpy).to.not.be.called
@@ -96,12 +96,12 @@ describe('Given a container with a registered constructor', function () {
 
 					container
 						.bind('common', Common)
-						.as(SINGLETON, CONSTRUCTOR)
+						.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
 						.bind('bar', Bar)
-						.as(SINGLETON, CONSTRUCTOR)
+						.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
 						.inject('common')
 						.bind('foo', Foo)
-						.as(SINGLETON, CONSTRUCTOR)
+						.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
 						.inject('common', 'bar')
 						.done()
 

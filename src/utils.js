@@ -41,4 +41,8 @@ export function partial(func, boundArgs) {
 	}
 }
 
+export function generateMask(flags) {
+	return flags.reduce((prev, curr) => prev | curr, 0)
+}
+
 export { instanciate, singletonify }

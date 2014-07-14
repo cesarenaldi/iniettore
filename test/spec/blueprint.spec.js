@@ -1,7 +1,7 @@
 'use strict'
 
 import iniettore from '../../src/iniettore'
-import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON } from '../../src/options'
+import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../../src/options'
 
 describe('Given a container', function () {
 
@@ -12,7 +12,7 @@ describe('Given a container', function () {
 	before(function () {
 		container = iniettore.create()
 			.bind('bar', VALUE_A).as(VALUE)
-			.bind('pluto', parentProvideStub).as(SINGLETON, PROVIDER)
+			.bind('pluto', parentProvideStub).as(TRANSIENT, SINGLETON, PROVIDER)
 			.done()
 	})
 
@@ -27,7 +27,7 @@ describe('Given a container', function () {
 
 					container
 						.bind('baz', blueprintProviderStub)
-						.as(SINGLETON, PROVIDER)
+						.as(TRANSIENT, SINGLETON, PROVIDER)
 						.inject('bar')
 						.done()
 				}).done()
@@ -62,7 +62,7 @@ describe('Given a container', function () {
 
 					container
 						.bind('baz', blueprintProviderStub)
-						.as(SINGLETON, PROVIDER)
+						.as(TRANSIENT, SINGLETON, PROVIDER)
 						.inject('bar')
 
 				}).exports('baz').done()

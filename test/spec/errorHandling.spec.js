@@ -1,7 +1,7 @@
 'use strict'
 
 import iniettore from '../../src/iniettore'
-import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON } from '../../src/options'
+import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../../src/options'
 
 describe('Given a container', function () {
 
@@ -9,6 +9,15 @@ describe('Given a container', function () {
 
 	beforeEach(function () {
 		container = iniettore.create()
+	})
+
+	describe('when registering a mapping with an invalid options combination', function () {
+		it('should throw an Error', function () {
+			function testCase() {
+				container.bind('foo', {}).as(SINGLETON, VALUE).done()
+			}
+			expect(testCase).to.throw(Error, /invalid flags combination/i)
+		})
 	})
 
 	describe('when requesting an alias that has never registered before', function () {
@@ -54,7 +63,7 @@ describe('Given a container', function () {
 		beforeEach(function () {
 			container
 				.bind('bar', providerStub)
-				.as(SINGLETON, PROVIDER)
+				.as(TRANSIENT, SINGLETON, PROVIDER)
 				.done()
 		})
 
