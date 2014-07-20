@@ -65,10 +65,12 @@ class UltimateQuestion {
 
 var container = iniettore.create(function (context) {
 	context
-		.bind('answer', 42)
+		.map('answer')
+		.to(42)
 		.as(VALUE)
 
-		.bind('question', UltimateQuestion)
+		.map('question')
+		.to(UltimateQuestion)
 		.as(SINGLETON, CONSTRUCTOR)
 		.injecting('answer')
 })
