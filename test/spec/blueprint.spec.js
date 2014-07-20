@@ -10,10 +10,11 @@ describe('Given a container', function () {
 	var container
 
 	before(function () {
-		container = iniettore.create()
-			.bind('bar', VALUE_A).as(VALUE)
-			.bind('pluto', parentProvideStub).as(TRANSIENT, SINGLETON, PROVIDER)
-			.done()
+		container = iniettore.create(function (context) {
+			context
+				.bind('bar', VALUE_A).as(VALUE)
+				.bind('pluto', parentProvideStub).as(TRANSIENT, SINGLETON, PROVIDER)
+		})
 	})
 
 	describe('and a registered blueprint with some registered bindings', function () {
@@ -23,13 +24,11 @@ describe('Given a container', function () {
 		describe('when requesting a copy of the blueprint', function () {
 
 			before(function () {
-				container.createBlueprint('foo', function (container) {
-
-					container
+				container.createBlueprint('foo', function (context) {
+					context
 						.bind('baz', blueprintProviderStub)
 						.as(TRANSIENT, SINGLETON, PROVIDER)
 						.inject('bar')
-						.done()
 				}).done()
 			})
 
@@ -58,9 +57,9 @@ describe('Given a container', function () {
 		describe('and a specified export', function () {
 
 			before(function () {
-				container.createBlueprint('foo', function (container) {
+				container.createBlueprint('foo', function (context) {
 
-					container
+					context
 						.bind('baz', blueprintProviderStub)
 						.as(TRANSIENT, SINGLETON, PROVIDER)
 						.inject('bar')

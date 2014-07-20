@@ -59,23 +59,21 @@ import { VALUE, SINGLETON, CONSTRUCTOR } from 'iniettore/lib/options'
 
 class UltimateQuestion {
 	constructor(answer) {
-		console.log(answer) // 42
+		console.log(answer)
 	}
 }
 
 var container = iniettore.create(function (context) {
 	context
-		.map('answer')
-		.to(42)
+		.bind('answer', 42)
 		.as(VALUE)
 
-		.map('question')
-		.to(UltimateQuestion)
+		.bind('question', UltimateQuestion)
 		.as(SINGLETON, CONSTRUCTOR)
 		.injecting('answer')
 })
 
-var question = container.get('question')
+var question = container.get('question') // 42
 
 console.log(question instanceof UltimateQuestion) // true
 ```

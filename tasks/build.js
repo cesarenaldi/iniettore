@@ -39,7 +39,9 @@ gulp.task('build-4-browser', function () {
 		.pipe(gulp.dest('./dist'))
 		.pipe(rename('iniettore.min.js'))
 		.pipe(streamify(uglify()))
-		.pipe(streamify(size()))
+		.pipe(streamify(size({
+			gzip: true
+		})))
 		.pipe(gulp.dest('./dist'))
 })
 

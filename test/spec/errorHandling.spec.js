@@ -7,20 +7,25 @@ describe('Given a container', function () {
 
 	var container
 
-	beforeEach(function () {
-		container = iniettore.create()
-	})
-
 	describe('when registering a mapping with an invalid options combination', function () {
 		it('should throw an Error', function () {
 			function testCase() {
-				container.bind('foo', {}).as(SINGLETON, VALUE).done()
+				iniettore.create(function (context) {
+					context
+						.bind('foo', {})
+						.as(SINGLETON, VALUE)
+				})
 			}
 			expect(testCase).to.throw(Error, /invalid flags combination/i)
 		})
 	})
 
 	describe('when requesting an alias that has never registered before', function () {
+
+		before(function () {
+			container = iniettore.create(function () {})
+		})
+
 		it('should throw an Error', function () {
 			function testCase() {
 				container.get('pluto')
@@ -38,10 +43,11 @@ describe('Given a container', function () {
 		}
 
 		beforeEach(function () {
-			container
-				.bind('foo', Foo)
-				.as(CONSTRUCTOR)
-				.done()
+			container = iniettore.create(function (context) {
+				context
+					.bind('foo', Foo)
+					.as(CONSTRUCTOR)
+			})
 		})
 
 		describe('when the constructor throw an Error', function () {
@@ -61,10 +67,11 @@ describe('Given a container', function () {
 		var providerStub = sinon.stub().returns(DUMMY_INSTANCE)
 
 		beforeEach(function () {
-			container
-				.bind('bar', providerStub)
-				.as(TRANSIENT, SINGLETON, PROVIDER)
-				.done()
+			container = iniettore.create(function (context) {
+				context
+					.bind('bar', providerStub)
+					.as(TRANSIENT, SINGLETON, PROVIDER)
+			})
 		})
 
 		describe('when disposing and instance it throws an Error', function () {
@@ -98,11 +105,12 @@ describe('Given a container', function () {
 
 				class Bar {}
 
-				container
-					.bind('bar', Bar)
-					.as(CONSTRUCTOR)
-					.inject('bar')
-					.done()
+				container = iniettore.create(function (context) {
+					context
+						.bind('bar', Bar)
+						.as(CONSTRUCTOR)
+						.inject('bar')
+				})
 
 				function testCase () {
 					container.get('bar')

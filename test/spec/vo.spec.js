@@ -8,10 +8,6 @@ describe('Given a container', function () {
 	var container
 	var DUMMY_VALUE = {}
 
-	before(function () {
-		
-	})
-
 	describe('with a registered object as value', function () {
 
 		before(function () {

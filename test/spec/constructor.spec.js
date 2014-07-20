@@ -6,12 +6,6 @@ import { VALUE, CONSTRUCTOR, SINGLETON, TRANSIENT } from '../../src/options'
 
 describe('Given a container with a registered constructor', function () {
 
-	var container
-
-	beforeEach(function () {
-		container = iniettore.create()
-	})
-
 	describe('when requesting the corresponding alias', function () {
 
 		it('should create a new instance', function (done) {
@@ -22,10 +16,11 @@ describe('Given a container with a registered constructor', function () {
 				}
 			}
 
-			container
-				.bind('foo', Foo)
-				.as(CONSTRUCTOR)
-				.done()
+			var container = iniettore.create(function (context) {
+				context
+					.bind('foo', Foo)
+					.as(CONSTRUCTOR)
+			})
 
 			container.get('foo')
 		})
@@ -48,16 +43,17 @@ describe('Given a container with a registered constructor', function () {
 					}
 				}
 
-				container
-					.bind('foo', Foo)
-					.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-					.done()
+				var container = iniettore.create(function (context) {
+					context
+						.bind('foo', Foo)
+						.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
+				})
 
 				expect(constructorSpy).to.not.be.called
 
 				firstGet = container.get('foo')
 
-				expect(constructorSpy).to.not.be.calleOnce
+				expect(constructorSpy).to.not.be.calle
 
 				secondGet = container.get('foo')
 				expect(secondGet).to.equal(firstGet)
@@ -94,16 +90,17 @@ describe('Given a container with a registered constructor', function () {
 						}
 					}
 
-					container
-						.bind('common', Common)
-						.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-						.bind('bar', Bar)
-						.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-						.inject('common')
-						.bind('foo', Foo)
-						.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-						.inject('common', 'bar')
-						.done()
+					var container = iniettore.create(function (context) {
+						context
+							.bind('common', Common)
+							.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
+							.bind('bar', Bar)
+							.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
+							.inject('common')
+							.bind('foo', Foo)
+							.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
+							.inject('common', 'bar')
+					})
 
 					expect(container.get('foo')).to.be.instanceof(Foo)
 				})

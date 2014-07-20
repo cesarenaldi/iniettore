@@ -18,8 +18,6 @@ describe('Given a container with a registered provider', function () {
 	var providerStub = sinon.stub()
 
 	beforeEach(function () {
-		container = iniettore.create()
-		container.bind('foo', 42).as(VALUE).done()
 		providerStub.reset()
 		providerStub
 			.onFirstCall().returns(BAR_1)
@@ -34,11 +32,14 @@ describe('Given a container with a registered provider', function () {
 			
 			var result
 
-			container
-				.bind('bar', providerStub)
-				.as(PROVIDER)
-				.inject('foo')
-				.done()
+			container = iniettore.create(function (context) {
+				context
+					.bind('foo', 42).as(VALUE)
+
+					.bind('bar', providerStub)
+					.as(PROVIDER)
+					.inject('foo')
+			})
 
 			result = container.get('bar')
 
@@ -58,12 +59,14 @@ describe('Given a container with a registered provider', function () {
 
 	describe('marked as singleton provider', function () {
 
-		beforeEach(function () {
-			container
-				.bind('bar', providerStub)
-				.as(TRANSIENT, SINGLETON, PROVIDER)
-				.inject('foo')
-				.done()
+		before(function () {
+			container = iniettore.create(function (context) {
+				context
+					.bind('foo', 42).as(VALUE)
+					.bind('bar', providerStub)
+					.as(TRANSIENT, SINGLETON, PROVIDER)
+					.inject('foo')
+			})
 		})
 
 		describe('when requesting the corresponding alias', function () {

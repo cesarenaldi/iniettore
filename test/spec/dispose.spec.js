@@ -28,39 +28,33 @@ describe('Given a container with registered providers and constructor', function
 		}
 	}
 
-	beforeEach(function () {
-
-		container = iniettore.create()
-
-		providerStub = sinon.stub()
-		BazDisposeSpy.reset()
-
-		providerStub
-			.onFirstCall().returns(BAR_1)
-			.onSecondCall().returns(BAR_2)
-
-		container
-			.bind('foo', OBJECT_DEP)
-			.as(VALUE)
-			.done()
-		container
-			.bind('baz', Baz)
-			.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-			.inject('foo')
-			.done()
-		container
-			.bind('bar', providerStub)
-			.as(TRANSIENT, SINGLETON, PROVIDER)
-			.inject('foo', 'baz')
-			.done()
-		container
-			.bind
-
-		BAR_1.dispose.reset()
-		BAR_2.dispose.reset()
-	})
-
 	describe('when releasing a transient singleton', function () {
+
+		beforeEach(function () {
+			providerStub = sinon.stub()
+			BazDisposeSpy.reset()
+
+			providerStub
+				.onFirstCall().returns(BAR_1)
+				.onSecondCall().returns(BAR_2)
+
+			container = iniettore.create(function (context) {
+				context
+					.bind('foo', OBJECT_DEP)
+					.as(VALUE)
+
+					.bind('baz', Baz)
+					.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
+					.inject('foo')
+
+					.bind('bar', providerStub)
+					.as(TRANSIENT, SINGLETON, PROVIDER)
+					.inject('foo', 'baz')
+			})
+
+			BAR_1.dispose.reset()
+			BAR_2.dispose.reset()
+		})
 
 		it('should not release the instance if still in use', function () {
 			var firstRequest = container.get('bar')
@@ -126,10 +120,11 @@ describe('Given a container with registered providers and constructor', function
 	describe('when releasing a persistent singleton', function () {
 
 		beforeEach(function () {
-			container
-				.bind('baz', Baz)
-				.as(PERSISTENT, SINGLETON, CONSTRUCTOR)
-				.done()
+			container = iniettore.create(function (context) {
+				context
+					.bind('baz', Baz)
+					.as(PERSISTENT, SINGLETON, CONSTRUCTOR)
+			})
 		})
 
 		it('should have test coverage', function () {
@@ -158,15 +153,17 @@ describe('Given a container with registered providers and constructor', function
 			describe('with a dependency in the parent container', function () {
 
 				beforeEach(function () {
-					container
-						.bind('bar', parentProviderStub)
-						.as(TRANSIENT, SINGLETON, PROVIDER)
-						.done()
-					child
-						.bind('baz', chilProviderStub)
-						.as(TRANSIENT, SINGLETON, PROVIDER)
-						.inject('bar')
-						.done()
+					container = iniettore.create(function (context) {
+						context
+							.bind('bar', parentProviderStub)
+							.as(TRANSIENT, SINGLETON, PROVIDER)
+					})
+					child = container.createChild(function (context) {
+						context
+							.bind('baz', chilProviderStub)
+							.as(TRANSIENT, SINGLETON, PROVIDER)
+							.inject('bar')
+					})
 					child.get('baz')
 				})
 
@@ -189,15 +186,17 @@ describe('Given a container with registered providers and constructor', function
 		describe('when disposing the child container itself', function () {
 
 			beforeEach(function () {
-				container
-					.bind('bar', parentProviderStub)
-					.as(TRANSIENT, SINGLETON, PROVIDER)
-					.done()
-				child
-					.bind('baz', chilProviderStub)
-					.as(TRANSIENT, SINGLETON, PROVIDER)
-					.inject('bar')
-					.done()
+				container = iniettore.create(function (context) {
+					context
+						.bind('bar', parentProviderStub)
+						.as(TRANSIENT, SINGLETON, PROVIDER)
+				})
+				child = container.createChild(function (context) {
+					context	
+						.bind('baz', chilProviderStub)
+						.as(TRANSIENT, SINGLETON, PROVIDER)
+						.inject('bar')
+				})
 			})
 
 			it('should dispose the registered singleton instances', function () {
