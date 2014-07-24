@@ -1,13 +1,26 @@
 'use strict';
 
 import { generateMask } from './utils'
+import { BLUEPRINT, PROVIDER } from './options'
 
 var ALIAS_IDX = 0
 var VALUE_IDX = 1
 var TYPE_IDX = 2
 var DEPS_IDX = 3
 
-export default function context(contribute) {
+function createChildContainerFactory(conf, exportAlias) {
+	return function (container) {
+		return container.createChild(conf)
+	}
+}
+
+function createExporter(containerFactory, exportAlias) {
+	return function (container) {
+		return containerFactory(container).get(exportAlias)
+	}
+}
+
+export default function createContext(contribute) {
 
 	var pending = []
 	
@@ -24,22 +37,41 @@ export default function context(contribute) {
 					return {
 						as: (...flags) => {
 
+							if (flags.length === 1 && flags[0] === BLUEPRINT) {
+								// test if VALUE is a function
+								flags = [PROVIDER]
+								pending[VALUE_IDX] = createChildContainerFactory(pending[VALUE_IDX])
+								pending.push(generateMask(flags))
+								pending.push(['$container'])
+								
+								return {
+									exports: (alias) => {
+										pending[VALUE_IDX] = createExporter(pending[VALUE_IDX], alias)
+										context.flush()
+									},
+									map: (alias) => {
+										context.flush()
+										return context.map.call(this, alias)
+									}
+								}
+							}
+
 							pending.push(generateMask(flags))
 
 							return {
-								map: (next) => {
+								map: (alias) => {
 									pending.push([])
 									context.flush()
-									return context.map.call(this, next)
+									return context.map.call(this, alias)
 								},
 								
 								injecting: (...deps) => {
 									pending.push(deps)
 
 									return {
-										map: (next) => {
+										map: (alias) => {
 											context.flush()
-											return context.map.call(this, next)
+											return context.map.call(this, alias)
 										}
 									}
 								}

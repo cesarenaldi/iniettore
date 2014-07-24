@@ -1,21 +1,13 @@
 'use strict'
 
 import iniettore from '../../src/iniettore'
-import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../../src/options'
+import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT, BLUEPRINT } from '../../src/options'
 
 describe('Given a container', function () {
 
 	var VALUE_A = { value: 'a'}
 	var parentProvideStub = sinon.stub().returns(42)
 	var container
-
-	before(function () {
-		container = iniettore.create(function (context) {
-			context
-				.map('bar').to(VALUE_A).as(VALUE)
-				.map('pluto').to(parentProvideStub).as(TRANSIENT, SINGLETON, PROVIDER)
-		})
-	})
 
 	describe('and a registered blueprint with some registered bindings', function () {
 
@@ -24,12 +16,19 @@ describe('Given a container', function () {
 		describe('when requesting a copy of the blueprint', function () {
 
 			before(function () {
-				container.createBlueprint('foo', function (context) {
+				container = iniettore.create(function (context) {
 					context
-						.map('baz').to(blueprintProviderStub)
-						.as(TRANSIENT, SINGLETON, PROVIDER)
-						.injecting('bar')
-				}).done()
+						.map('bar').to(VALUE_A).as(VALUE)
+						.map('pluto').to(parentProvideStub).as(TRANSIENT, SINGLETON, PROVIDER)
+
+						.map('foo').to(function (context) {
+							context
+								.map('baz').to(blueprintProviderStub)
+								.as(TRANSIENT, SINGLETON, PROVIDER)
+								.injecting('bar')
+						})
+						.as(BLUEPRINT)
+				})
 			})
 
 			it('should create a child container', function () {
@@ -57,14 +56,20 @@ describe('Given a container', function () {
 		describe('and a specified export', function () {
 
 			before(function () {
-				container.createBlueprint('foo', function (context) {
-
+				container = iniettore.create(function (context) {
 					context
-						.map('baz').to(blueprintProviderStub)
-						.as(TRANSIENT, SINGLETON, PROVIDER)
-						.injecting('bar')
+						.map('bar').to(VALUE_A).as(VALUE)
+						.map('pluto').to(parentProvideStub).as(TRANSIENT, SINGLETON, PROVIDER)
 
-				}).exports('baz').done()
+						.map('foo').to(function (context) {
+							context
+								.map('baz').to(blueprintProviderStub)
+								.as(TRANSIENT, SINGLETON, PROVIDER)
+								.injecting('bar')
+						})
+						.as(BLUEPRINT)
+						.exports('baz')
+				})
 			})
 
 			describe('when requesting a copy of the blueprint', function () {

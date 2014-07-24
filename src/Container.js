@@ -90,23 +90,6 @@ class Container {
 		return new Container(conf, Object.create(this._mappings))
 	}
 
-	createBlueprint(alias, blueprint) {
-		return {
-			exports: (mapping) => {
-				return {
-					done: () => {
-						this._context.map(alias).to(() => this.createChild(blueprint).get(mapping)).as(PROVIDER)
-						this._context.flush()
-					}
-				}
-			},
-			done: () => {
-				this._context.map(alias).to(() => this.createChild(blueprint)).as(PROVIDER)
-				this._context.flush()
-			}
-		}
-	}
-
 	dispose() {
 
 		var mappings = this._mappings
