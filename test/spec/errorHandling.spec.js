@@ -3,6 +3,18 @@
 import iniettore from '../../src/iniettore'
 import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../../src/options'
 
+describe('Given iniettore', function () {
+	describe('when creating a new container without a contribution function', function () {
+		it('should throw an Error', function () {
+			function testCase() {
+				iniettore.create()
+			}
+
+			expect(testCase).to.throw(Error, /missing contribution function/i)
+		})
+	})
+})
+
 describe('Given a container', function () {
 
 	var container

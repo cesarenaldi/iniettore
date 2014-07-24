@@ -3,6 +3,7 @@
 import iniettore from '../../src/iniettore'
 import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../../src/options'
 
+function noop() {}
 
 describe('Given a child container', function () {
 
@@ -15,7 +16,7 @@ describe('Given a child container', function () {
 					.bind('foo', OBJECT)
 					.as(VALUE)
 			})
-			var child = parent.createChild()
+			var child = parent.createChild(noop)
 
 			expect(child.get('foo'))
 				.to.equal(parent.get('foo'))
@@ -26,8 +27,8 @@ describe('Given a child container', function () {
 
 
 		it('should return the respective containers', function () {
-			var parent = iniettore.create()
-			var child = parent.createChild()
+			var parent = iniettore.create(noop)
+			var child = parent.createChild(noop)
 			expect(parent.get('$container')).to.equal(parent)
 			expect(child.get('$container')).to.equal(child)
 			expect(parent.get('$container')).to.not.equal(child.get('$container'))

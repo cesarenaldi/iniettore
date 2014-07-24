@@ -142,8 +142,10 @@ describe('Given a container with registered providers and constructor', function
 		var chilProviderStub = sinon.stub().returns(CHILD_INSTANCE)
 		var child
 
+		function noop() {}
+
 		beforeEach(function () {
-			child = container.createChild()
+			child = container.createChild(noop)
 			PARENT_INSTANCE.dispose.reset()
 			CHILD_INSTANCE.dispose.reset()
 		})

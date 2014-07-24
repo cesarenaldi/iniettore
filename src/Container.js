@@ -5,6 +5,7 @@ import { ACQUIRE, RELEASE, DISPOSE } from './signals'
 import { PROVIDER } from './options'
 import resolvers from './resolvers'
 import { VALUE } from './options'
+import createContext from './createContext';
 import log from './log'
 
 var ALIAS_IDX = 0
@@ -17,17 +18,23 @@ var CONTAINER_ALIAS = '$container'
 class Container {
 
 	constructor(conf, mappings) {
+
+		var context
+
+		if (typeof conf !== 'function') {
+			throw new Error('Invalid container creation, missing contribution function')
+		}
 		this._resolvers = resolvers
 		this._mappings = mappings || {}
 		this._resolving = {}
 		this._pending = []
 		
 		this.bind(CONTAINER_ALIAS, this).as(VALUE).done()
-		if (typeof conf === 'function') {
-			conf(this)
-			if (this._pending.length) {
-				this._done()
-			}
+		context = createContext(this, this._contribute.bind(this))
+		conf(context)
+		context.flush()
+		if (this._pending.length) {
+			this._done()
 		}
 	}
 
@@ -145,19 +152,22 @@ class Container {
 		}
 	}
 
+	_contribute(alias, value, type, deps) {
+
+		deps = deps || []
+
+		if ( !(type in this._resolvers) ) {
+			throw new Error('Invalid flags combination. See documentation for valid flags combinations.')
+		}
+		this._mappings[alias] = this._resolvers[type].call(null, value, this._resolve.bind(this, deps), this._release.bind(this, deps))
+
+	}
+
 	_done() {
 
 		var pending = this._pending
-		var deps = pending[DEPS_IDX] ? pending[DEPS_IDX] : []
-		var resolver
 
-		if ( !(pending[TYPE_IDX] in this._resolvers) ) {
-			throw new Error('Invalid flags combination. See documentation for valid flags combinations.')
-		}
-
-		resolver = this._resolvers[ pending[TYPE_IDX] ](pending[VALUE_IDX], this._resolve.bind(this, deps), this._release.bind(this, deps))
-
-		this._mappings[pending[ALIAS_IDX]] = resolver
+		this._contribute(pending[ALIAS_IDX], pending[VALUE_IDX], pending[TYPE_IDX], pending[DEPS_IDX])
 
 		this._pending = []
 		return this
