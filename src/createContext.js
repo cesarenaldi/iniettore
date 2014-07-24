@@ -7,15 +7,11 @@ var VALUE_IDX = 1
 var TYPE_IDX = 2
 var DEPS_IDX = 3
 
-export default function context(container, contribute) {
+export default function context(contribute) {
 
 	var pending = []
 	
 	var context = {
-
-		bind: function (...args) {
-			return container.bind.apply(container, args)
-		},
 
 		map: (alias) => {
 			pending.push(alias)
@@ -55,7 +51,7 @@ export default function context(container, contribute) {
 		},
 
 		flush: () => {
-			if (pending.length) {
+			if (pending.length > 2) {
 				contribute(pending[ALIAS_IDX], pending[VALUE_IDX], pending[TYPE_IDX], pending[DEPS_IDX])
 				pending = []
 			}

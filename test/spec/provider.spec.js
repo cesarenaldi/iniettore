@@ -34,11 +34,11 @@ describe('Given a container with a registered provider', function () {
 
 			container = iniettore.create(function (context) {
 				context
-					.bind('foo', 42).as(VALUE)
+					.map('foo').to(42).as(VALUE)
 
-					.bind('bar', providerStub)
+					.map('bar').to(providerStub)
 					.as(PROVIDER)
-					.inject('foo')
+					.injecting('foo')
 			})
 
 			result = container.get('bar')
@@ -62,10 +62,10 @@ describe('Given a container with a registered provider', function () {
 		before(function () {
 			container = iniettore.create(function (context) {
 				context
-					.bind('foo', 42).as(VALUE)
-					.bind('bar', providerStub)
+					.map('foo').to(42).as(VALUE)
+					.map('bar').to(providerStub)
 					.as(TRANSIENT, SINGLETON, PROVIDER)
-					.inject('foo')
+					.injecting('foo')
 			})
 		})
 

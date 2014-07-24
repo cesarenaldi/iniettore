@@ -17,10 +17,10 @@ describe('Given a container with a registered function', function () {
 				expect(param1).to.equal(42)
 			}
 
-			container = iniettore.create(function (container) {
-				container
-					.bind('bar', BAR).as(VALUE)
-					.bind('foo', foo).as(FUNCTION).inject('bar')
+			container = iniettore.create(function (context) {
+				context
+					.map('bar').to(BAR).as(VALUE)
+					.map('foo').to(foo).as(FUNCTION).injecting('bar')
 			})
 
 			foo = container.get('foo')

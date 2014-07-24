@@ -12,8 +12,8 @@ describe('Given a container', function () {
 	before(function () {
 		container = iniettore.create(function (context) {
 			context
-				.bind('bar', VALUE_A).as(VALUE)
-				.bind('pluto', parentProvideStub).as(TRANSIENT, SINGLETON, PROVIDER)
+				.map('bar').to(VALUE_A).as(VALUE)
+				.map('pluto').to(parentProvideStub).as(TRANSIENT, SINGLETON, PROVIDER)
 		})
 	})
 
@@ -26,9 +26,9 @@ describe('Given a container', function () {
 			before(function () {
 				container.createBlueprint('foo', function (context) {
 					context
-						.bind('baz', blueprintProviderStub)
+						.map('baz').to(blueprintProviderStub)
 						.as(TRANSIENT, SINGLETON, PROVIDER)
-						.inject('bar')
+						.injecting('bar')
 				}).done()
 			})
 
@@ -60,9 +60,9 @@ describe('Given a container', function () {
 				container.createBlueprint('foo', function (context) {
 
 					context
-						.bind('baz', blueprintProviderStub)
+						.map('baz').to(blueprintProviderStub)
 						.as(TRANSIENT, SINGLETON, PROVIDER)
-						.inject('bar')
+						.injecting('bar')
 
 				}).exports('baz').done()
 			})

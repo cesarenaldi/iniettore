@@ -13,7 +13,7 @@ describe('Given a child container', function () {
 		it('should return the same binding as requested to the parent container', function () {
 			var parent = iniettore.create(function (context) {
 				context
-					.bind('foo', OBJECT)
+					.map('foo').to(OBJECT)
 					.as(VALUE)
 			})
 			var child = parent.createChild(noop)
@@ -44,7 +44,7 @@ describe('Given a child container', function () {
 			beforeEach(function () {
 				parent = iniettore.create(function (context) {
 					context
-						.bind('foo', OBJECT)
+						.map('foo').to(OBJECT)
 						.as(VALUE)
 				})
 			})
@@ -52,7 +52,7 @@ describe('Given a child container', function () {
 			it('should retrieve the child container version', function () {
 				var child = parent.createChild(function (context) {
 					context
-						.bind('foo', 42)
+						.map('foo').to(42)
 						.as(VALUE)
 				})
 				expect(child.get('foo')).to.equal(42)
@@ -74,14 +74,14 @@ describe('Given a child container', function () {
 			beforeEach(function () {
 				parent = iniettore.create(function (context) {
 					context
-						.bind('bar', parentProviderStub)
+						.map('bar').to(parentProviderStub)
 						.as(TRANSIENT, SINGLETON, PROVIDER)
 				})
 				child = parent.createChild(function (context) {
 					context
-						.bind('baz', chilProviderStub)
+						.map('baz').to(chilProviderStub)
 						.as(TRANSIENT, SINGLETON, PROVIDER)
-						.inject('bar')
+						.injecting('bar')
 				})
 			})
 

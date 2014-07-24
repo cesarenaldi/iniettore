@@ -13,7 +13,7 @@ describe('Given a container', function () {
 		before(function () {
 			container = iniettore.create(function (container) {
 				container
-					.bind('bar', DUMMY_VALUE)
+					.map('bar').to(DUMMY_VALUE)
 					.as(VALUE)
 			})
 		})
@@ -30,7 +30,7 @@ describe('Given a container', function () {
 		before(function () {
 			container = iniettore.create(function (container) {
 				container
-					.bind('bar', DUMMY_VALUE)
+					.map('bar').to(DUMMY_VALUE)
 					.as(INSTANCE)
 			})
 		})

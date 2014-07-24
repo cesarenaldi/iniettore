@@ -29,47 +29,11 @@ class Container {
 		this._resolving = {}
 		this._pending = []
 		
-		this.bind(CONTAINER_ALIAS, this).as(VALUE).done()
-		context = createContext(this, this._contribute.bind(this))
+		context = this._context = createContext(this._contribute.bind(this))
+		context.map(CONTAINER_ALIAS).to(this).as(VALUE)
+		context.flush()
 		conf(context)
 		context.flush()
-		if (this._pending.length) {
-			this._done()
-		}
-	}
-
-	bind(alias, value) {
-		this._pending = [alias, value]
-
-		return {
-			
-			as: (...flags) => {
-				this._pending[TYPE_IDX] = generateMask(flags)
-
-				return {
-
-					bind: (...args) => {
-						this._done()
-						return this.bind.apply(this, args)
-					},
-
-					inject: (...deps) => {
-						this._pending[DEPS_IDX] = deps
-
-						return {
-							bind: (...args) => {
-								this._done()
-								return this.bind.apply(this, args)
-							},
-
-							done: () => this._done()
-						}
-					},
-
-					done: () => this._done()
-				}
-			}
-		}
 	}
 
 	get(alias, transients) {
@@ -98,11 +62,13 @@ class Container {
 	using(transientsDeps) {
 		return {
 			get: (alias) => {
+				var context = this._context
 				var dep
 
 				for (dep in transientsDeps) {
-					this.bind(dep, transientsDeps[dep]).as(VALUE).done()
+					context.map(dep).to(transientsDeps[dep]).as(VALUE)
 				}
+				context.flush()
 				this.get(alias)
 				for (dep in transientsDeps) {
 					this._unbind(dep)
@@ -128,10 +94,16 @@ class Container {
 		return {
 			exports: (mapping) => {
 				return {
-					done: () => this.bind(alias, () => this.createChild(blueprint).get(mapping)).as(PROVIDER).done()
+					done: () => {
+						this._context.map(alias).to(() => this.createChild(blueprint).get(mapping)).as(PROVIDER)
+						this._context.flush()
+					}
 				}
 			},
-			done: () => this.bind(alias, () => this.createChild(blueprint)).as(PROVIDER).done()
+			done: () => {
+				this._context.map(alias).to(() => this.createChild(blueprint)).as(PROVIDER)
+				this._context.flush()
+			}
 		}
 	}
 
@@ -161,16 +133,6 @@ class Container {
 		}
 		this._mappings[alias] = this._resolvers[type].call(null, value, this._resolve.bind(this, deps), this._release.bind(this, deps))
 
-	}
-
-	_done() {
-
-		var pending = this._pending
-
-		this._contribute(pending[ALIAS_IDX], pending[VALUE_IDX], pending[TYPE_IDX], pending[DEPS_IDX])
-
-		this._pending = []
-		return this
 	}
 
 	_unbind(alias) {

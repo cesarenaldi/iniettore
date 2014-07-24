@@ -24,7 +24,7 @@ describe('Given a container', function () {
 			function testCase() {
 				iniettore.create(function (context) {
 					context
-						.bind('foo', {})
+						.map('foo').to({})
 						.as(SINGLETON, VALUE)
 				})
 			}
@@ -57,7 +57,7 @@ describe('Given a container', function () {
 		beforeEach(function () {
 			container = iniettore.create(function (context) {
 				context
-					.bind('foo', Foo)
+					.map('foo').to(Foo)
 					.as(CONSTRUCTOR)
 			})
 		})
@@ -81,7 +81,7 @@ describe('Given a container', function () {
 		beforeEach(function () {
 			container = iniettore.create(function (context) {
 				context
-					.bind('bar', providerStub)
+					.map('bar').to(providerStub)
 					.as(TRANSIENT, SINGLETON, PROVIDER)
 			})
 		})
@@ -119,9 +119,9 @@ describe('Given a container', function () {
 
 				container = iniettore.create(function (context) {
 					context
-						.bind('bar', Bar)
+						.map('bar').to(Bar)
 						.as(CONSTRUCTOR)
-						.inject('bar')
+						.injecting('bar')
 				})
 
 				function testCase () {
