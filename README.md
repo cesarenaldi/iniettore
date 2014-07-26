@@ -1,10 +1,10 @@
 
-# ![Iniettore](https://github.com/cesarenaldi/iniettore/raw/master/logo.png) Iniettore
+# ![Iniettore](https://github.com/cesarenaldi/iniettore/raw/api-refactoring/logo.png) Iniettore
 
-[![Build Status](https://travis-ci.org/cesarenaldi/iniettore.svg?branch=master)](https://travis-ci.org/cesarenaldi/iniettore)
+[![Build Status](https://travis-ci.org/cesarenaldi/iniettore.svg?branch=api-refactoring)](https://travis-ci.org/cesarenaldi/iniettore)
 [![GitHub version](https://badge.fury.io/gh/cesarenaldi%2Finiettore.svg)](http://badge.fury.io/gh/cesarenaldi%2Finiettore)
 [![NPM dependencies](https://david-dm.org/cesarenaldi/iniettore.svg)](https://david-dm.org/cesarenaldi/iniettore)
-[![Coverage Status](https://img.shields.io/coveralls/cesarenaldi/iniettore.svg)](https://coveralls.io/r/cesarenaldi/iniettore?branch=master)
+[![Coverage Status](https://img.shields.io/coveralls/cesarenaldi/iniettore.svg)](https://coveralls.io/r/cesarenaldi/iniettore?branch=api-refactoring)
 
 ## TODO
 - [x] Dispose sub dependencies
@@ -13,23 +13,17 @@
 - [x] Handle errors in case constructors, providers or dispose fails
 	- [x] keep original errors trackable
 - [ ] ~~Make possible to pass extra params~~
-- [ ] Complete debug logs
-- [ ] Handle errors in case of wrong api calls
+- [x] Complete debug logs
+- [ ] ~~Handle errors in case of wrong api calls~~ Impossible to call methods in wrong order with new APIs.
 - [ ] Make dispose method name configurable
-- [ ] Improve fluid API
-	- [ ] remove done call
+- [x] Improve fluid API
+	- [x] remove done call
 	- [x] add experimental contribution phase into a revealing construction pattern
-	- [ ] refactor APIs to be more explicit
+	- [x] refactor APIs to be more explicit
 - [ ] test case when singletons do NOT implement a dispose method (see test coverage)
 - [x] cleanup
 	- [x] remove memoize if not used
 	- [x] remove merge if not used
-
-- [ ] DOCS
-	- [ ] Features
-	- [ ] Specify ECMA Script 5 required features or polyfills
-	- [ ] Quick usage
-	- [ ] Detailed examples
 
 ### DEFER
 - [ ] ~~Detect invalid singleton destroy calls.~~ Too complex for a minor benefit.
@@ -65,10 +59,12 @@ class UltimateQuestion {
 
 var container = iniettore.create(function (context) {
 	context
-		.bind('answer', 42)
+		.map('answer')
+		.to(42)
 		.as(VALUE)
 
-		.bind('question', UltimateQuestion)
+		.map('question')
+		.to(UltimateQuestion)
 		.as(SINGLETON, CONSTRUCTOR)
 		.injecting('answer')
 })

@@ -18,7 +18,7 @@ describe('Given a container with a registered constructor', function () {
 
 			var container = iniettore.create(function (context) {
 				context
-					.bind('foo', Foo)
+					.map('foo').to(Foo)
 					.as(CONSTRUCTOR)
 			})
 
@@ -45,7 +45,7 @@ describe('Given a container with a registered constructor', function () {
 
 				var container = iniettore.create(function (context) {
 					context
-						.bind('foo', Foo)
+						.map('foo').to(Foo)
 						.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
 				})
 
@@ -92,14 +92,14 @@ describe('Given a container with a registered constructor', function () {
 
 					var container = iniettore.create(function (context) {
 						context
-							.bind('common', Common)
+							.map('common').to(Common)
 							.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-							.bind('bar', Bar)
+							.map('bar').to(Bar)
 							.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-							.inject('common')
-							.bind('foo', Foo)
+							.injecting('common')
+							.map('foo').to(Foo)
 							.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-							.inject('common', 'bar')
+							.injecting('common', 'bar')
 					})
 
 					expect(container.get('foo')).to.be.instanceof(Foo)

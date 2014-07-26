@@ -40,16 +40,16 @@ describe('Given a container with registered providers and constructor', function
 
 			container = iniettore.create(function (context) {
 				context
-					.bind('foo', OBJECT_DEP)
+					.map('foo').to(OBJECT_DEP)
 					.as(VALUE)
 
-					.bind('baz', Baz)
+					.map('baz').to(Baz)
 					.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-					.inject('foo')
+					.injecting('foo')
 
-					.bind('bar', providerStub)
+					.map('bar').to(providerStub)
 					.as(TRANSIENT, SINGLETON, PROVIDER)
-					.inject('foo', 'baz')
+					.injecting('foo', 'baz')
 			})
 
 			BAR_1.dispose.reset()
@@ -122,7 +122,7 @@ describe('Given a container with registered providers and constructor', function
 		beforeEach(function () {
 			container = iniettore.create(function (context) {
 				context
-					.bind('baz', Baz)
+					.map('baz').to(Baz)
 					.as(PERSISTENT, SINGLETON, CONSTRUCTOR)
 			})
 		})
@@ -142,8 +142,10 @@ describe('Given a container with registered providers and constructor', function
 		var chilProviderStub = sinon.stub().returns(CHILD_INSTANCE)
 		var child
 
+		function noop() {}
+
 		beforeEach(function () {
-			child = container.createChild()
+			child = container.createChild(noop)
 			PARENT_INSTANCE.dispose.reset()
 			CHILD_INSTANCE.dispose.reset()
 		})
@@ -155,14 +157,14 @@ describe('Given a container with registered providers and constructor', function
 				beforeEach(function () {
 					container = iniettore.create(function (context) {
 						context
-							.bind('bar', parentProviderStub)
+							.map('bar').to(parentProviderStub)
 							.as(TRANSIENT, SINGLETON, PROVIDER)
 					})
 					child = container.createChild(function (context) {
 						context
-							.bind('baz', chilProviderStub)
+							.map('baz').to(chilProviderStub)
 							.as(TRANSIENT, SINGLETON, PROVIDER)
-							.inject('bar')
+							.injecting('bar')
 					})
 					child.get('baz')
 				})
@@ -188,14 +190,14 @@ describe('Given a container with registered providers and constructor', function
 			beforeEach(function () {
 				container = iniettore.create(function (context) {
 					context
-						.bind('bar', parentProviderStub)
+						.map('bar').to(parentProviderStub)
 						.as(TRANSIENT, SINGLETON, PROVIDER)
 				})
 				child = container.createChild(function (context) {
 					context	
-						.bind('baz', chilProviderStub)
+						.map('baz').to(chilProviderStub)
 						.as(TRANSIENT, SINGLETON, PROVIDER)
-						.inject('bar')
+						.injecting('bar')
 				})
 			})
 

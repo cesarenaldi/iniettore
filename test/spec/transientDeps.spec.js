@@ -17,8 +17,8 @@ describe('Given a container with a registered provider', function () {
 		before(function () {
 			container = iniettore.create(function (container) {
 				container
-					.bind('bar', 42).as(VALUE)
-					.bind('foo', providerSpy).as(PROVIDER).inject('bar', 'baz')
+					.map('bar').to(42).as(VALUE)
+					.map('foo').to(providerSpy).as(PROVIDER).injecting('bar', 'baz')
 			})
 		})
 

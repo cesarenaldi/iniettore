@@ -1,21 +1,13 @@
 'use strict'
 
 import iniettore from '../../src/iniettore'
-import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../../src/options'
+import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT, BLUEPRINT } from '../../src/options'
 
 describe('Given a container', function () {
 
 	var VALUE_A = { value: 'a'}
 	var parentProvideStub = sinon.stub().returns(42)
 	var container
-
-	before(function () {
-		container = iniettore.create(function (context) {
-			context
-				.bind('bar', VALUE_A).as(VALUE)
-				.bind('pluto', parentProvideStub).as(TRANSIENT, SINGLETON, PROVIDER)
-		})
-	})
 
 	describe('and a registered blueprint with some registered bindings', function () {
 
@@ -24,12 +16,19 @@ describe('Given a container', function () {
 		describe('when requesting a copy of the blueprint', function () {
 
 			before(function () {
-				container.createBlueprint('foo', function (context) {
+				function configureChildContext(context) {
 					context
-						.bind('baz', blueprintProviderStub)
+						.map('baz').to(blueprintProviderStub)
 						.as(TRANSIENT, SINGLETON, PROVIDER)
-						.inject('bar')
-				}).done()
+						.injecting('bar')
+				}
+
+				container = iniettore.create(function (context) {
+					context
+						.map('bar').to(VALUE_A).as(VALUE)
+						.map('foo').to(configureChildContext).as(BLUEPRINT)
+						.map('pluto').to(parentProvideStub).as(TRANSIENT, SINGLETON, PROVIDER)
+				})
 			})
 
 			it('should create a child container', function () {
@@ -57,14 +56,19 @@ describe('Given a container', function () {
 		describe('and a specified export', function () {
 
 			before(function () {
-				container.createBlueprint('foo', function (context) {
-
+				function configureChildContext(context) {
 					context
-						.bind('baz', blueprintProviderStub)
+						.map('baz').to(blueprintProviderStub)
 						.as(TRANSIENT, SINGLETON, PROVIDER)
-						.inject('bar')
+						.injecting('bar')
+				}
 
-				}).exports('baz').done()
+				container = iniettore.create(function (context) {
+					context
+						.map('bar').to(VALUE_A).as(VALUE)
+						.map('foo').to(configureChildContext).as(BLUEPRINT).exports('baz')
+						.map('pluto').to(parentProvideStub).as(TRANSIENT, SINGLETON, PROVIDER)
+				})
 			})
 
 			describe('when requesting a copy of the blueprint', function () {

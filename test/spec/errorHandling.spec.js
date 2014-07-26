@@ -3,6 +3,18 @@
 import iniettore from '../../src/iniettore'
 import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../../src/options'
 
+describe('Given iniettore', function () {
+	describe('when creating a new container without a contribution function', function () {
+		it('should throw an Error', function () {
+			function testCase() {
+				iniettore.create()
+			}
+
+			expect(testCase).to.throw(Error, /missing contribution function/i)
+		})
+	})
+})
+
 describe('Given a container', function () {
 
 	var container
@@ -12,7 +24,7 @@ describe('Given a container', function () {
 			function testCase() {
 				iniettore.create(function (context) {
 					context
-						.bind('foo', {})
+						.map('foo').to({})
 						.as(SINGLETON, VALUE)
 				})
 			}
@@ -45,7 +57,7 @@ describe('Given a container', function () {
 		beforeEach(function () {
 			container = iniettore.create(function (context) {
 				context
-					.bind('foo', Foo)
+					.map('foo').to(Foo)
 					.as(CONSTRUCTOR)
 			})
 		})
@@ -69,7 +81,7 @@ describe('Given a container', function () {
 		beforeEach(function () {
 			container = iniettore.create(function (context) {
 				context
-					.bind('bar', providerStub)
+					.map('bar').to(providerStub)
 					.as(TRANSIENT, SINGLETON, PROVIDER)
 			})
 		})
@@ -107,9 +119,9 @@ describe('Given a container', function () {
 
 				container = iniettore.create(function (context) {
 					context
-						.bind('bar', Bar)
+						.map('bar').to(Bar)
 						.as(CONSTRUCTOR)
-						.inject('bar')
+						.injecting('bar')
 				})
 
 				function testCase () {

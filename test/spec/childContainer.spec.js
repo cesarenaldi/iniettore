@@ -3,6 +3,7 @@
 import iniettore from '../../src/iniettore'
 import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../../src/options'
 
+function noop() {}
 
 describe('Given a child container', function () {
 
@@ -12,10 +13,10 @@ describe('Given a child container', function () {
 		it('should return the same binding as requested to the parent container', function () {
 			var parent = iniettore.create(function (context) {
 				context
-					.bind('foo', OBJECT)
+					.map('foo').to(OBJECT)
 					.as(VALUE)
 			})
-			var child = parent.createChild()
+			var child = parent.createChild(noop)
 
 			expect(child.get('foo'))
 				.to.equal(parent.get('foo'))
@@ -26,8 +27,8 @@ describe('Given a child container', function () {
 
 
 		it('should return the respective containers', function () {
-			var parent = iniettore.create()
-			var child = parent.createChild()
+			var parent = iniettore.create(noop)
+			var child = parent.createChild(noop)
 			expect(parent.get('$container')).to.equal(parent)
 			expect(child.get('$container')).to.equal(child)
 			expect(parent.get('$container')).to.not.equal(child.get('$container'))
@@ -43,7 +44,7 @@ describe('Given a child container', function () {
 			beforeEach(function () {
 				parent = iniettore.create(function (context) {
 					context
-						.bind('foo', OBJECT)
+						.map('foo').to(OBJECT)
 						.as(VALUE)
 				})
 			})
@@ -51,7 +52,7 @@ describe('Given a child container', function () {
 			it('should retrieve the child container version', function () {
 				var child = parent.createChild(function (context) {
 					context
-						.bind('foo', 42)
+						.map('foo').to(42)
 						.as(VALUE)
 				})
 				expect(child.get('foo')).to.equal(42)
@@ -73,14 +74,14 @@ describe('Given a child container', function () {
 			beforeEach(function () {
 				parent = iniettore.create(function (context) {
 					context
-						.bind('bar', parentProviderStub)
+						.map('bar').to(parentProviderStub)
 						.as(TRANSIENT, SINGLETON, PROVIDER)
 				})
 				child = parent.createChild(function (context) {
 					context
-						.bind('baz', chilProviderStub)
+						.map('baz').to(chilProviderStub)
 						.as(TRANSIENT, SINGLETON, PROVIDER)
-						.inject('bar')
+						.injecting('bar')
 				})
 			})
 

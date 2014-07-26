@@ -5,97 +5,63 @@ import { ACQUIRE, RELEASE, DISPOSE } from './signals'
 import { PROVIDER } from './options'
 import resolvers from './resolvers'
 import { VALUE } from './options'
-import log from './log'
-
-var ALIAS_IDX = 0
-var VALUE_IDX = 1
-var TYPE_IDX = 2
-var DEPS_IDX = 3
+import createContext from './createContext';
+import Logger from './Logger'
 
 var CONTAINER_ALIAS = '$container'
 
 class Container {
 
-	constructor(conf, mappings) {
+	constructor(conf, options, mappings, logger) {
+
+		var context
+
+		if (typeof conf !== 'function') {
+			throw new Error('Invalid container creation, missing contribution function')
+		}
 		this._resolvers = resolvers
 		this._mappings = mappings || {}
+		this._logger = logger || new Logger(options)
 		this._resolving = {}
 		this._pending = []
 		
-		this.bind(CONTAINER_ALIAS, this).as(VALUE).done()
-		if (typeof conf === 'function') {
-			conf(this)
-			if (this._pending.length) {
-				this._done()
-			}
-		}
-	}
-
-	bind(alias, value) {
-		this._pending = [alias, value]
-
-		return {
-			
-			as: (...flags) => {
-				this._pending[TYPE_IDX] = generateMask(flags)
-
-				return {
-
-					bind: (...args) => {
-						this._done()
-						return this.bind.apply(this, args)
-					},
-
-					inject: (...deps) => {
-						this._pending[DEPS_IDX] = deps
-
-						return {
-							bind: (...args) => {
-								this._done()
-								return this.bind.apply(this, args)
-							},
-
-							done: () => this._done()
-						}
-					},
-
-					done: () => this._done()
-				}
-			}
-		}
+		context = this._context = createContext(this._contribute.bind(this))
+		context.map(CONTAINER_ALIAS).to(this).as(VALUE)
+		context.flush()
+		conf(context)
+		context.flush()
 	}
 
 	get(alias, transients) {
+		return this._logger.log(`resolving '${alias}'`, () => {
+			var value, error
 
-		var value, error
+			if (this._resolving[alias]) { throw new Error(`Circular dependency detected while resolving '${alias}'`) }
+			if (!(alias in this._mappings)) { throw new Error(`'${alias}' is not available. Has it ever been registered?.`) }
 
-		log(`Resolving ${alias}`)
+			this._resolving[alias] = true
+			try {
+				value = this._mappings[alias](ACQUIRE)
+			} catch(err) {
+				err.message = `Failed while resolving '${alias}' due to:\n\t${err.message}`
+				throw err
+			}
+			this._resolving[alias] = false
 
-		if (this._resolving[alias]) { throw new Error(`Circular dependency detected while resolving '${alias}'`) }
-		if (!(alias in this._mappings)) { throw new Error(`'${alias}' is not available. Has it ever been registered?.`) }
-
-		this._resolving[alias] = true
-		try {
-			value = this._mappings[alias](ACQUIRE)
-		} catch(err) {
-			err.message = `Failed while resolving '${alias}' due to:\n\t${err.message}`
-			throw err
-		}
-		this._resolving[alias] = false
-
-		log.done()
-
-		return value
+			return value
+		})
 	}
 
 	using(transientsDeps) {
 		return {
 			get: (alias) => {
+				var context = this._context
 				var dep
 
 				for (dep in transientsDeps) {
-					this.bind(dep, transientsDeps[dep]).as(VALUE).done()
+					context.map(dep).to(transientsDeps[dep]).as(VALUE)
 				}
+				context.flush()
 				this.get(alias)
 				for (dep in transientsDeps) {
 					this._unbind(dep)
@@ -114,18 +80,7 @@ class Container {
 	}
 
 	createChild(conf) {
-		return new Container(conf, Object.create(this._mappings))
-	}
-
-	createBlueprint(alias, blueprint) {
-		return {
-			exports: (mapping) => {
-				return {
-					done: () => this.bind(alias, () => this.createChild(blueprint).get(mapping)).as(PROVIDER).done()
-				}
-			},
-			done: () => this.bind(alias, () => this.createChild(blueprint)).as(PROVIDER).done()
-		}
+		return new Container(conf, this._options, Object.create(this._mappings), this._logger)
 	}
 
 	dispose() {
@@ -145,22 +100,15 @@ class Container {
 		}
 	}
 
-	_done() {
+	_contribute(alias, value, type, deps) {
 
-		var pending = this._pending
-		var deps = pending[DEPS_IDX] ? pending[DEPS_IDX] : []
-		var resolver
+		deps = deps || []
 
-		if ( !(pending[TYPE_IDX] in this._resolvers) ) {
+		if ( !(type in this._resolvers) ) {
 			throw new Error('Invalid flags combination. See documentation for valid flags combinations.')
 		}
+		this._mappings[alias] = this._resolvers[type].call(null, value, this._resolve.bind(this, deps), this._release.bind(this, deps))
 
-		resolver = this._resolvers[ pending[TYPE_IDX] ](pending[VALUE_IDX], this._resolve.bind(this, deps), this._release.bind(this, deps))
-
-		this._mappings[pending[ALIAS_IDX]] = resolver
-
-		this._pending = []
-		return this
 	}
 
 	_unbind(alias) {
