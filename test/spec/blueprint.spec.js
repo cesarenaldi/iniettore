@@ -16,18 +16,18 @@ describe('Given a container', function () {
 		describe('when requesting a copy of the blueprint', function () {
 
 			before(function () {
+				function configureChildContext(context) {
+					context
+						.map('baz').to(blueprintProviderStub)
+						.as(TRANSIENT, SINGLETON, PROVIDER)
+						.injecting('bar')
+				}
+
 				container = iniettore.create(function (context) {
 					context
 						.map('bar').to(VALUE_A).as(VALUE)
+						.map('foo').to(configureChildContext).as(BLUEPRINT)
 						.map('pluto').to(parentProvideStub).as(TRANSIENT, SINGLETON, PROVIDER)
-
-						.map('foo').to(function (context) {
-							context
-								.map('baz').to(blueprintProviderStub)
-								.as(TRANSIENT, SINGLETON, PROVIDER)
-								.injecting('bar')
-						})
-						.as(BLUEPRINT)
 				})
 			})
 
@@ -56,19 +56,18 @@ describe('Given a container', function () {
 		describe('and a specified export', function () {
 
 			before(function () {
+				function configureChildContext(context) {
+					context
+						.map('baz').to(blueprintProviderStub)
+						.as(TRANSIENT, SINGLETON, PROVIDER)
+						.injecting('bar')
+				}
+
 				container = iniettore.create(function (context) {
 					context
 						.map('bar').to(VALUE_A).as(VALUE)
+						.map('foo').to(configureChildContext).as(BLUEPRINT).exports('baz')
 						.map('pluto').to(parentProvideStub).as(TRANSIENT, SINGLETON, PROVIDER)
-
-						.map('foo').to(function (context) {
-							context
-								.map('baz').to(blueprintProviderStub)
-								.as(TRANSIENT, SINGLETON, PROVIDER)
-								.injecting('bar')
-						})
-						.as(BLUEPRINT)
-						.exports('baz')
 				})
 			})
 

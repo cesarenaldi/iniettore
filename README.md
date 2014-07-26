@@ -13,23 +13,17 @@
 - [x] Handle errors in case constructors, providers or dispose fails
 	- [x] keep original errors trackable
 - [ ] ~~Make possible to pass extra params~~
-- [ ] Complete debug logs
-- [ ] Handle errors in case of wrong api calls
+- [x] Complete debug logs
+- [ ] ~~Handle errors in case of wrong api calls~~ Impossible to call methods in wrong order with new APIs.
 - [ ] Make dispose method name configurable
-- [ ] Improve fluid API
-	- [ ] remove done call
+- [x] Improve fluid API
+	- [x] remove done call
 	- [x] add experimental contribution phase into a revealing construction pattern
-	- [ ] refactor APIs to be more explicit
+	- [x] refactor APIs to be more explicit
 - [ ] test case when singletons do NOT implement a dispose method (see test coverage)
 - [x] cleanup
 	- [x] remove memoize if not used
 	- [x] remove merge if not used
-
-- [ ] DOCS
-	- [ ] Features
-	- [ ] Specify ECMA Script 5 required features or polyfills
-	- [ ] Quick usage
-	- [ ] Detailed examples
 
 ### DEFER
 - [ ] ~~Detect invalid singleton destroy calls.~~ Too complex for a minor benefit.

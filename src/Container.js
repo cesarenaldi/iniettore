@@ -6,18 +6,13 @@ import { PROVIDER } from './options'
 import resolvers from './resolvers'
 import { VALUE } from './options'
 import createContext from './createContext';
-import log from './log'
-
-var ALIAS_IDX = 0
-var VALUE_IDX = 1
-var TYPE_IDX = 2
-var DEPS_IDX = 3
+import Logger from './Logger'
 
 var CONTAINER_ALIAS = '$container'
 
 class Container {
 
-	constructor(conf, mappings) {
+	constructor(conf, options, mappings, logger) {
 
 		var context
 
@@ -26,6 +21,7 @@ class Container {
 		}
 		this._resolvers = resolvers
 		this._mappings = mappings || {}
+		this._logger = logger || new Logger(options)
 		this._resolving = {}
 		this._pending = []
 		
@@ -37,26 +33,23 @@ class Container {
 	}
 
 	get(alias, transients) {
+		return this._logger.log(`resolving '${alias}'`, () => {
+			var value, error
 
-		var value, error
+			if (this._resolving[alias]) { throw new Error(`Circular dependency detected while resolving '${alias}'`) }
+			if (!(alias in this._mappings)) { throw new Error(`'${alias}' is not available. Has it ever been registered?.`) }
 
-		log(`Resolving ${alias}`)
+			this._resolving[alias] = true
+			try {
+				value = this._mappings[alias](ACQUIRE)
+			} catch(err) {
+				err.message = `Failed while resolving '${alias}' due to:\n\t${err.message}`
+				throw err
+			}
+			this._resolving[alias] = false
 
-		if (this._resolving[alias]) { throw new Error(`Circular dependency detected while resolving '${alias}'`) }
-		if (!(alias in this._mappings)) { throw new Error(`'${alias}' is not available. Has it ever been registered?.`) }
-
-		this._resolving[alias] = true
-		try {
-			value = this._mappings[alias](ACQUIRE)
-		} catch(err) {
-			err.message = `Failed while resolving '${alias}' due to:\n\t${err.message}`
-			throw err
-		}
-		this._resolving[alias] = false
-
-		log.done()
-
-		return value
+			return value
+		})
 	}
 
 	using(transientsDeps) {
@@ -87,7 +80,7 @@ class Container {
 	}
 
 	createChild(conf) {
-		return new Container(conf, Object.create(this._mappings))
+		return new Container(conf, this._options, Object.create(this._mappings), this._logger)
 	}
 
 	dispose() {

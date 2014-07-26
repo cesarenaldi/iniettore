@@ -1,7 +1,6 @@
 'use strict'
 
 import iniettore from '../../src/iniettore'
-
 import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../../src/options'
 
 describe('Given a container', function () {

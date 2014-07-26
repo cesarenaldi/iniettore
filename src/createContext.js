@@ -8,7 +8,7 @@ var VALUE_IDX = 1
 var TYPE_IDX = 2
 var DEPS_IDX = 3
 
-function createChildContainerFactory(conf, exportAlias) {
+function createChildContainerFactory(conf) {
 	return function (container) {
 		return container.createChild(conf)
 	}
@@ -23,7 +23,6 @@ function createExporter(containerFactory, exportAlias) {
 export default function createContext(contribute) {
 
 	var pending = []
-	
 	var context = {
 
 		map: (alias) => {
@@ -48,6 +47,9 @@ export default function createContext(contribute) {
 									exports: (alias) => {
 										pending[VALUE_IDX] = createExporter(pending[VALUE_IDX], alias)
 										context.flush()
+										return {
+											map: context.map
+										}
 									},
 									map: (alias) => {
 										context.flush()
