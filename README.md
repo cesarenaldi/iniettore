@@ -7,30 +7,11 @@
 [![Coverage Status](https://img.shields.io/coveralls/cesarenaldi/iniettore.svg)](https://coveralls.io/r/cesarenaldi/iniettore?branch=api-refactoring)
 
 ## TODO
-- [x] Dispose sub dependencies
-- [x] Child context support
-- [x] Bind container itself
-- [x] Handle errors in case constructors, providers or dispose fails
-	- [x] keep original errors trackable
-- [ ] ~~Make possible to pass extra params~~
-- [x] Complete debug logs
-- [ ] ~~Handle errors in case of wrong api calls~~ Impossible to call methods in wrong order with new APIs.
-- [ ] Make dispose method name configurable
-- [x] Improve fluid API
-	- [x] remove done call
-	- [x] add experimental contribution phase into a revealing construction pattern
-	- [x] refactor APIs to be more explicit
-- [x] test case when singletons do NOT implement a dispose method (see test coverage)
-- [x] cleanup
-	- [x] remove memoize if not used
-	- [x] remove merge if not used
-
-### DEFER
-- [ ] ~~Detect invalid singleton destroy calls.~~ Too complex for a minor benefit.
-### WONT DO IT
-- [ ] ~~Consider derring the release in case the object will be required in the short term~~ - complicated and no real benefits - the container consumer should do that before calling release
+- [ ] Make singletons dispose method name configurable
+- [ ] Improve `instanciate` function to copy static methods/properties to the Surrogate constructor
 
 ## Features
+
 
 ## Specify ECMA Script 5 required features or polyfills
 - `Object.create`
@@ -46,7 +27,7 @@ node.js:
 npm install iniettore --save
 ```
 
-### Usage
+### Simple usage
 ```javascript
 import iniettore from 'iniettore'
 import { VALUE, SINGLETON, CONSTRUCTOR } from 'iniettore/lib/options'
@@ -77,6 +58,29 @@ console.log(question instanceof UltimateQuestion) // true
 ## Advanced usage
 
 ### Value objects and instances
+```javascript
+import iniettore from 'iniettore'
+import { VALUE, INSTANCE } from 'iniettore/lib/options'
+
+var drone = {
+	fly: function () { /*...*/ }
+}
+
+var container = iniettore.create(function (context) {
+	context
+		.map('answer')
+		.to(42)
+		.as(VALUE)
+
+		.map('drone')
+		.to(drone)
+		.as(INSTANCE)
+})
+
+var answer = container.get('answer')
+
+console.log(container.get('drone') === drone) // true
+```
 ### Functions
 ### Providers
 ### Constructor
