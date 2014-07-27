@@ -56,7 +56,7 @@ describe('Given a container', function () {
 			BAR_2.dispose.reset()
 		})
 
-		it('should not release the instance if still in use', function () {
+		it('should not dispose the instance if still in use', function () {
 			var firstRequest = container.get('bar')
 			var secondRequest = container.get('bar')
 
@@ -67,6 +67,27 @@ describe('Given a container', function () {
 			expect(BAR_1.dispose).to.not.be.called
 
 			expect(container.get('bar')).to.equal(firstRequest)
+		})
+
+		describe('and the instance does not have a dispose method', function () {
+
+			class Foo {}
+
+			beforeEach(function () {
+				container = iniettore.create(function (context) {
+					context
+						.map('foo').to(Foo)
+						.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
+				})
+				container.get('foo')
+			})
+
+			it('should not throw an Error', function () {
+				function testCase() {
+					container.release('foo')
+				}
+				expect(testCase).to.not.throw(TypeError)
+			})
 		})
 
 		describe('the same amount of times it has been acquired', function () {
@@ -117,7 +138,7 @@ describe('Given a container', function () {
 		})
 	})
 
-	describe('when releasing a persistent singleton', function () {
+	describe('when releasing a persistent singleton adn there is no more reference to the singleton', function () {
 
 		before(function () {
 			container = iniettore.create(function (context) {
@@ -127,7 +148,7 @@ describe('Given a container', function () {
 			})
 		})
 
-		it('should have test coverage', function () {
+		it('should not dispose the instance', function () {
 			container.get('baz')
 			container.release('baz')
 			expect(BazDisposeSpy).to.not.be.called

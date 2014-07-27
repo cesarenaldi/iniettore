@@ -20,7 +20,7 @@
 	- [x] remove done call
 	- [x] add experimental contribution phase into a revealing construction pattern
 	- [x] refactor APIs to be more explicit
-- [ ] test case when singletons do NOT implement a dispose method (see test coverage)
+- [x] test case when singletons do NOT implement a dispose method (see test coverage)
 - [x] cleanup
 	- [x] remove memoize if not used
 	- [x] remove merge if not used
