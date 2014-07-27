@@ -98,6 +98,7 @@ class Container {
 		var id
 
 		for (id in children) {
+			/* istanbul ignore else  */
 			if (children.hasOwnProperty(id)) {
 				children[id].dispose()
 				this._releaseChild(id)
@@ -114,6 +115,7 @@ class Container {
 		var alias
 
 		for (alias in mappings) {
+			/* istanbul ignore else  */
 			if (mappings.hasOwnProperty(alias)) {
 				try {
 					mappings[alias](DISPOSE)
@@ -127,8 +129,6 @@ class Container {
 	}
 
 	_contribute(alias, value, type, deps) {
-		deps = deps || []
-
 		if ( !(type in this._resolvers) ) {
 			throw new Error('Invalid flags combination. See documentation for valid flags combinations.')
 		}
