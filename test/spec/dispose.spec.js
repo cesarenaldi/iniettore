@@ -257,17 +257,4 @@ describe('Given a container', function () {
 			})
 		})
 	})
-
-	describe.skip('when disposing the instance outside of the container lifecycle management', function () {
-		
-		it('should throw an Error', function () {
-			
-			var instance = container.get('baz')
-
-			function testCase() {
-				instance.dispose()
-			}
-			expect(testCase).to.throw(Error)
-		})
-	})
 })
