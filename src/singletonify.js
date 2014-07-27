@@ -30,15 +30,17 @@ export default function singletonify(create, persistent) {
 
 		handlers[RELEASE] = function (value) {
 			count--
-			if (count <= 0 && !persistent) {
+			if (count == 0 && !persistent) {
 				releaseDeps()
 				dispose()
 			}
 		}
 
 		handlers[DISPOSE] = function (value) {
-			releaseDeps()
-			dispose()
+			if (instance) {
+				releaseDeps()
+				dispose()
+			}
 		}
 
 		return function (signal) {

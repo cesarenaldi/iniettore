@@ -11,7 +11,7 @@ import {
 } from '../../src/options'
 
 
-describe('Given a container with registered providers and constructor', function () {
+describe('Given a container', function () {
 
 	var container, providerStub
 	var BazDisposeSpy = sinon.spy()
@@ -119,7 +119,7 @@ describe('Given a container with registered providers and constructor', function
 
 	describe('when releasing a persistent singleton', function () {
 
-		beforeEach(function () {
+		before(function () {
 			container = iniettore.create(function (context) {
 				context
 					.map('baz').to(Baz)
@@ -134,20 +134,56 @@ describe('Given a container with registered providers and constructor', function
 		})
 	})
 
+	describe('with a registered singleton constructor and singleton provider', function () {
+
+		class Bar {}
+		function dummyProvider() { return {} }
+
+		before(function () {
+			container = iniettore.create(function (context) {
+				context
+					.map('bar').to(Bar)
+					.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
+				context
+					.map('foo').to(dummyProvider)
+					.as(TRANSIENT, SINGLETON, PROVIDER)
+			})
+		})
+
+		describe('and none of the two has been requested before', function () {
+			describe('when disposing the container', function () {
+				it('should not throw an Error related to dispoding instances that don\'t exists', function () {
+					function testCase() {
+						container.dispose()
+					}
+					expect(testCase).to.not.throw(TypeError, /Cannot read property 'dispose' of undefined/i)
+				})
+			})
+		})
+	})
+
 	describe('and a child container', function () {
 
-		var PARENT_INSTANCE = { dispose: sinon.spy() }
-		var CHILD_INSTANCE = { dispose: sinon.spy() }
-		var parentProviderStub = sinon.stub().returns(PARENT_INSTANCE)
-		var chilProviderStub = sinon.stub().returns(CHILD_INSTANCE)
+		var INSTANCE_IN_PARENT = { dispose: sinon.spy() }
+		var INSTANCE_IN_CHILD = { dispose: sinon.spy() }
+		var parentProviderStub = sinon.stub().returns(INSTANCE_IN_PARENT)
+		var chilProviderStub = sinon.stub().returns(INSTANCE_IN_CHILD)
 		var child
 
-		function noop() {}
-
 		beforeEach(function () {
-			child = container.createChild(noop)
-			PARENT_INSTANCE.dispose.reset()
-			CHILD_INSTANCE.dispose.reset()
+			container = iniettore.create(function (context) {
+				context
+					.map('bar').to(parentProviderStub)
+					.as(TRANSIENT, SINGLETON, PROVIDER)
+			})
+			child = container.createChild(function (context) {
+				context
+					.map('baz').to(chilProviderStub)
+					.as(TRANSIENT, SINGLETON, PROVIDER)
+					.injecting('bar')
+			})
+			INSTANCE_IN_PARENT.dispose.reset()
+			INSTANCE_IN_CHILD.dispose.reset()
 		})
 
 		describe('when disposing an instance in the child container', function () {
@@ -155,63 +191,69 @@ describe('Given a container with registered providers and constructor', function
 			describe('with a dependency in the parent container', function () {
 
 				beforeEach(function () {
-					container = iniettore.create(function (context) {
-						context
-							.map('bar').to(parentProviderStub)
-							.as(TRANSIENT, SINGLETON, PROVIDER)
-					})
-					child = container.createChild(function (context) {
-						context
-							.map('baz').to(chilProviderStub)
-							.as(TRANSIENT, SINGLETON, PROVIDER)
-							.injecting('bar')
-					})
 					child.get('baz')
 				})
 
 				it('should dispose both in the corresponding containers', function (done) {
 					child.release('baz')
-					expect(CHILD_INSTANCE.dispose).to.be.calledOnce
-					expect(PARENT_INSTANCE.dispose).to.be.calledOnce
+					expect(INSTANCE_IN_CHILD.dispose).to.be.calledOnce
+					expect(INSTANCE_IN_PARENT.dispose).to.be.calledOnce
 					done()
 				})
 
 				it('should dispose only the child one if the parent one is still in use', function () {
 					container.get('bar')
 					child.release('baz')
-					expect(CHILD_INSTANCE.dispose).to.be.calledOnce
-					expect(PARENT_INSTANCE.dispose).to.not.be.called
+					expect(INSTANCE_IN_CHILD.dispose).to.be.calledOnce
+					expect(INSTANCE_IN_PARENT.dispose).to.not.be.called
 				})
 			})
 		})
 
-		describe('when disposing the child container itself', function () {
+		describe('when disposing the child container', function () {
 
-			beforeEach(function () {
-				container = iniettore.create(function (context) {
-					context
-						.map('bar').to(parentProviderStub)
-						.as(TRANSIENT, SINGLETON, PROVIDER)
-				})
-				child = container.createChild(function (context) {
-					context	
-						.map('baz').to(chilProviderStub)
-						.as(TRANSIENT, SINGLETON, PROVIDER)
-						.injecting('bar')
-				})
-			})
-
-			it('should dispose the registered singleton instances', function () {
+			it('should dispose the registered singleton instances in the respective containers', function () {
 				child.get('baz')
 				child.dispose()
-				expect(CHILD_INSTANCE.dispose).to.be.calledOnce
-				expect(PARENT_INSTANCE.dispose).to.be.calledOnce
+				expect(INSTANCE_IN_CHILD.dispose).to.be.calledOnce
+				expect(INSTANCE_IN_PARENT.dispose).to.be.calledOnce
 			})
 		})
 
-		describe.skip('when disposing the parent container', function () {
+		describe('when disposing the parent container', function () {
+
+			beforeEach(function () {
+				sinon.spy(child, 'dispose')
+				child.dispose.reset()
+			})
+
+			after(function () {
+				child.dispose.restore()
+			})
+
 			it('should dispose the child container as well', function () {
-				expect(false).to.be.true
+				container.dispose()
+				expect(child.dispose).to.be.calledOnce
+			})
+
+			it('should dispose instances in the child container before moving to dispose the ones in the parent container', function () {
+				child.get('bar') // request bar to avoid auto-dispose when disposing child container and its instances
+				child.get('baz')
+				container.dispose()
+				expect(INSTANCE_IN_PARENT.dispose)
+					.to.be.calledOnce
+				expect(INSTANCE_IN_CHILD.dispose)
+					.to.be.calledOnce
+					.and.to.be.calledBefore(INSTANCE_IN_PARENT.dispose)
+			})
+
+			describe('after having disposed a child container', function () {
+				it('should not call the child dispose method', function () {
+					child.dispose()
+					child.dispose.reset()
+					container.dispose()
+					expect(child.dispose).to.not.be.called
+				})
 			})
 		})
 	})

@@ -86,14 +86,14 @@ describe('Given a container', function () {
 			})
 		})
 
-		describe('when disposing and instance it throws an Error', function () {
+		describe('when releasing and instance it throws an Error', function () {
 
 			it('should catch it and throw an Error specifing the failing component', function () {
 				container.get('bar')
 				function testCase() {
 					container.release('bar')
 				}
-				expect(testCase).to.throw(Error, 'Failed while disposing \'bar\' due to:\n\tUnexpected issue')
+				expect(testCase).to.throw(Error, 'Failed while releasing \'bar\' due to:\n\tUnexpected issue')
 			})
 		})
 

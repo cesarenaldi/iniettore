@@ -21,7 +21,7 @@ require.extensions['.js'] = function(module, filename) {
 	src = fs.readFileSync(filename, {encoding: 'utf8'})
 
 	try {
-		src = jstransform.transform(visitorList, src, { minify: true })
+		src = jstransform.transform(visitorList, src, { minify: false })
 	} catch (e) {
 		throw new Error('Error transforming ' + filename + ' to ES6: ' + e.toString())
 	}

@@ -26,6 +26,7 @@ export default function createContext(contribute) {
 	var context = {
 
 		map: (alias) => {
+			context.flush()
 			pending.push(alias)
 
 			return {
@@ -46,35 +47,24 @@ export default function createContext(contribute) {
 								return {
 									exports: (alias) => {
 										pending[VALUE_IDX] = createExporter(pending[VALUE_IDX], alias)
-										context.flush()
 										return {
 											map: context.map
 										}
 									},
-									map: (alias) => {
-										context.flush()
-										return context.map.call(this, alias)
-									}
+									map: context.map
 								}
 							}
 
 							pending.push(generateMask(flags))
-
+							
 							return {
-								map: (alias) => {
-									pending.push([])
-									context.flush()
-									return context.map.call(this, alias)
-								},
+								map: context.map,
 								
 								injecting: (...deps) => {
 									pending.push(deps)
 
 									return {
-										map: (alias) => {
-											context.flush()
-											return context.map.call(this, alias)
-										}
+										map: context.map
 									}
 								}
 							}
@@ -85,8 +75,10 @@ export default function createContext(contribute) {
 		},
 
 		flush: () => {
+			var deps = pending[DEPS_IDX] || []
+
 			if (pending.length > 2) {
-				contribute(pending[ALIAS_IDX], pending[VALUE_IDX], pending[TYPE_IDX], pending[DEPS_IDX])
+				contribute(pending[ALIAS_IDX], pending[VALUE_IDX], pending[TYPE_IDX], deps)
 				pending = []
 			}
 		}

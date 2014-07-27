@@ -1,5 +1,6 @@
 var gulp = require('gulp')
 var mocha = require('gulp-mocha')
+var gutil = require('gulp-util')
 
 gulp.task('test-node', function () {
 
@@ -13,4 +14,8 @@ gulp.task('test-node', function () {
 		.pipe(mocha({
 			reporter: 'progress'
 		}))
+		.on('error', function (err) {
+			gutil.log(gutil.colors.red(err.message))
+			this.emit('end')
+		})
 })
