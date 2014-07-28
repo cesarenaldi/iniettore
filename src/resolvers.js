@@ -23,7 +23,8 @@ import {
 	FUNCTION,
 	INSTANCE,
 	TRANSIENT,
-	PERSISTENT
+	PERSISTENT,
+	EAGER
 } from './options'
 	
 var resolvers = {}
@@ -36,6 +37,9 @@ resolvers[ generateMask([PERSISTENT, CONSTRUCTOR, SINGLETON]) ] = singletonify(i
 resolvers[ generateMask([PROVIDER]) ] = compose(leftCurryTwice, resolveDeps)(invoke)
 resolvers[ generateMask([TRANSIENT, SINGLETON, PROVIDER]) ] = singletonify(invoke)
 resolvers[ generateMask([PERSISTENT, SINGLETON, PROVIDER]) ] = singletonify(invoke, true)
+
+resolvers[ generateMask([EAGER, SINGLETON, PROVIDER])] = invoke(singletonify(invoke, true))
+resolvers[ generateMask([EAGER, CONSTRUCTOR, SINGLETON]) ] = invoke(singletonify(instanciate, true))
 
 // aliases
 resolvers[ generateMask([INSTANCE]) ] = resolvers[ generateMask([VALUE]) ]

@@ -23,8 +23,7 @@ describe('Given a child container', function () {
 		})
 	})
 
-	describe('when requesting a reference to the containers themself', function () {
-
+	describe('when requesting the reference to the containers', function () {
 
 		it('should return the respective containers', function () {
 			var parent = iniettore.create(noop)

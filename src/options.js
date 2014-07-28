@@ -9,7 +9,8 @@ export default = [
 	'INSTANCE',
 	'PERSISTENT',
 	'TRANSIENT',
-	'BLUEPRINT'
+	'BLUEPRINT',
+	'EAGER'
 ].reduce(function (options, flag, idx) {
 	options[flag] = Math.pow(2, idx)
 	return options

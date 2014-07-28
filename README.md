@@ -1,10 +1,10 @@
 
-# ![Iniettore](https://github.com/cesarenaldi/iniettore/raw/api-refactoring/logo.png) Iniettore
+# ![Iniettore](https://github.com/cesarenaldi/iniettore/raw/eager-instances/logo.png) Iniettore
 
-[![Build Status](https://travis-ci.org/cesarenaldi/iniettore.svg?branch=api-refactoring)](https://travis-ci.org/cesarenaldi/iniettore)
+[![Build Status](https://travis-ci.org/cesarenaldi/iniettore.svg?branch=eager-instances)](https://travis-ci.org/cesarenaldi/iniettore)
 [![GitHub version](https://badge.fury.io/gh/cesarenaldi%2Finiettore.svg)](http://badge.fury.io/gh/cesarenaldi%2Finiettore)
 [![NPM dependencies](https://david-dm.org/cesarenaldi/iniettore.svg)](https://david-dm.org/cesarenaldi/iniettore)
-[![Coverage Status](https://img.shields.io/coveralls/cesarenaldi/iniettore.svg)](https://coveralls.io/r/cesarenaldi/iniettore?branch=api-refactoring)
+[![Coverage Status](https://img.shields.io/coveralls/cesarenaldi/iniettore.svg)](https://coveralls.io/r/cesarenaldi/iniettore?branch=eager-instances)
 
 ## TODO
 - [x] Dispose sub dependencies
