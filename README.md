@@ -1,4 +1,3 @@
-
 # ![Iniettore](https://github.com/cesarenaldi/iniettore/raw/master/logo.png) Iniettore
 
 [![Build Status](https://travis-ci.org/cesarenaldi/iniettore.svg?branch=master)](https://travis-ci.org/cesarenaldi/iniettore)

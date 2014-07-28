@@ -2,6 +2,10 @@
 
 import instanciate from './instanciate'
 import singletonify from './singletonify'
+import { EAGER, SINGLETON, PROVIDER, CONSTRUCTOR } from './options'
+
+var EAGER_SINGLETON_PROVIDER = generateMask([EAGER, SINGLETON, PROVIDER])
+var EAGER_SINGLETON_CONSTRUCTOR = generateMask([EAGER, SINGLETON, CONSTRUCTOR])
 
 export function identity(value) { return value }
 
@@ -44,5 +48,11 @@ export function partial(func, boundArgs) {
 export function generateMask(flags) {
 	return flags.reduce((prev, curr) => prev | curr, 0)
 }
+
+export function isEagerSingleton(type) {
+	return [EAGER_SINGLETON_PROVIDER, EAGER_SINGLETON_CONSTRUCTOR].indexOf(type) > -1
+}
+
+export function noop() {}
 
 export { instanciate, singletonify }
