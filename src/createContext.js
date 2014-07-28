@@ -2,6 +2,7 @@
 
 import { generateMask } from './utils'
 import { BLUEPRINT, PROVIDER } from './options'
+import { CONTAINER_ALIAS, CONTEXT_ALIAS } from './constants'
 
 var ALIAS_IDX = 0
 var VALUE_IDX = 1
@@ -36,13 +37,14 @@ export default function createContext(contribute) {
 
 					return {
 						as: (...flags) => {
+							var mask = generateMask(flags)
 
-							if (flags.length === 1 && flags[0] === BLUEPRINT) {
+							if (mask === BLUEPRINT) {
 								// test if VALUE is a function
 								flags = [PROVIDER]
 								pending[VALUE_IDX] = createChildContainerFactory(pending[VALUE_IDX])
 								pending.push(generateMask(flags))
-								pending.push(['$container'])
+								pending.push([CONTAINER_ALIAS])
 								
 								return {
 									exports: (alias) => {
@@ -55,7 +57,7 @@ export default function createContext(contribute) {
 								}
 							}
 
-							pending.push(generateMask(flags))
+							pending.push(mask)
 							
 							return {
 								map: context.map,

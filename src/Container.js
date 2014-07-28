@@ -1,14 +1,11 @@
 'use strict'
 
-import { generateMask } from './utils'
 import { ACQUIRE, RELEASE, DISPOSE } from './signals'
-import { PROVIDER } from './options'
-import resolvers from './resolvers'
+import { CONTAINER_ALIAS, CONTEXT_ALIAS } from './constants'
 import { VALUE } from './options'
+import { generateMask, noop, isEagerSingleton } from './utils'
+import resolvers from './resolvers'
 import createContext from './createContext';
-
-var CONTAINER_ALIAS = '$container'
-function noop() {}
 
 class Container {
 
@@ -27,11 +24,12 @@ class Container {
 		this._children = {}
 		this._signalRelease = signalRelease || noop
 		
-		context = this._context = createContext(this._contribute.bind(this))
-		context.map(CONTAINER_ALIAS).to(this).as(VALUE)
-		context.flush()
+		this._bind(CONTAINER_ALIAS, this, VALUE, [])
+		context = this._context = createContext(this._bind.bind(this))
+		this._bind(CONTEXT_ALIAS, context, VALUE, [])
 		conf(context)
 		context.flush()
+		this._unbind(CONTEXT_ALIAS)
 	}
 
 	get(alias, transients) {
@@ -93,6 +91,10 @@ class Container {
 		this._signalRelease = noop
 	}
 
+	_instanciateEagerSingleton(alias) {
+
+	}
+
 	_disposeChildren() {
 		var children = this._children
 		var id
@@ -128,12 +130,14 @@ class Container {
 		}
 	}
 
-	_contribute(alias, value, type, deps) {
+	_bind(alias, value, type, deps) {
 		if ( !(type in this._resolvers) ) {
 			throw new Error('Invalid flags combination. See documentation for valid flags combinations.')
 		}
 		this._mappings[alias] = this._resolvers[type].call(null, value, this._resolve.bind(this, deps), this._release.bind(this, deps))
-
+		if (isEagerSingleton(type)) {
+			this.get(alias)
+		}
 	}
 
 	_unbind(alias) {

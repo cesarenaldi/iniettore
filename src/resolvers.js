@@ -38,8 +38,8 @@ resolvers[ generateMask([PROVIDER]) ] = compose(leftCurryTwice, resolveDeps)(inv
 resolvers[ generateMask([TRANSIENT, SINGLETON, PROVIDER]) ] = singletonify(invoke)
 resolvers[ generateMask([PERSISTENT, SINGLETON, PROVIDER]) ] = singletonify(invoke, true)
 
-resolvers[ generateMask([EAGER, SINGLETON, PROVIDER])] = invoke(singletonify(invoke, true))
-resolvers[ generateMask([EAGER, CONSTRUCTOR, SINGLETON]) ] = invoke(singletonify(instanciate, true))
+resolvers[ generateMask([EAGER, SINGLETON, PROVIDER])] = singletonify(invoke, true)
+resolvers[ generateMask([EAGER, CONSTRUCTOR, SINGLETON]) ] = singletonify(instanciate, true)
 
 // aliases
 resolvers[ generateMask([INSTANCE]) ] = resolvers[ generateMask([VALUE]) ]
