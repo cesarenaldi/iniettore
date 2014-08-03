@@ -15,7 +15,7 @@
 - [ ] Adds API quick reference
 - [ ] Block contribution on container after container creation
 - [ ] Expose flags from main module
-- [ ] Evaluate to change PERSISTENT flag with LAZY
+- [x] Evaluate to change PERSISTENT flag with LAZY
 
 ## Table of Content
 - [Features](#features)
@@ -297,20 +297,19 @@ console.log(foo) // { bar: 42, baz: 'pluto' }
 
 Constructors and Providers can also be marked as singletons. A function registered as `SINGLETON, PROVIDER` will be used as singleton instance factory. A constructor registered as `SINGLETON, CONSTRUCTOR` will be used to create only once instance of the constructor type.
 
-Singletons can be marked as: `TRANSIENT`, `PERSISTENT` or `EAGER`.
+Singletons can be marked as: `LAZY`, `EAGER` or `TRANSIENT`.
 
-- [Persistent singletons](#persistent-singletons)
+- [Lazy singletons](#persistent-singletons)
 - [Eager singletons](#eager-singletons)
 - [Transient singletons](#transient-singletons)
 
-### Persistent singletons
-A mapping marked as `TRANSIENT, SINGLETON` produce a **lazy singleton** instance.
-The instance gets created at the first time it is requested. It gets destroyed only when the container itself is destroyed. See [`container.dispose`](#container-dispose).
+### Lazy singletons
+A mapping marked as `LAZY, SINGLETON` produce a singleton instance that gets created at the first time it is requested. It gets destroyed only when the container itself is destroyed. See [`container.dispose`](#container-dispose).
 
-#### Persistent Singleton Provider
+#### Lazy Singleton Provider
 ```javascript
 import iniettore from 'iniettore'
-import { PERSISTENT, SINGLETON, PROVIDER } from 'iniettore/lib/options'
+import { LAZY, SINGLETON, PROVIDER } from 'iniettore/lib/options'
 
 var idx = 0
 
@@ -322,7 +321,7 @@ function fooProvider() {
 
 var container = iniettore.create(function (context) {
 	context
-		.map('foo').to(fooProvider).as(PERSISTENT, SINGLETON, PROVIDER)
+		.map('foo').to(fooProvider).as(LAZY, SINGLETON, PROVIDER)
 })
 
 var foo1 = container.get('foo')
@@ -332,10 +331,10 @@ console.log(foo1) // { idx: 1 }
 console.log(foo1 === foo2) // true
 ```
 
-#### Persistent Singleton Constructor
+#### Lazy Singleton Constructor
 ```javascript
 import iniettore from 'iniettore'
-import { PERSISTENT, SINGLETON, CONSTRUCTOR } from 'iniettore/lib/options'
+import { LAZY, SINGLETON, CONSTRUCTOR } from 'iniettore/lib/options'
 
 var idx = 0
 
@@ -347,7 +346,7 @@ class Bar {
 
 var container = iniettore.create(function (context) {
 	context
-		.map('bar').to(Bar).as(PERSISTENT, SINGLETON, CONSTRUCTOR)
+		.map('bar').to(Bar).as(LAZY, SINGLETON, CONSTRUCTOR)
 })
 
 var bar1 = container.get('bar')

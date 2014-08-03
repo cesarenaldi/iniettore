@@ -7,7 +7,7 @@ import {
 	CONSTRUCTOR,
 	SINGLETON,
 	TRANSIENT,
-	PERSISTENT
+	LAZY
 } from '../../src/options'
 
 
@@ -138,13 +138,13 @@ describe('Given a container', function () {
 		})
 	})
 
-	describe('when releasing a persistent singleton adn there is no more reference to the singleton', function () {
+	describe('when releasing a LAZY singleton adn there is no more reference to the singleton', function () {
 
 		before(function () {
 			container = iniettore.create(function (context) {
 				context
 					.map('baz').to(Baz)
-					.as(PERSISTENT, SINGLETON, CONSTRUCTOR)
+					.as(LAZY, SINGLETON, CONSTRUCTOR)
 			})
 		})
 

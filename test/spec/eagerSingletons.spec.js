@@ -1,7 +1,7 @@
 'use strict'
 
 import iniettore from '../../src/iniettore'
-import { TRANSIENT, PERSISTENT, PROVIDER, SINGLETON, CONSTRUCTOR, EAGER } from '../../src/options'
+import { TRANSIENT, LAZY, PROVIDER, SINGLETON, CONSTRUCTOR, EAGER } from '../../src/options'
 
 describe('Given a provider and a contructor', function () {
 
@@ -79,7 +79,7 @@ describe('Given a provider and a contructor', function () {
 
 						.map('foo')
 						.to(Foo)
-						.as(PERSISTENT, SINGLETON, CONSTRUCTOR)
+						.as(LAZY, SINGLETON, CONSTRUCTOR)
 						.injecting('$context')
 				})
 			})

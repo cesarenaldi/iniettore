@@ -10,6 +10,7 @@ export default = [
 	'PERSISTENT',
 	'TRANSIENT',
 	'BLUEPRINT',
+	'LAZY',
 	'EAGER'
 ].reduce(function (options, flag, idx) {
 	options[flag] = Math.pow(2, idx)

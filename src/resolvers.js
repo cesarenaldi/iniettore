@@ -22,8 +22,9 @@ import {
 	SINGLETON,
 	FUNCTION,
 	INSTANCE,
-	TRANSIENT,
 	PERSISTENT,
+	TRANSIENT,
+	LAZY,
 	EAGER
 } from './options'
 	
@@ -32,16 +33,22 @@ var resolvers = {}
 resolvers[ generateMask([VALUE]) ] = compose(leftCurryTwice, resolveDeps)(identity)
 resolvers[ generateMask([FUNCTION]) ] = compose(leftCurryTwice, resolveDeps)(partial)
 resolvers[ generateMask([CONSTRUCTOR]) ] = compose(leftCurryTwice, resolveDeps)(instanciate)
-resolvers[ generateMask([TRANSIENT, CONSTRUCTOR, SINGLETON]) ] = singletonify(instanciate)
-resolvers[ generateMask([PERSISTENT, CONSTRUCTOR, SINGLETON]) ] = singletonify(instanciate, true)
 resolvers[ generateMask([PROVIDER]) ] = compose(leftCurryTwice, resolveDeps)(invoke)
+
 resolvers[ generateMask([TRANSIENT, SINGLETON, PROVIDER]) ] = singletonify(invoke)
-resolvers[ generateMask([PERSISTENT, SINGLETON, PROVIDER]) ] = singletonify(invoke, true)
+resolvers[ generateMask([TRANSIENT, CONSTRUCTOR, SINGLETON]) ] = singletonify(instanciate)
+
+resolvers[ generateMask([LAZY, SINGLETON, PROVIDER]) ] = singletonify(invoke, true)
+resolvers[ generateMask([LAZY, CONSTRUCTOR, SINGLETON]) ] = singletonify(instanciate, true)
 
 resolvers[ generateMask([EAGER, SINGLETON, PROVIDER])] = singletonify(invoke, true)
 resolvers[ generateMask([EAGER, CONSTRUCTOR, SINGLETON]) ] = singletonify(instanciate, true)
 
 // aliases
 resolvers[ generateMask([INSTANCE]) ] = resolvers[ generateMask([VALUE]) ]
+
+// backward compatibility
+resolvers[ generateMask([PERSISTENT, SINGLETON, PROVIDER]) ] = resolvers[ generateMask([LAZY, SINGLETON, PROVIDER]) ]
+resolvers[ generateMask([PERSISTENT, CONSTRUCTOR, SINGLETON]) ] = resolvers[ generateMask([LAZY, CONSTRUCTOR, SINGLETON]) ]
 
 export default resolvers
