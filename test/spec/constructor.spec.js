@@ -24,5 +24,23 @@ describe('Given a container with a registered constructor', function () {
 
 			container.get('foo')
 		})
+
+		describe('the instance', function () {
+			class Bar {
+				static hello() {}
+			}
+
+			it(' should have the static method/properties of the original constructor', function () {
+				var container = iniettore.create(function (context) {
+					context
+						.map('bar').to(Bar)
+						.as(CONSTRUCTOR)
+				})
+				var bar = container.get('bar')
+
+				expect(bar.constructor).to.equal(Bar)
+				expect(bar.constructor).to.have.property('hello')
+			})
+		})
 	})
 })

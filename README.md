@@ -7,7 +7,7 @@
 
 ## TODO
 - [ ] Make singletons dispose method name configurable
-- [ ] Improve `instanciate` function to copy static methods/properties to the Surrogate constructor
+- [x] ~~Improve `instanciate` function to copy static methods/properties to the Surrogate constructor.~~ Not necessary instance.constructor still points to original constructor.
 - [ ] ~~Add $child special injector and remove $context.~~ No real benefit.
 - [ ] Add instance property injection (i.e. use of pattern such `foo.prop` as injecting alias)
 - [ ] Analyze release path when `FUNCTION` or no-singleton `PROVIDER` and `CONTRUCTOR` are involved. Potential bug.
