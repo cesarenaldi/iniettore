@@ -28,7 +28,7 @@ describe('Given a container', function () {
 		}
 	}
 
-	describe('when releasing a transient singleton', function () {
+	describe('when releasing a TRANSIENT, SINGLETON instance', function () {
 
 		beforeEach(function () {
 			providerStub = sinon.stub()
@@ -56,17 +56,48 @@ describe('Given a container', function () {
 			BAR_2.dispose.reset()
 		})
 
-		it('should not dispose the instance if still in use', function () {
-			var firstRequest = container.get('bar')
-			var secondRequest = container.get('bar')
+		it('should call instance.dispose() method', function () {
 
-			expect(secondRequest).to.equal(firstRequest)
+			var bar1 = container.get('bar')
+			var bar2 = container.get('bar')
+
+			expect(bar2).to.equal(bar1)
+
+			container.release('bar')
+			container.release('bar')
+
+			expect(BAR_1.dispose).to.be.calledOnce
+			expect(container.get('bar')).to.not.equal(bar1)
+		})
+
+		it('should release all the singleton dependencies', function () {
+
+			var bar = container.get('bar')
 
 			container.release('bar')
 
-			expect(BAR_1.dispose).to.not.be.called
+			expect(BAR_1.dispose).to.be.calledOnce
+			expect(BazDisposeSpy).to.be.calledOnce
+		})
 
-			expect(container.get('bar')).to.equal(firstRequest)
+		it('should not call dispose for dependencies that are still in use', function () {
+
+			var bar = container.get('bar')
+
+			container.get('baz')
+			container.release('bar')
+
+			expect(BazDisposeSpy).to.not.be.called
+		})
+
+		it('should not call dispose for any non singleton dependencies', function () {
+			
+			var bar = container.get('bar')
+
+			container.get('baz')
+			container.release('bar')
+
+			expect(OBJECT_DEP.dispose).to.not.be.called
 		})
 
 		describe('and the instance does not have a dispose method', function () {
@@ -89,73 +120,9 @@ describe('Given a container', function () {
 				expect(testCase).to.not.throw(TypeError)
 			})
 		})
-
-		describe('the same amount of times it has been acquired', function () {
-
-			it('should release the instance, call dispose() method', function () {
-
-				var firstRequest = container.get('bar')
-				var secondRequest = container.get('bar')
-
-				expect(secondRequest).to.equal(firstRequest)
-
-				container.release('bar')
-				container.release('bar')
-
-				expect(BAR_1.dispose).to.be.calledOnce
-				expect(container.get('bar')).to.not.equal(firstRequest)
-			})
-
-			it('should release all the singleton dependencies', function () {
-
-				var bar = container.get('bar')
-
-				container.release('bar')
-
-				expect(BAR_1.dispose).to.be.calledOnce
-				expect(BazDisposeSpy).to.be.calledOnce
-			})
-
-			it('should not call dispose for dependencies that are still in use', function () {
-
-				var bar = container.get('bar')
-
-				container.get('baz')
-				container.release('bar')
-
-				expect(BazDisposeSpy).to.not.be.called
-			})
-
-			it('should not call dispose for any non singleton dependencies', function () {
-				
-				var bar = container.get('bar')
-
-				container.get('baz')
-				container.release('bar')
-
-				expect(OBJECT_DEP.dispose).to.not.be.called
-			})
-		})
 	})
 
-	describe('when releasing a LAZY singleton adn there is no more reference to the singleton', function () {
-
-		before(function () {
-			container = iniettore.create(function (context) {
-				context
-					.map('baz').to(Baz)
-					.as(LAZY, SINGLETON, CONSTRUCTOR)
-			})
-		})
-
-		it('should not dispose the instance', function () {
-			container.get('baz')
-			container.release('baz')
-			expect(BazDisposeSpy).to.not.be.called
-		})
-	})
-
-	describe('with a registered singleton constructor and singleton provider', function () {
+	describe('with a registered TRANSIENT, SINGLETON, CONSTRUCTOR and a TRANSIENT, SINGLETON, PROVIDER', function () {
 
 		class Bar {}
 		function dummyProvider() { return {} }
@@ -207,7 +174,7 @@ describe('Given a container', function () {
 			INSTANCE_IN_CHILD.dispose.reset()
 		})
 
-		describe('when disposing an instance in the child container', function () {
+		describe('when disposing a TRANSIENT, SINGLETON instance in the child container', function () {
 
 			describe('with a dependency in the parent container', function () {
 
@@ -233,7 +200,7 @@ describe('Given a container', function () {
 
 		describe('when disposing the child container', function () {
 
-			it('should dispose the registered singleton instances in the respective containers', function () {
+			it('should dispose the registered TRANSIENT; SINGLETON instances in the respective containers', function () {
 				child.get('baz')
 				child.dispose()
 				expect(INSTANCE_IN_CHILD.dispose).to.be.calledOnce
@@ -257,7 +224,7 @@ describe('Given a container', function () {
 				expect(child.dispose).to.be.calledOnce
 			})
 
-			it('should dispose instances in the child container before moving to dispose the ones in the parent container', function () {
+			it('should dispose SINGLETON instances in the child container before moving to dispose the ones in the parent container', function () {
 				child.get('bar') // request bar to avoid auto-dispose when disposing child container and its instances
 				child.get('baz')
 				container.dispose()

@@ -28,7 +28,7 @@ describe('Given a container with a registered provider', function () {
 
 	describe('when requesting multiple times the corresponding alias', function () {
 
-		it('should invoke the provider at every request with his dependencies', function () {
+		it('should invoke the provider function at every request with his dependencies', function () {
 			
 			var result
 
@@ -54,38 +54,6 @@ describe('Given a container with a registered provider', function () {
 			expect(providerStub)
 				.to.be.calledTwice
 					.and.to.be.calledWith(42)
-		})
-	})
-
-	describe('marked as singleton provider', function () {
-
-		before(function () {
-			container = iniettore.create(function (context) {
-				context
-					.map('foo').to(42).as(VALUE)
-					.map('bar').to(providerStub)
-					.as(TRANSIENT, SINGLETON, PROVIDER)
-					.injecting('foo')
-			})
-		})
-
-		describe('when requesting the corresponding alias', function () {
-
-			it('should invoke the provider at the first request and return the created item at the subsequent call', function () {
-
-				var result
-
-				result = container.get('bar')
-
-				expect(result).to.equal(BAR_1)
-
-				result = container.get('bar')
-
-				expect(result).to.equal(BAR_1)
-				expect(providerStub)
-					.to.be.calledOnce
-					.and.to.be.calledWith(42)
-			})
 		})
 	})
 })

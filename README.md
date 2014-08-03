@@ -8,7 +8,7 @@
 ## TODO
 - [ ] Make singletons dispose method name configurable
 - [ ] Improve `instanciate` function to copy static methods/properties to the Surrogate constructor
-- [ ] Add $child special injector and remove $context
+- [ ] ~~Add $child special injector and remove $context.~~ No real benefit.
 - [ ] Add instance property injection (i.e. use of pattern such `foo.prop` as injecting alias)
 - [ ] Analyze release path when `FUNCTION` or no-singleton `PROVIDER` and `CONTRUCTOR` are involved. Potential bug.
 - [ ] Adds mention of creational mapping into provider, constructor and blueprint docs
@@ -26,18 +26,18 @@
 - [Throubleshooting](#throubleshooting)
 
 ## Features
-- [Dependency resolution](#dependency-resolution)
 - [Extreme late binding](#extreme-late-binding)
 - [Functional Programming support](#functional-rogramming-support)
-
-### Dependency resolution
-TBC
+- [Lifecycle management](#lifecycle-management)
 
 ### Extreme late binding
 With exception of [eager singletons](#eager-singletons), all instances and dependencies are resolved only when requested rather when registered into the container.
 
 ### Functional Programming support
 `FUNCTION`, `PROVIDER` and `INSTANCE` mappings are the ideal solution to have DI in Functional Programming.
+
+### Lifecycle management
+TBC
 
 ## ECMA Script 5 required features
 iniettore assumes that the following ES5 features are available. If you want to use the library in a no-ES5 compatible environment please provide a polyfill. For example see [es5-shim](https://github.com/es-shims/es5-shim).
@@ -361,6 +361,8 @@ console.log(bar1 === bar2) // true
 ```
 
 #### Eager singletons
+A mapping marked as `EAGER, SINGLETON` gets at registration time.
+All the required dependencies must be already registered in the current container or in one of its ancestors.
 
 TBC
 
@@ -503,9 +505,11 @@ class Foo {
 var container = iniettore.create(function (context) {
 	context
 		.map('events').to(EventEmitter).as(EAGER, SINGLETON, CONSTRUCTOR)
-		.map(foo).to(Foo).as(LAZY, SINGLETON, CONSTRUCTOR).injecting('events')
+		.map('foo').to(Foo).as(LAZY, SINGLETON, CONSTRUCTOR).injecting('events')
 })
 var events = container.get('events')
+console.log(events.listeners('message').length) // 0
+
 var foo = container.get('foo')
 
 // let's check the number of event handlers

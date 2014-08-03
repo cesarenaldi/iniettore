@@ -39,10 +39,10 @@ resolvers[ generateMask([TRANSIENT, SINGLETON, PROVIDER]) ] = singletonify(invok
 resolvers[ generateMask([TRANSIENT, CONSTRUCTOR, SINGLETON]) ] = singletonify(instanciate)
 
 resolvers[ generateMask([LAZY, SINGLETON, PROVIDER]) ] = singletonify(invoke, true)
-resolvers[ generateMask([LAZY, CONSTRUCTOR, SINGLETON]) ] = singletonify(instanciate, true)
+resolvers[ generateMask([LAZY, SINGLETON, CONSTRUCTOR]) ] = singletonify(instanciate, true)
 
 resolvers[ generateMask([EAGER, SINGLETON, PROVIDER])] = singletonify(invoke, true)
-resolvers[ generateMask([EAGER, CONSTRUCTOR, SINGLETON]) ] = singletonify(instanciate, true)
+resolvers[ generateMask([EAGER, SINGLETON, CONSTRUCTOR]) ] = singletonify(instanciate, true)
 
 // aliases
 resolvers[ generateMask([INSTANCE]) ] = resolvers[ generateMask([VALUE]) ]

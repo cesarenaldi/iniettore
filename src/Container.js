@@ -1,7 +1,7 @@
 'use strict'
 
 import { ACQUIRE, RELEASE, DISPOSE } from './signals'
-import { CONTAINER_ALIAS, CONTEXT_ALIAS } from './constants'
+import { CONTAINER_ALIAS, CONTEXT_ALIAS, CHILD_ALIAS } from './constants'
 import { VALUE } from './options'
 import { generateMask, noop, isEagerSingleton } from './utils'
 import resolvers from './resolvers'
@@ -89,10 +89,6 @@ class Container {
 		this._disposeInstances()
 		this._signalRelease()
 		this._signalRelease = noop
-	}
-
-	_instanciateEagerSingleton(alias) {
-
 	}
 
 	_disposeChildren() {

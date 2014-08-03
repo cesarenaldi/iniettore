@@ -32,8 +32,9 @@ describe('Given a provider and a contructor', function () {
 					.map('foo')
 					.to(Foo)
 					.as(EAGER, SINGLETON, CONSTRUCTOR)
+				expect(provider).to.be.calledOnce
 			})
-			expect(provider).to.be.calledOnce
+			
 			expect(constructorSpy).to.be.calledOnce
 		})
 
