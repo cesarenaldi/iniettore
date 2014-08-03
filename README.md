@@ -29,6 +29,7 @@
 - [Extreme late binding](#extreme-late-binding)
 - [Functional Programming support](#functional-rogramming-support)
 - [Lifecycle management](#lifecycle-management)
+- [Predictable](#predictable)
 
 ### Extreme late binding
 With exception of [eager singletons](#eager-singletons), all instances and dependencies are resolved only when requested rather when registered into the container.
@@ -37,7 +38,10 @@ With exception of [eager singletons](#eager-singletons), all instances and depen
 `FUNCTION`, `PROVIDER` and `INSTANCE` mappings are the ideal solution to have DI in Functional Programming.
 
 ### Lifecycle management
-TBC
+iniettore provides containers and singleton lifecycle management.
+
+### Predictable
+iniettore handles all operation in a syncronous way so at any point in time you know what is instanciated and what is not.
 
 ## ECMA Script 5 required features
 iniettore assumes that the following ES5 features are available. If you want to use the library in a no-ES5 compatible environment please provide a polyfill. For example see [es5-shim](https://github.com/es-shims/es5-shim).
@@ -361,10 +365,47 @@ console.log(bar1 === bar2) // true
 ```
 
 #### Eager singletons
-A mapping marked as `EAGER, SINGLETON` gets at registration time.
+A mapping marked as `EAGER, SINGLETON` gets created at registration time.
 All the required dependencies must be already registered in the current container or in one of its ancestors.
 
-TBC
+Eager singletons gets destroyed when the corresponding container is destoroyed.
+
+```javascript
+import iniettore from 'iniettore'
+import { EAGER, SINGLETON, PROVIDER, CONSTRUCTOR, VALUE } from 'iniettore/lib/options'
+
+var idx = 0
+
+function fooProvider(answer) {
+	console.log('foo provider invoked:', answer)
+	return {
+		id: ++idx
+	}
+}
+
+class Bar {
+	constructor(answer) {
+		console.log('Bar instance created', answer)
+	}
+}
+
+var container = iniettore.create(function (context) {
+	context
+		.map('answer')
+		.to(42)
+		.as(VALUE)
+
+		.map('foo')
+		.to(fooProvider)
+		.as(EAGER, SINGLETON, PROVIDER)
+		.injection('answer') // foo provider invoked: 42
+
+		.map('bar')
+		.to(Bar)
+		.as(EAGER, SINGLETON, CONSTRUCTOR)
+		.injection('answer') // Bar instance created: 42
+})
+```
 
 #### Transient singletons
 A mapping marked as `TRANSIENT, SINGLETON` produce a **temporary lazy singleton** instance. The instance gets created at the first time it is requested (directly or as dependency of another mapping) and gets destroyed when is not used anymore.
@@ -523,4 +564,9 @@ console.log(events.listeners('message').length) // 0
 ```
 
 #### `container.dispose`
+
+TBC
+
 ## Troubleshooting
+
+TBC
