@@ -23,8 +23,6 @@
 - [Quick start](#quick-start)
 - [Terminology](#terminology)
 - [Advanced usage](#advanced-usage)
-- [Singletons](#singletons)
-- [Lifecycle](#lifecycle)
 - [Throubleshooting](#throubleshooting)
 
 ## Features
@@ -60,7 +58,7 @@ npm install iniettore --save
 ### Simple usage
 ```javascript
 import iniettore from 'iniettore'
-import { VALUE, PERMANENT, SINGLETON, CONSTRUCTOR } from 'iniettore/lib/options'
+import { VALUE, LAZY, SINGLETON, CONSTRUCTOR } from 'iniettore/lib/options'
 
 class UltimateQuestion {
 	constructor(answer) {
@@ -76,7 +74,7 @@ var container = iniettore.create(function (context) {
 
 		.map('question')
 		.to(UltimateQuestion)
-		.as(PERMANENT, SINGLETON, CONSTRUCTOR)
+		.as(LAZY, SINGLETON, CONSTRUCTOR)
 		.injecting('answer')
 })
 
@@ -99,6 +97,9 @@ console.log(question instanceof UltimateQuestion) // true
 - [Child containers](#child-containers)
 - [Blueprints](#blueprints)
 - [Transient dependencies](#transient-dependencies)
+- [Service locator](#service-locator)
+- [Singletons](#singletons)
+- [Lifecycle](#lifecycle)
 
 ### Values and instances
 ```javascript
@@ -292,8 +293,11 @@ var foo = container.using(transientDependencies).get('foo')
 
 console.log(foo) // { bar: 42, baz: 'pluto' }
 ```
+### Service locator
 
-## Singletons
+TBC
+
+### Singletons
 
 Constructors and Providers can also be marked as singletons. A function registered as `SINGLETON, PROVIDER` will be used as singleton instance factory. A constructor registered as `SINGLETON, CONSTRUCTOR` will be used to create only once instance of the constructor type.
 
@@ -303,10 +307,10 @@ Singletons can be marked as: `LAZY`, `EAGER` or `TRANSIENT`.
 - [Eager singletons](#eager-singletons)
 - [Transient singletons](#transient-singletons)
 
-### Lazy singletons
+#### Lazy singletons
 A mapping marked as `LAZY, SINGLETON` produce a singleton instance that gets created at the first time it is requested. It gets destroyed only when the container itself is destroyed. See [`container.dispose`](#container-dispose).
 
-#### Lazy Singleton Provider
+##### Lazy Singleton Provider
 ```javascript
 import iniettore from 'iniettore'
 import { LAZY, SINGLETON, PROVIDER } from 'iniettore/lib/options'
@@ -331,7 +335,7 @@ console.log(foo1) // { idx: 1 }
 console.log(foo1 === foo2) // true
 ```
 
-#### Lazy Singleton Constructor
+##### Lazy Singleton Constructor
 ```javascript
 import iniettore from 'iniettore'
 import { LAZY, SINGLETON, CONSTRUCTOR } from 'iniettore/lib/options'
@@ -356,18 +360,18 @@ console.log(bar1) // { idx: 1 }
 console.log(bar1 === bar2) // true
 ```
 
-### Eager singletons
+#### Eager singletons
 
 TBC
 
-### Transient singletons
+#### Transient singletons
 A mapping marked as `TRANSIENT, SINGLETON` produce a **temporary lazy singleton** instance. The instance gets created at the first time it is requested (directly or as dependency of another mapping) and gets destroyed when is not used anymore.
 
 A transient singleton allows to gurantee that at any given point in time there are no more than one instance of the respective mapping (whetever has been creates using a constructor or a provider function).
 
 In order to announce that a singleton is not used anymore you can invoke `container.release(name :string) :void` method. The instance gets _released_ (i.e. all references to it gets removed) when `container.release` is invoked as many time as it has been requested. See examples below.
 
-#### Transient Singleton Provider
+##### Transient Singleton Provider
 ```javascript
 import iniettore from 'iniettore'
 import { TRANSIENT, SINGLETON, PROVIDER } from 'iniettore/lib/options'
@@ -396,7 +400,7 @@ var foo3 = container.get('foo')
 console.log(foo1 === foo3) // false
 ```
 
-#### Transient Singleton Constructor
+##### Transient Singleton Constructor
 ```javascript
 import iniettore from 'iniettore'
 import { TRANSIENT, SINGLETON, CONSTRUCTOR } from 'iniettore/lib/options'
@@ -424,7 +428,7 @@ container.relase('bar')
 var bar3 = container.get('bar')
 console.log(bar1 === bar3) // false
 ```
-#### Transient singleton dependencies
+##### Transient singleton dependencies
 ```javascript
 import iniettore from 'iniettore'
 import { TRANSIENT, SINGLETON, CONSTRUCTOR, PROVIDER } from 'iniettore/lib/options'
@@ -469,11 +473,50 @@ console.log(foo3) // { bar: { idx: 2 }, method: function () {} }
 console.log(foo1 === foo3) // false
 console.log(foo1.bar === foo3.bar) // false
 ```
-## Lifecycle
+### Lifecycle
+iniettore offers a simple concept of lifecycle management for singleton instances and containers. Let's see what it means for instances and containers.
 
 - [`instance.dispose`](#instancedispose)
 - [`container.dispose`](#containerdispose)
 
-### `instance.dispose`
-### `container.dispose`
+#### `instance.dispose`
+
+Given a `LAZY, SINGLETON` or `TRANSIENT, SINGLETON` instance that implements a method called `dispose() :void` when the instance gets released the container will invoke it. This allow you to cleanup any hanging reference (e.g. remove event listeners) so the instance can properly garbage collected.
+```javascript
+import iniettore from 'iniettore'
+import { LAZY, SINGLETON, CONSTRUCTOR } from 'iniettore/lib/options'
+import { EventEmitter } from 'events'
+
+class Foo {
+	constructor(events) {
+		this._events = events
+		this._events.on('message', this._onMessage)
+	}
+
+	_onMessage(evt) { /* ... */ }
+
+	dispose() {
+		this._events.off('message', this._onMessage)
+	}
+}
+
+var container = iniettore.create(function (context) {
+	context
+		.map('events').to(EventEmitter).as(EAGER, SINGLETON, CONSTRUCTOR)
+		.map(foo).to(Foo).as(LAZY, SINGLETON, CONSTRUCTOR).injecting('events')
+})
+var events = container.get('events')
+var foo = container.get('foo')
+
+// let's check the number of event handlers
+console.log(events.listeners('message').length) // 1
+
+// foo.dispose will be invoked
+container.release('foo')
+
+// the event handler has been unbound
+console.log(events.listeners('message').length) // 0
+```
+
+#### `container.dispose`
 ## Troubleshooting
