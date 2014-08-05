@@ -17,7 +17,7 @@ describe('Given a TRANSIENT, SINGLETON, CONSTRUCTOR mapping', function () {
 				}
 			}
 
-			var container = iniettore.create(function (context) {
+			var rootContext = iniettore.create(function (context) {
 				context
 					.map('bar').to(Bar)
 					.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
@@ -25,11 +25,11 @@ describe('Given a TRANSIENT, SINGLETON, CONSTRUCTOR mapping', function () {
 
 			expect(constructorSpy).to.not.be.called
 
-			bar1 = container.get('bar')
+			bar1 = rootContext.get('bar')
 
 			expect(constructorSpy).to.be.calledOnce
 
-			bar2 = container.get('bar')
+			bar2 = rootContext.get('bar')
 			expect(bar2).to.equal(bar1)
 		})
 	})
@@ -64,7 +64,7 @@ describe('Given a TRANSIENT, SINGLETON, CONSTRUCTOR mapping', function () {
 					}
 				}
 
-				var container = iniettore.create(function (context) {
+				var rootContext = iniettore.create(function (context) {
 					context
 						.map('common').to(Common)
 						.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
@@ -76,19 +76,19 @@ describe('Given a TRANSIENT, SINGLETON, CONSTRUCTOR mapping', function () {
 						.injecting('common', 'bar')
 				})
 
-				expect(container.get('foo')).to.be.instanceof(Foo)
+				expect(rootContext.get('foo')).to.be.instanceof(Foo)
 			})
 		})
 	})
 	
 	describe('and an instance of it', function () {
-		var container
+		var rootContext
 
 		describe('when releasing the instance', function () {
 			class Bar {}
 
 			beforeEach(function () {
-				container = iniettore.create(function (context) {
+				rootContext = iniettore.create(function (context) {
 					context
 						.map('bar')
 						.to(Bar)
@@ -97,15 +97,15 @@ describe('Given a TRANSIENT, SINGLETON, CONSTRUCTOR mapping', function () {
 			})
 
 			it('should not release the instance if still in use', function () {
-				var bar1 = container.get('bar')
-				var bar2 = container.get('bar')
+				var bar1 = rootContext.get('bar')
+				var bar2 = rootContext.get('bar')
 				var bar3
 
 				expect(bar1).to.equal(bar2)
 
-				container.release('bar')
+				rootContext.release('bar')
 
-				bar3 = container.get('bar')
+				bar3 = rootContext.get('bar')
 
 				expect(bar3).to.equal(bar1)
 			})
@@ -113,16 +113,16 @@ describe('Given a TRANSIENT, SINGLETON, CONSTRUCTOR mapping', function () {
 			describe('the same amount of times it has been requested', function () {
 
 				it('should release the instance', function () {
-					var bar1 = container.get('bar')
-					var bar2 = container.get('bar')
+					var bar1 = rootContext.get('bar')
+					var bar2 = rootContext.get('bar')
 					var bar3
 
 					expect(bar1).to.equal(bar2)
 
-					container.release('bar')
-					container.release('bar')
+					rootContext.release('bar')
+					rootContext.release('bar')
 
-					bar3 = container.get('bar')
+					bar3 = rootContext.get('bar')
 
 					expect(bar3).to.not.equal(bar1)
 				})
@@ -143,24 +143,24 @@ describe('Given a TRANSIENT, SINGLETON, PROVIDER mapping', function () {
 			}
 			var foo1, foo2
 
-			var container = iniettore.create(function (context) {
+			var rootContext = iniettore.create(function (context) {
 				context
 					.map('foo').to(fooProvider)
 					.as(TRANSIENT, SINGLETON, PROVIDER)
 			})
 			expect(providerSpy).to.not.be.called
 
-			foo1 = container.get('foo')
+			foo1 = rootContext.get('foo')
 
 			expect(providerSpy).to.be.calledOnce
 
-			foo2 = container.get('foo')
+			foo2 = rootContext.get('foo')
 			expect(foo2).to.equal(foo1)
 		})
 	})
 
 	describe('and an instance created from it', function () {
-		var container
+		var rootContext
 
 		describe('when releasing the instance', function () {
 			function fooProvider() {
@@ -168,7 +168,7 @@ describe('Given a TRANSIENT, SINGLETON, PROVIDER mapping', function () {
 			}
 
 			beforeEach(function () {
-				container = iniettore.create(function (context) {
+				rootContext = iniettore.create(function (context) {
 					context
 						.map('foo')
 						.to(fooProvider)
@@ -177,15 +177,15 @@ describe('Given a TRANSIENT, SINGLETON, PROVIDER mapping', function () {
 			})
 
 			it('should not release the instance if still in use', function () {
-				var foo1 = container.get('foo')
-				var foo2 = container.get('foo')
+				var foo1 = rootContext.get('foo')
+				var foo2 = rootContext.get('foo')
 				var foo3
 
 				expect(foo1).to.equal(foo2)
 
-				container.release('foo')
+				rootContext.release('foo')
 
-				foo3 = container.get('foo')
+				foo3 = rootContext.get('foo')
 
 				expect(foo3).to.equal(foo1)
 			})
@@ -193,16 +193,16 @@ describe('Given a TRANSIENT, SINGLETON, PROVIDER mapping', function () {
 			describe('the same amount of times it has been requested', function () {
 
 				it('should release the instance', function () {
-					var foo1 = container.get('foo')
-					var foo2 = container.get('foo')
+					var foo1 = rootContext.get('foo')
+					var foo2 = rootContext.get('foo')
 					var foo3
 
 					expect(foo1).to.equal(foo2)
 
-					container.release('foo')
-					container.release('foo')
+					rootContext.release('foo')
+					rootContext.release('foo')
 
-					foo3 = container.get('foo')
+					foo3 = rootContext.get('foo')
 
 					expect(foo3).to.not.equal(foo1)
 				})

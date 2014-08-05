@@ -3,13 +3,13 @@
 import iniettore from '../../src/iniettore'
 import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT, BLUEPRINT } from '../../src/options'
 
-describe('Given a container', function () {
+describe('Given a context', function () {
 
 	var VALUE_A = { value: 'a'}
 	var parentProvideStub = sinon.stub().returns(42)
-	var container
+	var rootContext
 
-	describe('and a registered blueprint with some registered bindings', function () {
+	describe('and a registered blueprint with some registered mappings', function () {
 
 		var blueprintProviderStub = sinon.stub().returns(84)
 
@@ -23,7 +23,7 @@ describe('Given a container', function () {
 						.injecting('bar')
 				}
 
-				container = iniettore.create(function (context) {
+				rootContext = iniettore.create(function (context) {
 					context
 						.map('bar').to(VALUE_A).as(VALUE)
 						.map('foo').to(configureChildContext).as(BLUEPRINT)
@@ -31,24 +31,24 @@ describe('Given a container', function () {
 				})
 			})
 
-			it('should create a child container', function () {
-				var child = container.get('foo')
+			it('should create a child context', function () {
+				var childContext = rootContext.get('foo')
 
-				expect(child).to.respondTo('get')
-				expect(child.get('bar')).to.equal(VALUE_A)
-				expect(child.get('baz')).to.equal(84)
-				expect(child.get('baz')).to.equal(84)
+				expect(childContext).to.respondTo('get')
+				expect(childContext.get('bar')).to.equal(VALUE_A)
+				expect(childContext.get('baz')).to.equal(84)
+				expect(childContext.get('baz')).to.equal(84)
 				expect(blueprintProviderStub)
 					.to.be.calledOnce
 					.and.to.be.calledWith(VALUE_A)
 			})
 
 			describe('multiple times', function () {
-				it('should create a new child container each time', function () {
-					var first = container.get('foo')
-					var second = container.get('foo')
+				it('should create a new child context each time', function () {
+					var childContext1 = rootContext.get('foo')
+					var childContext2 = rootContext.get('foo')
 
-					expect(first).to.not.equal(second)
+					expect(childContext1).to.not.equal(childContext2)
 				})
 			})
 		})
@@ -63,7 +63,7 @@ describe('Given a container', function () {
 						.injecting('bar')
 				}
 
-				container = iniettore.create(function (context) {
+				rootContext = iniettore.create(function (context) {
 					context
 						.map('bar').to(VALUE_A).as(VALUE)
 						.map('foo').to(configureChildContext).as(BLUEPRINT).exports('baz')
@@ -72,9 +72,8 @@ describe('Given a container', function () {
 			})
 
 			describe('when requesting a copy of the blueprint', function () {
-
 				it('should return an instance of the export', function () {
-					expect(container.get('foo')).to.equal(84)
+					expect(rootContext.get('foo')).to.equal(84)
 				})
 			})
 		})

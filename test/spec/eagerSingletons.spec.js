@@ -40,7 +40,7 @@ describe('Given a provider and a contructor', function () {
 
 		describe('and $context as dependency', function () {
 
-			var context = sinon.match.object.and(sinon.match.has('map', sinon.match.func))
+			var isValidContext = sinon.match.object.and(sinon.match.has('map', sinon.match.func))
 
 			it('should provide a reference to the context', function () {
 				iniettore.create(function (context) {
@@ -57,21 +57,21 @@ describe('Given a provider and a contructor', function () {
 				})
 				expect(provider)
 					.to.be.calledOnce
-					.and.to.be.calledWith(context)
+					.and.to.be.calledWith(isValidContext)
 				expect(constructorSpy)
 					.to.be.calledOnce
-					.and.to.be.calledWith(context)
+					.and.to.be.calledWith(isValidContext)
 			})
 		})
 	})
 
 	describe('registered as simple CONSTRUCTOR and PROVIDER (not singleton)', function () {
-		var container
+		var rootContext
 
 		describe('with $context as dependency', function () {
 
 			before(function () {
-				container = iniettore.create(function (context) {
+				rootContext = iniettore.create(function (context) {
 					context
 						.map('bar')
 						.to(provider)
@@ -87,10 +87,10 @@ describe('Given a provider and a contructor', function () {
 			describe('when requesting those', function () {
 				it('should throw an Error specifying that $context injection is available only for eager singletons', function () {
 					function testCase1() {
-						container.get('foo')
+						rootContext.get('foo')
 					}
 					function testCase2() {
-						container.get('bar')
+						rootContext.get('bar')
 					}
 					expect(testCase1).to.throw(Error)
 					expect(testCase2).to.throw(Error)

@@ -3,23 +3,23 @@
 import iniettore from '../../src/iniettore'
 import { VALUE, INSTANCE } from '../../src/options'
 
-describe('Given a container', function () {
+describe('Given a context', function () {
 
-	var container
+	var rootContext
 	var DUMMY_VALUE = {}
 
 	describe('with a registered object as value', function () {
 
 		before(function () {
-			container = iniettore.create(function (container) {
-				container
+			rootContext = iniettore.create(function (context) {
+				context
 					.map('bar').to(DUMMY_VALUE)
 					.as(VALUE)
 			})
 		})
 
 		it('should be possible to retrieve it', function () {
-			var value = container.get('bar')
+			var value = rootContext.get('bar')
 
 			expect(value).to.deep.equal(DUMMY_VALUE)
 		})
@@ -28,15 +28,15 @@ describe('Given a container', function () {
 	describe('with a registered object as instance', function () {
 
 		before(function () {
-			container = iniettore.create(function (container) {
-				container
+			rootContext = iniettore.create(function (context) {
+				context
 					.map('bar').to(DUMMY_VALUE)
 					.as(INSTANCE)
 			})
 		})
 
 		it('should be possible to retrieve it', function () {
-			var value = container.get('bar')
+			var value = rootContext.get('bar')
 
 			expect(value).to.deep.equal(DUMMY_VALUE)
 		})

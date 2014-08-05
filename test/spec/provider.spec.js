@@ -9,9 +9,9 @@ import {
 } from '../../src/options'
 
 
-describe('Given a container with a registered provider', function () {
+describe('Given a context with a registered provider', function () {
 
-	var container
+	var rootContext
 
 	var BAR_1 = { bar: 1, dispose: sinon.spy() }
 	var BAR_2 = { bar: 2, dispose: sinon.spy() }
@@ -32,7 +32,7 @@ describe('Given a container with a registered provider', function () {
 			
 			var result
 
-			container = iniettore.create(function (context) {
+			rootContext = iniettore.create(function (context) {
 				context
 					.map('foo').to(42).as(VALUE)
 
@@ -41,14 +41,14 @@ describe('Given a container with a registered provider', function () {
 					.injecting('foo')
 			})
 
-			result = container.get('bar')
+			result = rootContext.get('bar')
 
 			expect(result).to.equal(BAR_1)
 			expect(providerStub)
 				.to.be.calledOnce
 				.to.be.calledWith(42)
 
-			result = container.get('bar')
+			result = rootContext.get('bar')
 
 			expect(result).to.equal(BAR_2)
 			expect(providerStub)

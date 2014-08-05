@@ -27,10 +27,10 @@ describe('Given a LAZY, SINGLETON, CONSTRUCTOR', function () {
 	})
 
 	describe('when requesting the mapping for the first time', function () {
-		var container
+		var rootContext
 
 		before(function () {
-			container = iniettore.create(function (context) {
+			rootContext = iniettore.create(function (context) {
 				context
 					.map('bar')
 					.to(Bar)
@@ -39,16 +39,16 @@ describe('Given a LAZY, SINGLETON, CONSTRUCTOR', function () {
 		})
 
 		it('should create an instance', function () {
-			container.get('bar')
+			rootContext.get('bar')
 			expect(constructorSpy).to.be.calledOnce
 		})
 	})
 
 	describe('when requesting the mapping multiple times', function () {
-		var container
+		var rootContext
 
 		before(function () {
-			container = iniettore.create(function (context) {
+			rootContext = iniettore.create(function (context) {
 				context
 					.map('bar')
 					.to(Bar)
@@ -57,17 +57,17 @@ describe('Given a LAZY, SINGLETON, CONSTRUCTOR', function () {
 		})
 
 		it('should return the same instance', function () {
-			var bar1 = container.get('bar')
-			var bar2 = container.get('bar')
+			var bar1 = rootContext.get('bar')
+			var bar2 = rootContext.get('bar')
 			expect(bar1).to.equal(bar2)
 		})
 	})
 
-	describe('when invoking container.release with the corresponding mapping name', function () {
-		var container
+	describe('when invoking rootContext.release with the corresponding mapping name', function () {
+		var rootContext
 
 		before(function () {
-			container = iniettore.create(function (context) {
+			rootContext = iniettore.create(function (context) {
 				context
 					.map('bar')
 					.to(Bar)
@@ -76,9 +76,9 @@ describe('Given a LAZY, SINGLETON, CONSTRUCTOR', function () {
 		})
 
 		it('should not release the instance', function () {
-			var bar1 = container.get('bar')
-			container.release('bar')
-			var bar2 = container.get('bar')
+			var bar1 = rootContext.get('bar')
+			rootContext.release('bar')
+			var bar2 = rootContext.get('bar')
 			expect(bar1).to.equal(bar2)
 		})
 	})
@@ -101,10 +101,10 @@ describe('Given a LAZY, SINGLETON, PROVIDER', function () {
 	})
 
 	describe('when requesting the mapping for the first time', function () {
-		var container
+		var rootContext
 
 		before(function () {
-			container = iniettore.create(function (context) {
+			rootContext = iniettore.create(function (context) {
 				context
 					.map('bar')
 					.to(barProvider)
@@ -113,19 +113,19 @@ describe('Given a LAZY, SINGLETON, PROVIDER', function () {
 		})
 
 		it('should invoke the provider function', function () {
-			container.get('bar')
+			rootContext.get('bar')
 			expect(barProvider).to.be.calledOnce
 		})
 	})
 
 	describe('when requesting the mapping multiple times', function () {
-		var container
+		var rootContext
 		function barProvider() {
 			return {}
 		}
 
 		before(function () {
-			container = iniettore.create(function (context) {
+			rootContext = iniettore.create(function (context) {
 				context
 					.map('bar')
 					.to(barProvider)
@@ -134,20 +134,20 @@ describe('Given a LAZY, SINGLETON, PROVIDER', function () {
 		})
 
 		it('should return the instance created at the first request', function () {
-			var bar1 = container.get('bar')
-			var bar2 = container.get('bar')
+			var bar1 = rootContext.get('bar')
+			var bar2 = rootContext.get('bar')
 			expect(bar1).to.equal(bar2)
 		})
 	})
 
-	describe('when invoking container.release with the corresponding mapping name', function () {
-		var container
+	describe('when invoking rootContext.release with the corresponding mapping name', function () {
+		var rootContext
 		function barProvider() {
 			return {}
 		}
 
 		before(function () {
-			container = iniettore.create(function (context) {
+			rootContext = iniettore.create(function (context) {
 				context
 					.map('bar')
 					.to(barProvider)
@@ -156,9 +156,9 @@ describe('Given a LAZY, SINGLETON, PROVIDER', function () {
 		})
 
 		it('should not release the instance', function () {
-			var bar1 = container.get('bar')
-			container.release('bar')
-			var bar2 = container.get('bar')
+			var bar1 = rootContext.get('bar')
+			rootContext.release('bar')
+			var bar2 = rootContext.get('bar')
 			expect(bar1).to.equal(bar2)
 		})
 	})

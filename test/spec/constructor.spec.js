@@ -4,9 +4,9 @@ import iniettore from '../../src/iniettore'
 import { VALUE, CONSTRUCTOR, SINGLETON, TRANSIENT } from '../../src/options'
 
 
-describe('Given a container with a registered constructor', function () {
+describe('Given a context with a registered constructor', function () {
 
-	describe('when requesting the corresponding alias', function () {
+	describe('when requesting the corresponding mapping name', function () {
 
 		it('should create a new instance', function (done) {
 			class Foo {
@@ -16,27 +16,27 @@ describe('Given a container with a registered constructor', function () {
 				}
 			}
 
-			var container = iniettore.create(function (context) {
+			var rootContext = iniettore.create(function (context) {
 				context
 					.map('foo').to(Foo)
 					.as(CONSTRUCTOR)
 			})
 
-			container.get('foo')
+			rootContext.get('foo')
 		})
 
-		describe('the instance', function () {
+		describe('the created instance constructor', function () {
 			class Bar {
 				static hello() {}
 			}
 
-			it(' should have the static method/properties of the original constructor', function () {
-				var container = iniettore.create(function (context) {
+			it('should have the static method/properties of the original constructor', function () {
+				var rootContext = iniettore.create(function (context) {
 					context
 						.map('bar').to(Bar)
 						.as(CONSTRUCTOR)
 				})
-				var bar = container.get('bar')
+				var bar = rootContext.get('bar')
 
 				expect(bar.constructor).to.equal(Bar)
 				expect(bar.constructor).to.have.property('hello')

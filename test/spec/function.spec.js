@@ -3,9 +3,9 @@
 import iniettore from '../../src/iniettore'
 import { FUNCTION, VALUE } from '../../src/options'
 
-describe('Given a container with a registered function', function () {
+describe('Given a context with a registered function', function () {
 
-	var container
+	var rootContext
 
 	describe('when the function has some dependencies', function () {
 
@@ -17,13 +17,13 @@ describe('Given a container with a registered function', function () {
 				expect(param1).to.equal(42)
 			}
 
-			container = iniettore.create(function (context) {
+			rootContext = iniettore.create(function (context) {
 				context
 					.map('bar').to(BAR).as(VALUE)
 					.map('foo').to(foo).as(FUNCTION).injecting('bar')
 			})
 
-			foo = container.get('foo')
+			foo = rootContext.get('foo')
 
 			foo(42)
 		})

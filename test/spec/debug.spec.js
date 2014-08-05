@@ -3,9 +3,9 @@
 import iniettore from '../../src/iniettore'
 import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../../src/options'
 
-describe('Given a container with some registered mappings', function () {
+describe('Given a context with some registered mappings', function () {
 
-	var container
+	var rootContext
 
 	class Bar {
 		constructor(foo) {
@@ -30,7 +30,7 @@ describe('Given a container with some registered mappings', function () {
 	describe('with not debug option', function () {
 
 		before(function () {
-			container = iniettore.create(function (context) {
+			rootContext = iniettore.create(function (context) {
 				context
 					.map('foo').to(42).as(VALUE)
 					.map('bar').to(Bar).as(CONSTRUCTOR).injecting('foo')
@@ -40,7 +40,7 @@ describe('Given a container with some registered mappings', function () {
 
 		describe('when requesting a mapping', function () {
 			it('should not log any information', function () {
-				container.get('baz')
+				rootContext.get('baz')
 				expect(console.log).to.not.be.called
 			})
 		})
@@ -49,7 +49,7 @@ describe('Given a container with some registered mappings', function () {
 	describe('with the debug option set to true', function () {
 
 		before(function () {
-			container = iniettore.create(function (context) {
+			rootContext = iniettore.create(function (context) {
 				context
 					.map('foo').to(42).as(VALUE)
 					.map('bar').to(Bar).as(CONSTRUCTOR).injecting('foo')
@@ -65,7 +65,7 @@ describe('Given a container with some registered mappings', function () {
 
 			describe('when requesting a mapping', function () {
 				it('should print log information in a hierarchical way', function () {
-					container.get('baz')
+					rootContext.get('baz')
 					expect(console.log.callCount).to.equal(6)
 					expect(console.log.getCall(0).args[0]).to.match(/\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\] Starting resolving 'baz'.../)
 					expect(console.log.getCall(1).args[0]).to.match(/\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\]   Starting resolving 'bar'.../)
@@ -85,7 +85,7 @@ describe('Given a container with some registered mappings', function () {
 
 			describe('when requesting a mapping', function () {
 				it('should not log any information', function () {
-					container.get('baz')
+					rootContext.get('baz')
 					expect(console.log).to.not.be.called
 				})
 			})

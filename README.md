@@ -13,7 +13,7 @@
 - [ ] Analyze release path when `FUNCTION` or no-singleton `PROVIDER` and `CONTRUCTOR` are involved. Potential bug.
 - [ ] Adds mention of creational mapping into provider, constructor and blueprint docs
 - [ ] Adds API quick reference
-- [ ] Block contribution on container after container creation
+- [ ] Block contribution on context after context creation
 - [ ] Expose flags from main module
 - [x] Evaluate to change PERSISTENT flag with LAZY
 
@@ -21,7 +21,7 @@
 - [Features](#features)
 - [ECMA Script 5 required features or polyfills](#ecma-script-5-required-features)
 - [Quick start](#quick-start)
-- [Terminology](#terminology)
+- [Concepts](#concepts)
 - [Advanced usage](#advanced-usage)
 - [Throubleshooting](#throubleshooting)
 
@@ -32,13 +32,13 @@
 - [Predictable](#predictable)
 
 ### Extreme late binding
-With exception of [eager singletons](#eager-singletons), all instances and dependencies are resolved only when requested rather when registered into the container.
+With exception of [eager singletons](#eager-singletons), all instances and dependencies are resolved only when requested rather when registered into the context.
 
 ### Functional Programming support
 `FUNCTION`, `PROVIDER` and `INSTANCE` mappings are the ideal solution to have DI in Functional Programming.
 
 ### Lifecycle management
-iniettore provides containers and singleton lifecycle management.
+iniettore provides contexts and singleton lifecycle management.
 
 ### Predictable
 iniettore handles all operation in a syncronous way so at any point in time you know what is instanciated and what is not.
@@ -70,7 +70,7 @@ class UltimateQuestion {
 	}
 }
 
-var container = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('answer')
 		.to(42)
@@ -82,15 +82,73 @@ var container = iniettore.create(function (context) {
 		.injecting('answer')
 })
 
-var question = container.get('question') // 42
+var question = rootContext.get('question') // 42
 
 console.log(question instanceof UltimateQuestion) // true
 ```
-## Terminology
-- **Container** - TBC
-- **Context** - TBC
-- **Mapping** - TBC
-- **Creational mapping** - TBC
+## Concepts
+
+### Context
+A _context_ is a JS Object that contains the collection of mappings. During the creation of the context it is possible to register several mappings using the registration API provided inside the configuration function. After the context has been fully created it's only possible to request mapping from it using the query API.
+```javascript
+import iniettore from 'iniettore'
+import { VALUE } from 'iniettore/lib/options'
+
+var rootContext = iniettore.create(function (context) {
+	// context can only be used to register new mappings
+	context
+		.map('answer')
+		.to(42)
+		.as(VALUE)
+})
+
+// rootContext is the interface for requesting mappings
+var answer = rootContext.get('answer')
+
+console.log(answer) // 42
+```
+
+### Child context
+Contexts can be organized in a hierarchy. Given one context query interface it's possible to create a child context and provide a separate configuration function for registering child specific mappings. The child context can access all the mappings of his parent and ancestor in the same fashion as JS execution context can access parent ones.
+A parente cannot see/use any of the mapping registered in its child contexts. A mapping registered in a child context that has the same name of a mapping in the parent context (or any of its ancestor contexts) will shadow the corresponding value in the same way that in JS a variable in a nested scope can shadows a variable defined in a "parent" scope. See [Child contexts](#child-contexts) for more details.
+
+Continuing with the previouse example:
+```javascript
+import iniettore from 'iniettore'
+import { VALUE, PROVIDER } from 'iniettore/lib/options'
+
+function questionProvider(answer) {
+	return {
+		question: 'What is the Answer to the Ultimate Question of Life, the Universe, and Everything?',
+		answer
+	}
+}
+
+var rootContext = iniettore.create(function (context) {
+	context
+		.map('answer')
+		.to(42)
+		.as(VALUE)
+})
+
+var childContext = rootContext.createChild(function (context) {
+	context
+		.map('question')
+		.to(questionProvider)
+		.as(PROVIDER)
+		.injecting('answer')
+})
+
+var question = childContext.get('question')
+
+console.log(question) 
+/*
+ { 
+ 	question: 'What is the Answer to the Ultimate Question of Life, the Universe, and Everything?',
+ 	answer: 42
+ }
+ */
+```
 
 ## Advanced usage
 
@@ -98,7 +156,7 @@ console.log(question instanceof UltimateQuestion) // true
 - [Functions](#functions)
 - [Providers](#providers)
 - [Constructors](#constructors)
-- [Child containers](#child-containers)
+- [Child contexts](#child-contexts)
 - [Blueprints](#blueprints)
 - [Transient dependencies](#transient-dependencies)
 - [Service locator](#service-locator)
@@ -114,18 +172,18 @@ var drone = {
 	fly: function () { /*...*/ }
 }
 
-var container = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('answer').to(42).as(VALUE)
 		.map('drone').to(drone).as(INSTANCE)
 })
 
-var answer = container.get('answer')
+var answer = rootContext.get('answer')
 
-console.log(container.get('drone') === drone) // true
+console.log(rootContext.get('drone') === drone) // true
 ```
 ### Functions
-You can register a function into the container and specify the its dependencies. When requesting the function you will get a partial application of it with all dependencies already satisfied.
+You can register a function into the context and specify the its dependencies. When requesting the function you will get a partial application of it with all dependencies already satisfied.
 ```javascript
 import iniettore from 'iniettore'
 import { VALUE, FUNCTION } from 'iniettore/lib/options'
@@ -134,13 +192,13 @@ function fooFunction(bar, baz) {
 	console.log(bar, baz)
 }
 
-var container = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('bar').to('BAR').as(VALUE)
 		.map('foo').to(fooFunction).as(FUNCTION).injecting('bar')
 })
 
-var foo = container.get('foo') // foo is a partial application of the original function
+var foo = rootContext.get('foo') // foo is a partial application of the original function
 
 foo(42) // BAR, 42
 ```
@@ -160,14 +218,14 @@ function fooProvider(bar) {
 	return { idx, bar }
 }
 
-var container = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('bar').to(42).as(VALUE)
 		.map('foo').to(fooProvider).as(PROVIDER).injecting('bar')
 })
 
-console.log(container.get('foo')) // { idx: 1, bar: 42 }
-console.log(container.get('foo')) // { idx: 2, bar: 42 }
+console.log(rootContext.get('foo')) // { idx: 1, bar: 42 }
+console.log(rootContext.get('foo')) // { idx: 2, bar: 42 }
 ```
 ### Constructors
 You can register constructors specifying the constructor dependencies. Every request will receive a new instance of the specified constructor.
@@ -185,18 +243,18 @@ class Bar {
 	}
 }
 
-var container = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('bar').to(Bar).as(CONSTRUCTOR)
 })
 
-console.log(container.get('bar')) // { idx: 1 }
-console.log(container.get('bar')) // { idx: 2 }
+console.log(rootContext.get('bar')) // { idx: 1 }
+console.log(rootContext.get('bar')) // { idx: 2 }
 ```
-### Child containers
-Containers can be organized in a hierarchy. Given a container you can create a child container invoking `container.createChild(configure :Function) :Object` and providing the configuration function.
+### Child contexts
+Containers can be organized in a hierarchy. Given a context you can create a child context invoking `context.createChild(configure :Function) :Object` and providing the configuration function.
 
-A child container can make use all the mappings of the parent container and ancestor containers.
+A child context can make use all the mappings of the parent context and ancestor contexts.
 
 ```javascript
 import iniettore from 'iniettore'
@@ -206,23 +264,23 @@ function fooProvider(bar, baz) {
 	return { bar, baz }
 }
 
-var parent = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('bar').to(42).as(VALUE)
 		.map('baz').to('pluto').as(VALUE)
 })
-var child = parent.createChild(function (context) {
+var childContext = rootContext.createChild(function (context) {
 	context
-		.map('bar').to(84).as(VALUE) // this will shadow the parent mapping
+		.map('bar').to(84).as(VALUE) // this will shadow the rootContext mapping
 		.map('foo').to(fooProvider).as(PROVIDER).injecting('bar', 'baz')
 })
 
-console.log(parent.get('bar')) // 42
-console.log(child.get('bar')) // 84
-console.log(child.get('foo')) // { bar: 84, baz: 'pluto' }
+console.log(rootContext.get('bar')) // 42
+console.log(childContext.get('bar')) // 84
+console.log(childContext.get('foo')) // { bar: 84, baz: 'pluto' }
 ```
 ### Blueprints
-Blueprint is effectively **a convenient way to register a child container factory**. The mapping value is the configuration function for the child container. Every time you request the blueprint alias you will get a new child container.
+Blueprint is effectively **a convenient way to register a child context factory**. The mapping value is the configuration function for the child context. Every time you request the blueprint mapping name you will get a new child context.
 ```javascript
 import iniettore from 'iniettore'
 import { VALUE, BLUEPRINT } from 'iniettore/lib/options'
@@ -232,18 +290,18 @@ function configureChildContext(context) {
 		.map('baz').to('pluto').as(VALUE)
 }
 
-var container = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('bar').to(42).as(VALUE)
 		.map('foo').to(configureChildContext).as(BLUEPRINT)
 })
 
-var child = container.get('foo')
+var childContext = rootContext.get('foo')
 
-console.log(child.get('bar')) // 42
-console.log(child.get('baz')) // pluto
+console.log(childContext.get('bar')) // 42
+console.log(childContext.get('baz')) // pluto
 ```
-In case you are interested in only one mapping in the child container you can specify the exported alias. See example below.
+In case you are interested in only one mapping in the child context you can specify the exported alias. See example below.
 ```javascript
 import iniettore from 'iniettore'
 import { VALUE, FUNCTION, BLUEPRINT } from 'iniettore/lib/options'
@@ -257,13 +315,13 @@ function configureChildContext(context) {
 		.map('baz').to(baz).as(FUNCTION).injecting('bar')
 }
 
-var container = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('bar').to(42).as(VALUE)
 		.map('foo').to(configureChildContext).as(BLUEPRINT).exports('baz')
 })
 
-var baz = container.get('foo')
+var baz = rootContext.get('foo')
 
 console.log(baz()) // 42
 ```
@@ -272,7 +330,7 @@ console.log(baz()) // 42
 
 While requesting an alias it's possible to provide **temporary dependencies** to satisfy dependencies of the requested mapping or one of his dependency.
 
-**Note:** Transient dependencies cannot be used to satisfy dependencies in the ancestor containers.
+**Note:** Transient dependencies cannot be used to satisfy dependencies in the ancestor contexts.
 
 ```javascript
 import iniettore from 'iniettore'
@@ -282,7 +340,7 @@ function fooProvider(bar, baz) {
 	return { bar, baz }
 }
 
-var container = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('bar').to(42).as(VALUE)
 
@@ -293,7 +351,7 @@ var container = iniettore.create(function (context) {
 var transientDependencies = {
 	baz: 'pluto'
 }
-var foo = container.using(transientDependencies).get('foo')
+var foo = rootContext.using(transientDependencies).get('foo')
 
 console.log(foo) // { bar: 42, baz: 'pluto' }
 ```
@@ -312,7 +370,7 @@ Singletons can be marked as: `LAZY`, `EAGER` or `TRANSIENT`.
 - [Transient singletons](#transient-singletons)
 
 #### Lazy singletons
-A mapping marked as `LAZY, SINGLETON` produce a singleton instance that gets created at the first time it is requested. It gets destroyed only when the container itself is destroyed. See [`container.dispose`](#container-dispose).
+A mapping marked as `LAZY, SINGLETON` produce a singleton instance that gets created at the first time it is requested. It gets destroyed only when the context itself is destroyed. See [`context.dispose`](#context-dispose).
 
 ##### Lazy Singleton Provider
 ```javascript
@@ -327,13 +385,13 @@ function fooProvider() {
 	}
 }
 
-var container = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('foo').to(fooProvider).as(LAZY, SINGLETON, PROVIDER)
 })
 
-var foo1 = container.get('foo')
-var foo2 = container.get('foo')
+var foo1 = rootContext.get('foo')
+var foo2 = rootContext.get('foo')
 
 console.log(foo1) // { idx: 1 }
 console.log(foo1 === foo2) // true
@@ -352,13 +410,13 @@ class Bar {
 	}
 }
 
-var container = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('bar').to(Bar).as(LAZY, SINGLETON, CONSTRUCTOR)
 })
 
-var bar1 = container.get('bar')
-var bar2 = container.get('bar')
+var bar1 = rootContext.get('bar')
+var bar2 = rootContext.get('bar')
 
 console.log(bar1) // { idx: 1 }
 console.log(bar1 === bar2) // true
@@ -366,9 +424,9 @@ console.log(bar1 === bar2) // true
 
 #### Eager singletons
 A mapping marked as `EAGER, SINGLETON` gets created at registration time.
-All the required dependencies must be already registered in the current container or in one of its ancestors.
+All the required dependencies must be already registered in the current context or in one of its ancestors.
 
-Eager singletons gets destroyed when the corresponding container is destoroyed.
+Eager singletons gets destroyed when the corresponding context is destoroyed.
 
 ```javascript
 import iniettore from 'iniettore'
@@ -389,7 +447,7 @@ class Bar {
 	}
 }
 
-var container = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('answer')
 		.to(42)
@@ -410,9 +468,9 @@ var container = iniettore.create(function (context) {
 #### Transient singletons
 A mapping marked as `TRANSIENT, SINGLETON` produce a **temporary lazy singleton** instance. The instance gets created at the first time it is requested (directly or as dependency of another mapping) and gets destroyed when is not used anymore.
 
-A transient singleton allows to gurantee that at any given point in time there are no more than one instance of the respective mapping (whetever has been creates using a constructor or a provider function).
+A transient singleton allows to gurantee that at any given point in time there are no more than one instance of the respective mapping (whetever has been created using a constructor or a provider function).
 
-In order to announce that a singleton is not used anymore you can invoke `container.release(name :string) :void` method. The instance gets _released_ (i.e. all references to it gets removed) when `container.release` is invoked as many time as it has been requested. See examples below.
+In order to announce that a singleton is not used anymore you can invoke `context.release(name:string):void` method. The instance gets _released_ (i.e. all references to it gets removed) when `context.release` is invoked as many time as it has been requested. See examples below.
 
 ##### Transient Singleton Provider
 ```javascript
@@ -427,19 +485,19 @@ function fooProvider() {
 	}
 }
 
-var container = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('foo').to(fooProvider).as(TRANSIENT, SINGLETON, PROVIDER)
 })
 
-var foo1 = container.get('foo')
-var foo2 = container.get('foo')
+var foo1 = rootContext.get('foo')
+var foo2 = rootContext.get('foo')
 console.log(foo1 === foo2) // true
 
 // assuming that we dont need foo anymore
-container.relase('foo')
+rootContext.relase('foo')
 
-var foo3 = container.get('foo')
+var foo3 = rootContext.get('foo')
 console.log(foo1 === foo3) // false
 ```
 
@@ -456,19 +514,19 @@ class Bar {
 	}
 }
 
-var container = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('bar').to(Bar).as(TRANSIENT, SINGLETON, CONSTRUCTOR)
 })
 
-var bar1 = container.get('bar')
-var bar2 = container.get('bar')
+var bar1 = rootContext.get('bar')
+var bar2 = rootContext.get('bar')
 console.log(bar1 === bar2) // true
 
 // assuming that we dont need bar anymore
-container.relase('bar')
+rootContext.relase('bar')
 
-var bar3 = container.get('bar')
+var bar3 = rootContext.get('bar')
 console.log(bar1 === bar3) // false
 ```
 ##### Transient singleton dependencies
@@ -491,40 +549,40 @@ function fooProvider(bar) {
 	}
 }
 
-var container = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('bar').to(Bar).as(TRANSIENT, SINGLETON, CONSTRUCTOR)
 		.map('foo').to(fooProvider).as(TRANSIENT, SINGLETON, PROVIDER).injecting('bar')
 })
 
-var foo1 = container.get('foo')
+var foo1 = rootContext.get('foo')
 console.log(foo1) // { bar: { idx: 1 }, method: function () {} }
-var foo2 = container.get('foo')
+var foo2 = rootContext.get('foo')
 console.log(foo1 === foo2) // true
 console.log(foo1.bar === foo2.bar) // true
 
 // assuming that we don't need foo anymore
 // we have to release it as many times as it as been acquired
-container.relase('foo')
+rootContext.relase('foo')
 // also bar gets released
-container.relase('foo') 
+rootContext.relase('foo') 
 
 // when requesting foo again we receive
 // a new instance of it and a new instance of bar as well
-var foo3 = container.get('foo')
+var foo3 = rootContext.get('foo')
 console.log(foo3) // { bar: { idx: 2 }, method: function () {} }
 console.log(foo1 === foo3) // false
 console.log(foo1.bar === foo3.bar) // false
 ```
 ### Lifecycle
-iniettore offers a simple concept of lifecycle management for singleton instances and containers. Let's see what it means for instances and containers.
+iniettore offers a simple concept of lifecycle management for singleton instances and contexts. Let's see what it means for instances and contexts.
 
 - [`instance.dispose`](#instancedispose)
-- [`container.dispose`](#containerdispose)
+- [`context.dispose`](#contextdispose)
 
 #### `instance.dispose`
 
-Given a `LAZY, SINGLETON` or `TRANSIENT, SINGLETON` instance that implements a method called `dispose() :void` when the instance gets released the container will invoke it. This allow you to cleanup any hanging reference (e.g. remove event listeners) so the instance can properly garbage collected.
+Given a `LAZY, SINGLETON` or `TRANSIENT, SINGLETON` instance that implements a method called `dispose():void` when the instance gets released the context will invoke it. This allow you to cleanup any hanging reference (e.g. remove event listeners) so the instance can be properly garbage collected.
 ```javascript
 import iniettore from 'iniettore'
 import { LAZY, SINGLETON, CONSTRUCTOR } from 'iniettore/lib/options'
@@ -543,27 +601,27 @@ class Foo {
 	}
 }
 
-var container = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (context) {
 	context
 		.map('events').to(EventEmitter).as(EAGER, SINGLETON, CONSTRUCTOR)
 		.map('foo').to(Foo).as(LAZY, SINGLETON, CONSTRUCTOR).injecting('events')
 })
-var events = container.get('events')
+var events = rootContext.get('events')
 console.log(events.listeners('message').length) // 0
 
-var foo = container.get('foo')
+var foo = rootContext.get('foo')
 
 // let's check the number of event handlers
 console.log(events.listeners('message').length) // 1
 
 // foo.dispose will be invoked
-container.release('foo')
+rootContext.release('foo')
 
 // the event handler has been unbound
 console.log(events.listeners('message').length) // 0
 ```
 
-#### `container.dispose`
+#### `context.dispose`
 
 TBC
 

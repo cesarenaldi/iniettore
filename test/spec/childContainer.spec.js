@@ -5,78 +5,78 @@ import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../../src/op
 
 function noop() {}
 
-describe('Given a child container', function () {
+describe('Given a child context', function () {
 
 	var OBJECT = {}
 
-	describe('when requesting an alias registered in the parent container', function () {
-		it('should return the same binding as requested to the parent container', function () {
-			var parent = iniettore.create(function (context) {
+	describe('when requesting an alias registered in the parent context', function () {
+		it('should return the same binding as requested to the parent context', function () {
+			var rootContext = iniettore.create(function (context) {
 				context
 					.map('foo').to(OBJECT)
 					.as(VALUE)
 			})
-			var child = parent.createChild(noop)
+			var child = rootContext.createChild(noop)
 
 			expect(child.get('foo'))
-				.to.equal(parent.get('foo'))
+				.to.equal(rootContext.get('foo'))
 		})
 	})
 
-	describe('when requesting the reference to the containers', function () {
+	describe('when requesting the reference to the contexts', function () {
 
-		it('should return the respective containers', function () {
-			var parent = iniettore.create(noop)
-			var child = parent.createChild(noop)
-			expect(parent.get('$container')).to.equal(parent)
+		it('should return the respective contexts', function () {
+			var rootContext = iniettore.create(noop)
+			var child = rootContext.createChild(noop)
+			expect(rootContext.get('$container')).to.equal(rootContext)
 			expect(child.get('$container')).to.equal(child)
-			expect(parent.get('$container')).to.not.equal(child.get('$container'))
+			expect(rootContext.get('$container')).to.not.equal(child.get('$container'))
 		})
 	})
 
-	describe('with a registered alias that shadows the one registered in the parent container', function () {
+	describe('with a registered alias that shadows the one registered in the parent context', function () {
 
-		describe('when requesting its alias from the child container', function () {
+		describe('when requesting its alias from the child context', function () {
 
-			var parent
+			var rootContext
 
 			beforeEach(function () {
-				parent = iniettore.create(function (context) {
+				rootContext = iniettore.create(function (context) {
 					context
 						.map('foo').to(OBJECT)
 						.as(VALUE)
 				})
 			})
 
-			it('should retrieve the child container version', function () {
-				var child = parent.createChild(function (context) {
+			it('should retrieve the child context version', function () {
+				var child = rootContext.createChild(function (context) {
 					context
 						.map('foo').to(42)
 						.as(VALUE)
 				})
 				expect(child.get('foo')).to.equal(42)
-				expect(parent.get('foo')).to.equal(OBJECT)
+				expect(rootContext.get('foo')).to.equal(OBJECT)
 			})
 		})
 	})
 
-	describe('when requesting an instance from a provider registered in the child container', function () {
+	describe('when requesting an instance from a provider registered in the child context', function () {
 
-		describe('with a dependency from a provider registered in the parent container', function () {
+		describe('with a dependency from a provider registered in the parent context', function () {
 
 			var PARENT_INSTANCE = {}
 			var CHILD_INSTANCE = {}
 			var parentProviderStub = sinon.stub().returns(PARENT_INSTANCE)
 			var chilProviderStub = sinon.stub().returns(CHILD_INSTANCE)
-			var parent, child
+			var rootContext, childContext
 
 			beforeEach(function () {
-				parent = iniettore.create(function (context) {
+				rootContext = iniettore.create(function (context) {
 					context
 						.map('bar').to(parentProviderStub)
 						.as(TRANSIENT, SINGLETON, PROVIDER)
 				})
-				child = parent.createChild(function (context) {
+				childContext = rootContext.createChild(function (context) {
 					context
 						.map('baz').to(chilProviderStub)
 						.as(TRANSIENT, SINGLETON, PROVIDER)
@@ -84,12 +84,12 @@ describe('Given a child container', function () {
 				})
 			})
 
-			it('should create instances in the respective containers', function () {
+			it('should create singleton instances in the respective contexts', function () {
 
-				var baz = child.get('baz')
+				var baz = childContext.get('baz')
 
 				expect(baz).to.equal(CHILD_INSTANCE)
-				expect(parent.get('bar')).to.equal(PARENT_INSTANCE)
+				expect(rootContext.get('bar')).to.equal(PARENT_INSTANCE)
 			})
 		})
 	})

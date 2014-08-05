@@ -4,7 +4,7 @@ import iniettore from '../../src/iniettore'
 import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../../src/options'
 
 describe('Given iniettore', function () {
-	describe('when creating a new container without a contribution function', function () {
+	describe('when creating a new context without a contribution function', function () {
 		it('should throw an Error', function () {
 			function testCase() {
 				iniettore.create()
@@ -15,9 +15,9 @@ describe('Given iniettore', function () {
 	})
 })
 
-describe('Given a container', function () {
+describe('Given a context', function () {
 
-	var container
+	var rootContext
 
 	describe('when registering a mapping with an invalid options combination', function () {
 		it('should throw an Error', function () {
@@ -35,12 +35,12 @@ describe('Given a container', function () {
 	describe('when requesting an alias that has never registered before', function () {
 
 		before(function () {
-			container = iniettore.create(function () {})
+			rootContext = iniettore.create(function () {})
 		})
 
 		it('should throw an Error', function () {
 			function testCase() {
-				container.get('pluto')
+				rootContext.get('pluto')
 			}
 			expect(testCase).to.throw(Error, '\pluto\' is not available. Has it ever been registered?.')
 		})
@@ -55,7 +55,7 @@ describe('Given a container', function () {
 		}
 
 		beforeEach(function () {
-			container = iniettore.create(function (context) {
+			rootContext = iniettore.create(function (context) {
 				context
 					.map('foo').to(Foo)
 					.as(CONSTRUCTOR)
@@ -66,7 +66,7 @@ describe('Given a container', function () {
 
 			it('should catch it and throw an Error specifing the failing component', function () {
 				function testCase() {
-					container.get('foo')
+					rootContext.get('foo')
 				}
 				expect(testCase).to.throw(Error, 'Failed while resolving \'foo\' due to:\n\tUnexpected issue')
 			})
@@ -79,7 +79,7 @@ describe('Given a container', function () {
 		var providerStub = sinon.stub().returns(DUMMY_INSTANCE)
 
 		beforeEach(function () {
-			container = iniettore.create(function (context) {
+			rootContext = iniettore.create(function (context) {
 				context
 					.map('bar').to(providerStub)
 					.as(TRANSIENT, SINGLETON, PROVIDER)
@@ -89,20 +89,20 @@ describe('Given a container', function () {
 		describe('when releasing and instance it throws an Error', function () {
 
 			it('should catch it and throw an Error specifing the failing component', function () {
-				container.get('bar')
+				rootContext.get('bar')
 				function testCase() {
-					container.release('bar')
+					rootContext.release('bar')
 				}
 				expect(testCase).to.throw(Error, 'Failed while releasing \'bar\' due to:\n\tUnexpected issue')
 			})
 		})
 
-		describe('when disposing the container itself', function () {
+		describe('when disposing the context itself', function () {
 
 			it('should catch it and throw an Error specifing the failing component', function () {
-				container.get('bar')
+				rootContext.get('bar')
 				function testCase() {
-					container.dispose()
+					rootContext.dispose()
 				}
 				expect(testCase).to.throw(Error, 'Failed while disposing \'bar\' due to:\n\tUnexpected issue')
 			})
@@ -117,7 +117,7 @@ describe('Given a container', function () {
 
 				class Bar {}
 
-				container = iniettore.create(function (context) {
+				rootContext = iniettore.create(function (context) {
 					context
 						.map('bar').to(Bar)
 						.as(CONSTRUCTOR)
@@ -125,7 +125,7 @@ describe('Given a container', function () {
 				})
 
 				function testCase () {
-					container.get('bar')
+					rootContext.get('bar')
 				}
 				expect(testCase).to.throw(Error, /Circular dependency/)
 			})
