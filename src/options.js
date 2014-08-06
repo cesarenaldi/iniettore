@@ -7,7 +7,6 @@ export default = [
 	'SINGLETON',
 	'FUNCTION',
 	'INSTANCE',
-	'PERSISTENT',
 	'TRANSIENT',
 	'BLUEPRINT',
 	'LAZY',

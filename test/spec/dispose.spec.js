@@ -38,18 +38,10 @@ describe('Given a context', function () {
 				.onFirstCall().returns(BAR_1)
 				.onSecondCall().returns(BAR_2)
 
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('foo').to(OBJECT_DEP)
-					.as(VALUE)
-
-					.map('baz').to(Baz)
-					.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-					.injecting('foo')
-
-					.map('bar').to(providerStub)
-					.as(TRANSIENT, SINGLETON, PROVIDER)
-					.injecting('foo', 'baz')
+			rootContext = iniettore.create(function (map) {
+				map('foo').to(OBJECT_DEP).as(VALUE)
+				map('baz').to(Baz).as(TRANSIENT, SINGLETON, CONSTRUCTOR).injecting('foo')
+				map('bar').to(providerStub).as(TRANSIENT, SINGLETON, PROVIDER).injecting('foo', 'baz')
 			})
 
 			BAR_1.dispose.reset()
@@ -105,10 +97,8 @@ describe('Given a context', function () {
 			class Foo {}
 
 			beforeEach(function () {
-				rootContext = iniettore.create(function (context) {
-					context
-						.map('foo').to(Foo)
-						.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
+				rootContext = iniettore.create(function (map) {
+					map('foo').to(Foo).as(TRANSIENT, SINGLETON, CONSTRUCTOR)
 				})
 				rootContext.get('foo')
 			})
@@ -128,13 +118,9 @@ describe('Given a context', function () {
 		function dummyProvider() { return {} }
 
 		before(function () {
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('bar').to(Bar)
-					.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-				context
-					.map('foo').to(dummyProvider)
-					.as(TRANSIENT, SINGLETON, PROVIDER)
+			rootContext = iniettore.create(function (map) {
+				map('bar').to(Bar).as(TRANSIENT, SINGLETON, CONSTRUCTOR)
+				map('foo').to(dummyProvider).as(TRANSIENT, SINGLETON, PROVIDER)
 			})
 		})
 
@@ -159,16 +145,11 @@ describe('Given a context', function () {
 		var childContext
 
 		beforeEach(function () {
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('bar').to(parentProviderStub)
-					.as(TRANSIENT, SINGLETON, PROVIDER)
+			rootContext = iniettore.create(function (map) {
+				map('bar').to(parentProviderStub).as(TRANSIENT, SINGLETON, PROVIDER)
 			})
-			childContext = rootContext.createChild(function (context) {
-				context
-					.map('baz').to(chilProviderStub)
-					.as(TRANSIENT, SINGLETON, PROVIDER)
-					.injecting('bar')
+			childContext = rootContext.createChild(function (map) {
+				map('baz').to(chilProviderStub).as(TRANSIENT, SINGLETON, PROVIDER).injecting('bar')
 			})
 			INSTANCE_IN_PARENT.dispose.reset()
 			INSTANCE_IN_CHILD.dispose.reset()

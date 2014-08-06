@@ -17,10 +17,9 @@ describe('Given a context with a registered function', function () {
 				expect(param1).to.equal(42)
 			}
 
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('bar').to(BAR).as(VALUE)
-					.map('foo').to(foo).as(FUNCTION).injecting('bar')
+			rootContext = iniettore.create(function (map) {
+				map('bar').to(BAR).as(VALUE)
+				map('foo').to(foo).as(FUNCTION).injecting('bar')
 			})
 
 			foo = rootContext.get('foo')

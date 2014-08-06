@@ -32,13 +32,9 @@ describe('Given a context with a registered provider', function () {
 			
 			var result
 
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('foo').to(42).as(VALUE)
-
-					.map('bar').to(providerStub)
-					.as(PROVIDER)
-					.injecting('foo')
+			rootContext = iniettore.create(function (map) {
+				map('foo').to(42).as(VALUE)
+				map('bar').to(providerStub).as(PROVIDER).injecting('foo')
 			})
 
 			result = rootContext.get('bar')

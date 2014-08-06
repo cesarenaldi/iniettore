@@ -16,11 +16,8 @@ describe('Given a LAZY, SINGLETON, CONSTRUCTOR', function () {
 	describe('when registering it into the context', function () {
 		it('should not create an instance', function () {
 
-			iniettore.create(function (context) {
-				context
-					.map('bar')
-					.to(Bar)
-					.as(LAZY, SINGLETON, CONSTRUCTOR)
+			iniettore.create(function (map) {
+				map('bar').to(Bar).as(LAZY, SINGLETON, CONSTRUCTOR)
 			})
 			expect(constructorSpy).to.not.be.called
 		})
@@ -30,11 +27,8 @@ describe('Given a LAZY, SINGLETON, CONSTRUCTOR', function () {
 		var rootContext
 
 		before(function () {
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('bar')
-					.to(Bar)
-					.as(LAZY, SINGLETON, CONSTRUCTOR)
+			rootContext = iniettore.create(function (map) {
+				map('bar').to(Bar).as(LAZY, SINGLETON, CONSTRUCTOR)
 			})
 		})
 
@@ -48,11 +42,8 @@ describe('Given a LAZY, SINGLETON, CONSTRUCTOR', function () {
 		var rootContext
 
 		before(function () {
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('bar')
-					.to(Bar)
-					.as(LAZY, SINGLETON, CONSTRUCTOR)
+			rootContext = iniettore.create(function (map) {
+				map('bar').to(Bar).as(LAZY, SINGLETON, CONSTRUCTOR)
 			})
 		})
 
@@ -67,11 +58,8 @@ describe('Given a LAZY, SINGLETON, CONSTRUCTOR', function () {
 		var rootContext
 
 		before(function () {
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('bar')
-					.to(Bar)
-					.as(LAZY, SINGLETON, CONSTRUCTOR)
+			rootContext = iniettore.create(function (map) {
+				map('bar').to(Bar).as(LAZY, SINGLETON, CONSTRUCTOR)
 			})
 		})
 
@@ -90,11 +78,8 @@ describe('Given a LAZY, SINGLETON, PROVIDER', function () {
 	describe('when registering it into the context', function () {
 		it('should not invoke the provider function', function () {
 
-			iniettore.create(function (context) {
-				context
-					.map('bar')
-					.to(barProvider)
-					.as(LAZY, SINGLETON, PROVIDER)
+			iniettore.create(function (map) {
+				map('bar').to(barProvider).as(LAZY, SINGLETON, PROVIDER)
 			})
 			expect(barProvider).to.not.be.called
 		})
@@ -104,11 +89,8 @@ describe('Given a LAZY, SINGLETON, PROVIDER', function () {
 		var rootContext
 
 		before(function () {
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('bar')
-					.to(barProvider)
-					.as(LAZY, SINGLETON, PROVIDER)
+			rootContext = iniettore.create(function (map) {
+				map('bar').to(barProvider).as(LAZY, SINGLETON, PROVIDER)
 			})
 		})
 
@@ -125,11 +107,8 @@ describe('Given a LAZY, SINGLETON, PROVIDER', function () {
 		}
 
 		before(function () {
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('bar')
-					.to(barProvider)
-					.as(LAZY, SINGLETON, PROVIDER)
+			rootContext = iniettore.create(function (map) {
+				map('bar').to(barProvider).as(LAZY, SINGLETON, PROVIDER)
 			})
 		})
 
@@ -147,11 +126,8 @@ describe('Given a LAZY, SINGLETON, PROVIDER', function () {
 		}
 
 		before(function () {
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('bar')
-					.to(barProvider)
-					.as(LAZY, SINGLETON, PROVIDER)
+			rootContext = iniettore.create(function (map) {
+				map('bar').to(barProvider).as(LAZY, SINGLETON, PROVIDER)
 			})
 		})
 

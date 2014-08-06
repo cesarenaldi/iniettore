@@ -17,10 +17,8 @@ describe('Given a TRANSIENT, SINGLETON, CONSTRUCTOR mapping', function () {
 				}
 			}
 
-			var rootContext = iniettore.create(function (context) {
-				context
-					.map('bar').to(Bar)
-					.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
+			var rootContext = iniettore.create(function (map) {
+				map('bar').to(Bar).as(TRANSIENT, SINGLETON, CONSTRUCTOR)
 			})
 
 			expect(constructorSpy).to.not.be.called
@@ -64,16 +62,10 @@ describe('Given a TRANSIENT, SINGLETON, CONSTRUCTOR mapping', function () {
 					}
 				}
 
-				var rootContext = iniettore.create(function (context) {
-					context
-						.map('common').to(Common)
-						.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-						.map('bar').to(Bar)
-						.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-						.injecting('common')
-						.map('foo').to(Foo)
-						.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-						.injecting('common', 'bar')
+				var rootContext = iniettore.create(function (map) {
+					map('common').to(Common).as(TRANSIENT, SINGLETON, CONSTRUCTOR)
+					map('bar').to(Bar).as(TRANSIENT, SINGLETON, CONSTRUCTOR).injecting('common')
+					map('foo').to(Foo).as(TRANSIENT, SINGLETON, CONSTRUCTOR).injecting('common', 'bar')
 				})
 
 				expect(rootContext.get('foo')).to.be.instanceof(Foo)
@@ -88,11 +80,8 @@ describe('Given a TRANSIENT, SINGLETON, CONSTRUCTOR mapping', function () {
 			class Bar {}
 
 			beforeEach(function () {
-				rootContext = iniettore.create(function (context) {
-					context
-						.map('bar')
-						.to(Bar)
-						.as(TRANSIENT, SINGLETON, CONSTRUCTOR)
+				rootContext = iniettore.create(function (map) {
+					map('bar').to(Bar).as(TRANSIENT, SINGLETON, CONSTRUCTOR)
 				})
 			})
 
@@ -143,10 +132,8 @@ describe('Given a TRANSIENT, SINGLETON, PROVIDER mapping', function () {
 			}
 			var foo1, foo2
 
-			var rootContext = iniettore.create(function (context) {
-				context
-					.map('foo').to(fooProvider)
-					.as(TRANSIENT, SINGLETON, PROVIDER)
+			var rootContext = iniettore.create(function (map) {
+				map('foo').to(fooProvider).as(TRANSIENT, SINGLETON, PROVIDER)
 			})
 			expect(providerSpy).to.not.be.called
 
@@ -168,11 +155,8 @@ describe('Given a TRANSIENT, SINGLETON, PROVIDER mapping', function () {
 			}
 
 			beforeEach(function () {
-				rootContext = iniettore.create(function (context) {
-					context
-						.map('foo')
-						.to(fooProvider)
-						.as(TRANSIENT, SINGLETON, PROVIDER)
+				rootContext = iniettore.create(function (map) {
+					map('foo').to(fooProvider).as(TRANSIENT, SINGLETON, PROVIDER)
 				})
 			})
 

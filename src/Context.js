@@ -1,13 +1,13 @@
 'use strict'
 
 import { ACQUIRE, RELEASE, DISPOSE } from './signals'
-import { CONTAINER_ALIAS, CONTEXT_ALIAS, CHILD_ALIAS } from './constants'
+import { CONTEXT_ALIAS, CHILD_ALIAS } from './constants'
 import { VALUE } from './options'
 import { generateMask, noop, isEagerSingleton } from './utils'
 import resolvers from './resolvers'
-import createContext from './createContext';
+import createRegistrationAPI from './createRegistrationAPI';
 
-class Container {
+class Context {
 
 	constructor(conf, logger, mappings, signalRelease) {
 		var context
@@ -24,12 +24,10 @@ class Container {
 		this._children = {}
 		this._signalRelease = signalRelease || noop
 		
-		this._bind(CONTAINER_ALIAS, this, VALUE, [])
-		context = this._context = createContext(this._bind.bind(this))
-		this._bind(CONTEXT_ALIAS, context, VALUE, [])
-		conf(context)
-		context.flush()
-		this._unbind(CONTEXT_ALIAS)
+		this._bind(CONTEXT_ALIAS, this, VALUE, [])
+		context = this._context = createRegistrationAPI(this._bind.bind(this))
+		conf(context.map)
+		context.done()
 	}
 
 	get(alias, transients) {
@@ -58,7 +56,7 @@ class Container {
 				for (dep in transientsDeps) {
 					context.map(dep).to(transientsDeps[dep]).as(VALUE)
 				}
-				context.flush()
+				context.done()
 				this.get(alias)
 				for (dep in transientsDeps) {
 					this._unbind(dep)
@@ -78,7 +76,7 @@ class Container {
 
 	createChild(conf) {
 		var id = Object.keys(this._children).length + 1
-		var child = new Container(conf, this._logger, Object.create(this._mappings), this._releaseChild.bind(this, id))
+		var child = new Context(conf, this._logger, Object.create(this._mappings), this._releaseChild.bind(this, id))
 
 		this._children[id] = child
 		return child
@@ -154,4 +152,4 @@ class Container {
 	}
 }
 
-export default Container
+export default Context

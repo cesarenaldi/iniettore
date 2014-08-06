@@ -15,10 +15,9 @@ describe('Given a context with a registered provider', function () {
 		}
 
 		before(function () {
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('bar').to(42).as(VALUE)
-					.map('foo').to(providerSpy).as(PROVIDER).injecting('bar', 'baz')
+			rootContext = iniettore.create(function (map) {
+				map('bar').to(42).as(VALUE)
+				map('foo').to(providerSpy).as(PROVIDER).injecting('bar', 'baz')
 			})
 		})
 

@@ -11,10 +11,8 @@ describe('Given a child context', function () {
 
 	describe('when requesting an alias registered in the parent context', function () {
 		it('should return the same binding as requested to the parent context', function () {
-			var rootContext = iniettore.create(function (context) {
-				context
-					.map('foo').to(OBJECT)
-					.as(VALUE)
+			var rootContext = iniettore.create(function (map) {
+				map('foo').to(OBJECT).as(VALUE)
 			})
 			var child = rootContext.createChild(noop)
 
@@ -28,9 +26,9 @@ describe('Given a child context', function () {
 		it('should return the respective contexts', function () {
 			var rootContext = iniettore.create(noop)
 			var child = rootContext.createChild(noop)
-			expect(rootContext.get('$container')).to.equal(rootContext)
-			expect(child.get('$container')).to.equal(child)
-			expect(rootContext.get('$container')).to.not.equal(child.get('$container'))
+			expect(rootContext.get('$context')).to.equal(rootContext)
+			expect(child.get('$context')).to.equal(child)
+			expect(rootContext.get('$context')).to.not.equal(child.get('$context'))
 		})
 	})
 
@@ -41,18 +39,14 @@ describe('Given a child context', function () {
 			var rootContext
 
 			beforeEach(function () {
-				rootContext = iniettore.create(function (context) {
-					context
-						.map('foo').to(OBJECT)
-						.as(VALUE)
+				rootContext = iniettore.create(function (map) {
+					map('foo').to(OBJECT).as(VALUE)
 				})
 			})
 
 			it('should retrieve the child context version', function () {
-				var child = rootContext.createChild(function (context) {
-					context
-						.map('foo').to(42)
-						.as(VALUE)
+				var child = rootContext.createChild(function (map) {
+					map('foo').to(42).as(VALUE)
 				})
 				expect(child.get('foo')).to.equal(42)
 				expect(rootContext.get('foo')).to.equal(OBJECT)
@@ -71,16 +65,11 @@ describe('Given a child context', function () {
 			var rootContext, childContext
 
 			beforeEach(function () {
-				rootContext = iniettore.create(function (context) {
-					context
-						.map('bar').to(parentProviderStub)
-						.as(TRANSIENT, SINGLETON, PROVIDER)
+				rootContext = iniettore.create(function (map) {
+					map('bar').to(parentProviderStub).as(TRANSIENT, SINGLETON, PROVIDER)
 				})
-				childContext = rootContext.createChild(function (context) {
-					context
-						.map('baz').to(chilProviderStub)
-						.as(TRANSIENT, SINGLETON, PROVIDER)
-						.injecting('bar')
+				childContext = rootContext.createChild(function (map) {
+					map('baz').to(chilProviderStub).as(TRANSIENT, SINGLETON, PROVIDER).injecting('bar')
 				})
 			})
 

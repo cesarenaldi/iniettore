@@ -1,6 +1,6 @@
 'use strict'
 
-import Container from './Container'
+import Context from './Context'
 import Logger from './Logger'
 
 export function create(conf, options) {
@@ -9,5 +9,5 @@ export function create(conf, options) {
 	options = options || {}
 	logger = new Logger(options)
 
-	return new Container(conf, logger)
+	return new Context(conf, logger)
 }

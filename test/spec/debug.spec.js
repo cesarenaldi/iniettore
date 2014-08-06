@@ -30,11 +30,10 @@ describe('Given a context with some registered mappings', function () {
 	describe('with not debug option', function () {
 
 		before(function () {
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('foo').to(42).as(VALUE)
-					.map('bar').to(Bar).as(CONSTRUCTOR).injecting('foo')
-					.map('baz').to(provider).as(PROVIDER).injecting('bar')
+			rootContext = iniettore.create(function (map) {
+				map('foo').to(42).as(VALUE)
+				map('bar').to(Bar).as(CONSTRUCTOR).injecting('foo')
+				map('baz').to(provider).as(PROVIDER).injecting('bar')
 			})
 		})
 
@@ -49,11 +48,10 @@ describe('Given a context with some registered mappings', function () {
 	describe('with the debug option set to true', function () {
 
 		before(function () {
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('foo').to(42).as(VALUE)
-					.map('bar').to(Bar).as(CONSTRUCTOR).injecting('foo')
-					.map('baz').to(provider).as(PROVIDER).injecting('bar')
+			rootContext = iniettore.create(function (map) {
+				map('foo').to(42).as(VALUE)
+				map('bar').to(Bar).as(CONSTRUCTOR).injecting('foo')
+				map('baz').to(provider).as(PROVIDER).injecting('bar')
 			}, { debug: true })
 		})
 

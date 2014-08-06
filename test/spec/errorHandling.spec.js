@@ -22,10 +22,8 @@ describe('Given a context', function () {
 	describe('when registering a mapping with an invalid options combination', function () {
 		it('should throw an Error', function () {
 			function testCase() {
-				iniettore.create(function (context) {
-					context
-						.map('foo').to({})
-						.as(SINGLETON, VALUE)
+				iniettore.create(function (map) {
+					map('foo').to({}).as(SINGLETON, VALUE)
 				})
 			}
 			expect(testCase).to.throw(Error, /invalid flags combination/i)
@@ -55,10 +53,8 @@ describe('Given a context', function () {
 		}
 
 		beforeEach(function () {
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('foo').to(Foo)
-					.as(CONSTRUCTOR)
+			rootContext = iniettore.create(function (map) {
+				map('foo').to(Foo).as(CONSTRUCTOR)
 			})
 		})
 
@@ -79,10 +75,8 @@ describe('Given a context', function () {
 		var providerStub = sinon.stub().returns(DUMMY_INSTANCE)
 
 		beforeEach(function () {
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('bar').to(providerStub)
-					.as(TRANSIENT, SINGLETON, PROVIDER)
+			rootContext = iniettore.create(function (map) {
+				map('bar').to(providerStub).as(TRANSIENT, SINGLETON, PROVIDER)
 			})
 		})
 
@@ -117,11 +111,8 @@ describe('Given a context', function () {
 
 				class Bar {}
 
-				rootContext = iniettore.create(function (context) {
-					context
-						.map('bar').to(Bar)
-						.as(CONSTRUCTOR)
-						.injecting('bar')
+				rootContext = iniettore.create(function (map) {
+					map('bar').to(Bar).as(CONSTRUCTOR).injecting('bar')
 				})
 
 				function testCase () {

@@ -5,6 +5,9 @@
 [![NPM dependencies](https://david-dm.org/cesarenaldi/iniettore.svg)](https://david-dm.org/cesarenaldi/iniettore)
 [![Coverage Status](https://img.shields.io/coveralls/cesarenaldi/iniettore.svg)](https://coveralls.io/r/cesarenaldi/iniettore?branch=master)
 
+## WARNING: APIs are going to significantly change in v2.0
+See documentation in tagged versions for previous usage.
+
 ## TODO
 - [ ] Make singletons dispose method name configurable
 - [x] ~~Improve `instanciate` function to copy static methods/properties to the Surrogate constructor.~~ Not necessary instance.constructor still points to original constructor.
@@ -70,16 +73,9 @@ class UltimateQuestion {
 	}
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('answer')
-		.to(42)
-		.as(VALUE)
-
-		.map('question')
-		.to(UltimateQuestion)
-		.as(LAZY, SINGLETON, CONSTRUCTOR)
-		.injecting('answer')
+var rootContext = iniettore.create(function (map) {
+	map('answer').to(42).as(VALUE)
+	map('question').to(UltimateQuestion).as(LAZY, SINGLETON, CONSTRUCTOR).injecting('answer')
 })
 
 var question = rootContext.get('question') // 42
@@ -94,12 +90,9 @@ A _context_ is a JS Object that contains the collection of mappings. During the 
 import iniettore from 'iniettore'
 import { VALUE } from 'iniettore/lib/options'
 
-var rootContext = iniettore.create(function (context) {
+var rootContext = iniettore.create(function (map) {
 	// context can only be used to register new mappings
-	context
-		.map('answer')
-		.to(42)
-		.as(VALUE)
+	map('answer').to(42).as(VALUE)
 })
 
 // rootContext is the interface for requesting mappings
@@ -124,19 +117,12 @@ function questionProvider(answer) {
 	}
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('answer')
-		.to(42)
-		.as(VALUE)
+var rootContext = iniettore.create(function (map) {
+	map('answer').to(42).as(VALUE)
 })
 
-var childContext = rootContext.createChild(function (context) {
-	context
-		.map('question')
-		.to(questionProvider)
-		.as(PROVIDER)
-		.injecting('answer')
+var childContext = rootContext.createChild(function (map) {
+	map('question').to(questionProvider).as(PROVIDER).injecting('answer')
 })
 
 var question = childContext.get('question')
@@ -172,10 +158,9 @@ var drone = {
 	fly: function () { /*...*/ }
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('answer').to(42).as(VALUE)
-		.map('drone').to(drone).as(INSTANCE)
+var rootContext = iniettore.create(function (map) {
+	map('answer').to(42).as(VALUE)
+	map('drone').to(drone).as(INSTANCE)
 })
 
 var answer = rootContext.get('answer')
@@ -192,10 +177,9 @@ function fooFunction(bar, baz) {
 	console.log(bar, baz)
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('bar').to('BAR').as(VALUE)
-		.map('foo').to(fooFunction).as(FUNCTION).injecting('bar')
+var rootContext = iniettore.create(function (map) {
+	map('bar').to('BAR').as(VALUE)
+	map('foo').to(fooFunction).as(FUNCTION).injecting('bar')
 })
 
 var foo = rootContext.get('foo') // foo is a partial application of the original function
@@ -218,10 +202,9 @@ function fooProvider(bar) {
 	return { idx, bar }
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('bar').to(42).as(VALUE)
-		.map('foo').to(fooProvider).as(PROVIDER).injecting('bar')
+var rootContext = iniettore.create(function (map) {
+	map('bar').to(42).as(VALUE)
+	map('foo').to(fooProvider).as(PROVIDER).injecting('bar')
 })
 
 console.log(rootContext.get('foo')) // { idx: 1, bar: 42 }
@@ -243,9 +226,8 @@ class Bar {
 	}
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('bar').to(Bar).as(CONSTRUCTOR)
+var rootContext = iniettore.create(function (map) {
+	map('bar').to(Bar).as(CONSTRUCTOR)
 })
 
 console.log(rootContext.get('bar')) // { idx: 1 }
@@ -264,15 +246,13 @@ function fooProvider(bar, baz) {
 	return { bar, baz }
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('bar').to(42).as(VALUE)
-		.map('baz').to('pluto').as(VALUE)
+var rootContext = iniettore.create(function (map) {
+	map('bar').to(42).as(VALUE)
+	map('baz').to('pluto').as(VALUE)
 })
-var childContext = rootContext.createChild(function (context) {
-	context
-		.map('bar').to(84).as(VALUE) // this will shadow the rootContext mapping
-		.map('foo').to(fooProvider).as(PROVIDER).injecting('bar', 'baz')
+var childContext = rootContext.createChild(function (map) {
+	map('bar').to(84).as(VALUE) // this will shadow the rootContext mapping
+	map('foo').to(fooProvider).as(PROVIDER).injecting('bar', 'baz')
 })
 
 console.log(rootContext.get('bar')) // 42
@@ -285,15 +265,13 @@ Blueprint is effectively **a convenient way to register a child context factory*
 import iniettore from 'iniettore'
 import { VALUE, BLUEPRINT } from 'iniettore/lib/options'
 
-function configureChildContext(context) {
-	context
-		.map('baz').to('pluto').as(VALUE)
+function configureChildContext(map) {
+	map('baz').to('pluto').as(VALUE)
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('bar').to(42).as(VALUE)
-		.map('foo').to(configureChildContext).as(BLUEPRINT)
+var rootContext = iniettore.create(function (map) {
+	map('bar').to(42).as(VALUE)
+	map('foo').to(configureChildContext).as(BLUEPRINT)
 })
 
 var childContext = rootContext.get('foo')
@@ -310,15 +288,13 @@ function baz(bar) {
 	console.log(bar)
 }
 
-function configureChildContext(context) {
-	context
-		.map('baz').to(baz).as(FUNCTION).injecting('bar')
+function configureChildContext(map) {
+	map('baz').to(baz).as(FUNCTION).injecting('bar')
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('bar').to(42).as(VALUE)
-		.map('foo').to(configureChildContext).as(BLUEPRINT).exports('baz')
+var rootContext = iniettore.create(function (map) {
+	map('bar').to(42).as(VALUE)
+	map('foo').to(configureChildContext).as(BLUEPRINT).exports('baz')
 })
 
 var baz = rootContext.get('foo')
@@ -340,12 +316,11 @@ function fooProvider(bar, baz) {
 	return { bar, baz }
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('bar').to(42).as(VALUE)
+var rootContext = iniettore.create(function (map) {
+	map('bar').to(42).as(VALUE)
 
-		// NOTE: baz is not registered here
-		.map('foo').to(fooProvider).as(PROVIDER).injecting('bar', 'baz') 
+	// NOTE: baz is not registered here
+	map('foo').to(fooProvider).as(PROVIDER).injecting('bar', 'baz') 
 })
 
 var transientDependencies = {
@@ -385,9 +360,8 @@ function fooProvider() {
 	}
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('foo').to(fooProvider).as(LAZY, SINGLETON, PROVIDER)
+var rootContext = iniettore.create(function (map) {
+	map('foo').to(fooProvider).as(LAZY, SINGLETON, PROVIDER)
 })
 
 var foo1 = rootContext.get('foo')
@@ -410,9 +384,8 @@ class Bar {
 	}
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('bar').to(Bar).as(LAZY, SINGLETON, CONSTRUCTOR)
+var rootContext = iniettore.create(function (map) {
+	map('bar').to(Bar).as(LAZY, SINGLETON, CONSTRUCTOR)
 })
 
 var bar1 = rootContext.get('bar')
@@ -447,22 +420,14 @@ class Bar {
 	}
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('answer')
-		.to(42)
-		.as(VALUE)
-
-		.map('foo')
-		.to(fooProvider)
-		.as(EAGER, SINGLETON, PROVIDER)
-		.injection('answer') // foo provider invoked: 42
-
-		.map('bar')
-		.to(Bar)
-		.as(EAGER, SINGLETON, CONSTRUCTOR)
-		.injection('answer') // Bar instance created: 42
+var rootContext = iniettore.create(function (map) {
+	map('answer').to(42).as(VALUE)
+	map('foo').to(fooProvider).as(EAGER, SINGLETON, PROVIDER).injecting('answer')
+	map('bar').to(Bar).as(EAGER, SINGLETON, CONSTRUCTOR).injecting('answer')
 })
+
+// foo provider invoked: 42
+// Bar instance created: 42
 ```
 
 #### Transient singletons
@@ -485,9 +450,8 @@ function fooProvider() {
 	}
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('foo').to(fooProvider).as(TRANSIENT, SINGLETON, PROVIDER)
+var rootContext = iniettore.create(function (map) {
+	map('foo').to(fooProvider).as(TRANSIENT, SINGLETON, PROVIDER)
 })
 
 var foo1 = rootContext.get('foo')
@@ -514,9 +478,8 @@ class Bar {
 	}
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('bar').to(Bar).as(TRANSIENT, SINGLETON, CONSTRUCTOR)
+var rootContext = iniettore.create(function (map) {
+	map('bar').to(Bar).as(TRANSIENT, SINGLETON, CONSTRUCTOR)
 })
 
 var bar1 = rootContext.get('bar')
@@ -549,10 +512,9 @@ function fooProvider(bar) {
 	}
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('bar').to(Bar).as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-		.map('foo').to(fooProvider).as(TRANSIENT, SINGLETON, PROVIDER).injecting('bar')
+var rootContext = iniettore.create(function (map) {
+	map('bar').to(Bar).as(TRANSIENT, SINGLETON, CONSTRUCTOR)
+	map('foo').to(fooProvider).as(TRANSIENT, SINGLETON, PROVIDER).injecting('bar')
 })
 
 var foo1 = rootContext.get('foo')
@@ -601,10 +563,9 @@ class Foo {
 	}
 }
 
-var rootContext = iniettore.create(function (context) {
-	context
-		.map('events').to(EventEmitter).as(EAGER, SINGLETON, CONSTRUCTOR)
-		.map('foo').to(Foo).as(LAZY, SINGLETON, CONSTRUCTOR).injecting('events')
+var rootContext = iniettore.create(function (map) {
+	map('events').to(EventEmitter).as(EAGER, SINGLETON, CONSTRUCTOR)
+	map('foo').to(Foo).as(LAZY, SINGLETON, CONSTRUCTOR).injecting('events')
 })
 var events = rootContext.get('events')
 console.log(events.listeners('message').length) // 0

@@ -16,10 +16,8 @@ describe('Given a context with a registered constructor', function () {
 				}
 			}
 
-			var rootContext = iniettore.create(function (context) {
-				context
-					.map('foo').to(Foo)
-					.as(CONSTRUCTOR)
+			var rootContext = iniettore.create(function (map) {
+				map('foo').to(Foo).as(CONSTRUCTOR)
 			})
 
 			rootContext.get('foo')
@@ -31,10 +29,8 @@ describe('Given a context with a registered constructor', function () {
 			}
 
 			it('should have the static method/properties of the original constructor', function () {
-				var rootContext = iniettore.create(function (context) {
-					context
-						.map('bar').to(Bar)
-						.as(CONSTRUCTOR)
+				var rootContext = iniettore.create(function (map) {
+					map('bar').to(Bar).as(CONSTRUCTOR)
 				})
 				var bar = rootContext.get('bar')
 

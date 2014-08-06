@@ -2,32 +2,32 @@
 
 import { generateMask } from './utils'
 import { BLUEPRINT, PROVIDER } from './options'
-import { CONTAINER_ALIAS, CONTEXT_ALIAS } from './constants'
+import { CONTEXT_ALIAS } from './constants'
 
 var ALIAS_IDX = 0
 var VALUE_IDX = 1
 var TYPE_IDX = 2
 var DEPS_IDX = 3
 
-function createChildContainerFactory(conf) {
-	return function (container) {
-		return container.createChild(conf)
+function createChildContextFactory(conf) {
+	return function (context) {
+		return context.createChild(conf)
 	}
 }
 
-function createExporter(containerFactory, exportAlias) {
-	return function (container) {
-		return containerFactory(container).get(exportAlias)
+function createExporter(contextFactory, exportAlias) {
+	return function (configure) {
+		return contextFactory(configure).get(exportAlias)
 	}
 }
 
-export default function createContext(contribute) {
+export default function createRegistrationAPI(contribute) {
 
 	var pending = []
-	var context = {
+	var api = {
 
 		map: (alias) => {
-			context.flush()
+			api.done()
 			pending.push(alias)
 
 			return {
@@ -42,32 +42,22 @@ export default function createContext(contribute) {
 							if (mask === BLUEPRINT) {
 								// test if VALUE is a function
 								flags = [PROVIDER]
-								pending[VALUE_IDX] = createChildContainerFactory(pending[VALUE_IDX])
+								pending[VALUE_IDX] = createChildContextFactory(pending[VALUE_IDX])
 								pending.push(generateMask(flags))
-								pending.push([CONTAINER_ALIAS])
+								pending.push([CONTEXT_ALIAS])
 								
 								return {
 									exports: (alias) => {
 										pending[VALUE_IDX] = createExporter(pending[VALUE_IDX], alias)
-										return {
-											map: context.map
-										}
-									},
-									map: context.map
+									}
 								}
 							}
 
 							pending.push(mask)
 							
-							return {
-								map: context.map,
-								
+							return {								
 								injecting: (...deps) => {
 									pending.push(deps)
-
-									return {
-										map: context.map
-									}
 								}
 							}
 						}
@@ -76,7 +66,7 @@ export default function createContext(contribute) {
 			}
 		},
 
-		flush: () => {
+		done: () => {
 			var deps = pending[DEPS_IDX] || []
 
 			if (pending.length > 2) {
@@ -86,5 +76,5 @@ export default function createContext(contribute) {
 		}
 	}
 
-	return context
+	return api
 }

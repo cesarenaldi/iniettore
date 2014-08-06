@@ -11,10 +11,8 @@ describe('Given a context', function () {
 	describe('with a registered object as value', function () {
 
 		before(function () {
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('bar').to(DUMMY_VALUE)
-					.as(VALUE)
+			rootContext = iniettore.create(function (map) {
+				map('bar').to(DUMMY_VALUE).as(VALUE)
 			})
 		})
 
@@ -28,10 +26,8 @@ describe('Given a context', function () {
 	describe('with a registered object as instance', function () {
 
 		before(function () {
-			rootContext = iniettore.create(function (context) {
-				context
-					.map('bar').to(DUMMY_VALUE)
-					.as(INSTANCE)
+			rootContext = iniettore.create(function (map) {
+				map('bar').to(DUMMY_VALUE).as(INSTANCE)
 			})
 		})
 
