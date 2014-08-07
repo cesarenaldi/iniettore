@@ -10,7 +10,7 @@ import createRegistrationAPI from './createRegistrationAPI';
 class Context {
 
 	constructor(conf, logger, mappings, signalRelease) {
-		var context
+		var api
 
 		if (typeof conf !== 'function') {
 			throw new Error('Invalid container creation, missing contribution function')
@@ -25,9 +25,9 @@ class Context {
 		this._signalRelease = signalRelease || noop
 		
 		this._bind(CONTEXT_ALIAS, this, VALUE, [])
-		context = this._context = createRegistrationAPI(this._bind.bind(this))
-		conf(context.map)
-		context.done()
+		api = createRegistrationAPI(this._bind.bind(this))
+		conf(api.map)
+		api.done()
 	}
 
 	get(alias) {
@@ -50,13 +50,11 @@ class Context {
 	using(transientsDeps) {
 		return {
 			get: (alias) => {
-				var context = this._context
 				var dep
 
 				for (dep in transientsDeps) {
-					context.map(dep).to(transientsDeps[dep]).as(VALUE)
+					this._bind(dep, transientsDeps[dep], VALUE, [])
 				}
-				context.done()
 				this.get(alias)
 				for (dep in transientsDeps) {
 					this._unbind(dep)
