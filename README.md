@@ -10,15 +10,10 @@ See documentation in tagged versions for previous usage.
 
 ## TODO
 - [ ] Make singletons dispose method name configurable
-- [x] ~~Improve `instanciate` function to copy static methods/properties to the Surrogate constructor.~~ Not necessary instance.constructor still points to original constructor.
-- [ ] ~~Add $child special injector and remove $context.~~ No real benefit.
 - [ ] Add instance property injection (i.e. use of pattern such `foo.prop` as injecting alias)
 - [ ] Analyze release path when `FUNCTION` or no-singleton `PROVIDER` and `CONTRUCTOR` are involved. Potential bug.
-- [ ] Adds mention of creational mapping into provider, constructor and blueprint docs
 - [ ] Adds API quick reference
 - [ ] Block contribution on context after context creation
-- [x] Expose flags from main module
-- [x] Evaluate to change PERSISTENT flag with LAZY
 
 ## Table of Content
 - [Features](#features)
