@@ -8,7 +8,7 @@ import {
 	SINGLETON,
 	TRANSIENT,
 	LAZY
-} from '../../src/options'
+} from '../../src/iniettore'
 
 
 describe('Given a context', function () {

@@ -1,7 +1,7 @@
 'use strict'
 
 import iniettore from '../../src/iniettore'
-import { PROVIDER, VALUE } from '../../src/options'
+import { PROVIDER, VALUE } from '../../src/iniettore'
 
 describe('Given a context with a registered provider', function () {
 

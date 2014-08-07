@@ -1,7 +1,7 @@
 'use strict'
 
 import iniettore from '../../src/iniettore'
-import { FUNCTION, VALUE } from '../../src/options'
+import { FUNCTION, VALUE } from '../../src/iniettore'
 
 describe('Given a context with a registered function', function () {
 

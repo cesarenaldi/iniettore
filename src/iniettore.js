@@ -3,6 +3,8 @@
 import Context from './Context'
 import Logger from './Logger'
 
+export * from './options'
+
 export function create(conf, options) {
 	var logger
 

@@ -1,7 +1,7 @@
 'use strict'
 
 import iniettore from '../../src/iniettore'
-import { TRANSIENT, LAZY, PROVIDER, SINGLETON, CONSTRUCTOR, EAGER, VALUE } from '../../src/options'
+import { TRANSIENT, LAZY, PROVIDER, SINGLETON, CONSTRUCTOR, EAGER, VALUE } from '../../src/iniettore'
 
 describe('Given a provider and a contructor', function () {
 

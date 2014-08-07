@@ -1,7 +1,7 @@
 'use strict'
 
 import iniettore from '../../src/iniettore'
-import { VALUE, INSTANCE } from '../../src/options'
+import { VALUE, INSTANCE } from '../../src/iniettore'
 
 describe('Given a context', function () {
 

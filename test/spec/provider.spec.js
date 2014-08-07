@@ -6,7 +6,7 @@ import {
 	PROVIDER,
 	SINGLETON,
 	TRANSIENT
-} from '../../src/options'
+} from '../../src/iniettore'
 
 
 describe('Given a context with a registered provider', function () {

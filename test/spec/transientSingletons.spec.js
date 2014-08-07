@@ -1,7 +1,7 @@
 'use strict'
 
 import iniettore from '../../src/iniettore'
-import { TRANSIENT, PROVIDER, SINGLETON, CONSTRUCTOR } from '../../src/options'
+import { TRANSIENT, PROVIDER, SINGLETON, CONSTRUCTOR } from '../../src/iniettore'
 
 describe('Given a TRANSIENT, SINGLETON, CONSTRUCTOR mapping', function () {
 

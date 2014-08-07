@@ -17,7 +17,7 @@ See documentation in tagged versions for previous usage.
 - [ ] Adds mention of creational mapping into provider, constructor and blueprint docs
 - [ ] Adds API quick reference
 - [ ] Block contribution on context after context creation
-- [ ] Expose flags from main module
+- [x] Expose flags from main module
 - [x] Evaluate to change PERSISTENT flag with LAZY
 
 ## Table of Content
@@ -65,7 +65,7 @@ npm install iniettore --save
 ### Simple usage
 ```javascript
 import iniettore from 'iniettore'
-import { VALUE, LAZY, SINGLETON, CONSTRUCTOR } from 'iniettore/lib/options'
+import { VALUE, LAZY, SINGLETON, CONSTRUCTOR } from 'iniettore'
 
 class UltimateQuestion {
 	constructor(answer) {
@@ -88,7 +88,7 @@ console.log(question instanceof UltimateQuestion) // true
 A _context_ is a JS Object that contains the collection of mappings. During the creation of the context it is possible to register several mappings using the registration API provided inside the configuration function. After the context has been fully created it's only possible to request mapping from it using the query API.
 ```javascript
 import iniettore from 'iniettore'
-import { VALUE } from 'iniettore/lib/options'
+import { VALUE } from 'iniettore'
 
 var rootContext = iniettore.create(function (map) {
 	// context can only be used to register new mappings
@@ -108,7 +108,7 @@ A parente cannot see/use any of the mapping registered in its child contexts. A 
 Continuing with the previouse example:
 ```javascript
 import iniettore from 'iniettore'
-import { VALUE, PROVIDER } from 'iniettore/lib/options'
+import { VALUE, PROVIDER } from 'iniettore'
 
 function questionProvider(answer) {
 	return {
@@ -152,7 +152,7 @@ console.log(question)
 ### Values and instances
 ```javascript
 import iniettore from 'iniettore'
-import { VALUE, INSTANCE } from 'iniettore/lib/options'
+import { VALUE, INSTANCE } from 'iniettore'
 
 var drone = {
 	fly: function () { /*...*/ }
@@ -171,7 +171,7 @@ console.log(rootContext.get('drone') === drone) // true
 You can register a function into the context and specify the its dependencies. When requesting the function you will get a partial application of it with all dependencies already satisfied.
 ```javascript
 import iniettore from 'iniettore'
-import { VALUE, FUNCTION } from 'iniettore/lib/options'
+import { VALUE, FUNCTION } from 'iniettore'
 
 function fooFunction(bar, baz) {
 	console.log(bar, baz)
@@ -192,7 +192,7 @@ Providers are generic functions that returns object or values specific for your 
 Every request will invoke the provider function and return a new value. The returned value depends on the nature of the registered provider function.
 ```javascript
 import iniettore from 'iniettore'
-import { PROVIDER } from 'iniettore/lib/options'
+import { PROVIDER } from 'iniettore'
 
 var idx = 0
 
@@ -216,7 +216,7 @@ You can register constructors specifying the constructor dependencies. Every req
 **Note:** no setters injection is supported at the moment.
 ```javascript
 import iniettore from 'iniettore'
-import { CONSTRUCTOR } from 'iniettore/lib/options'
+import { CONSTRUCTOR } from 'iniettore'
 
 var idx = 0
 
@@ -240,7 +240,7 @@ A child context can make use all the mappings of the parent context and ancestor
 
 ```javascript
 import iniettore from 'iniettore'
-import { VALUE, PROVIDER } from 'iniettore/lib/options'
+import { VALUE, PROVIDER } from 'iniettore'
 
 function fooProvider(bar, baz) {
 	return { bar, baz }
@@ -263,7 +263,7 @@ console.log(childContext.get('foo')) // { bar: 84, baz: 'pluto' }
 Blueprint is effectively **a convenient way to register a child context factory**. The mapping value is the configuration function for the child context. Every time you request the blueprint mapping name you will get a new child context.
 ```javascript
 import iniettore from 'iniettore'
-import { VALUE, BLUEPRINT } from 'iniettore/lib/options'
+import { VALUE, BLUEPRINT } from 'iniettore'
 
 function configureChildContext(map) {
 	map('baz').to('pluto').as(VALUE)
@@ -282,7 +282,7 @@ console.log(childContext.get('baz')) // pluto
 In case you are interested in only one mapping in the child context you can specify the exported alias. See example below.
 ```javascript
 import iniettore from 'iniettore'
-import { VALUE, FUNCTION, BLUEPRINT } from 'iniettore/lib/options'
+import { VALUE, FUNCTION, BLUEPRINT } from 'iniettore'
 
 function baz(bar) {
 	console.log(bar)
@@ -310,7 +310,7 @@ While requesting an alias it's possible to provide **temporary dependencies** to
 
 ```javascript
 import iniettore from 'iniettore'
-import { VALUE, PROVIDER } from 'iniettore/lib/options'
+import { VALUE, PROVIDER } from 'iniettore'
 
 function fooProvider(bar, baz) {
 	return { bar, baz }
@@ -350,7 +350,7 @@ A mapping marked as `LAZY, SINGLETON` produce a singleton instance that gets cre
 ##### Lazy Singleton Provider
 ```javascript
 import iniettore from 'iniettore'
-import { LAZY, SINGLETON, PROVIDER } from 'iniettore/lib/options'
+import { LAZY, SINGLETON, PROVIDER } from 'iniettore'
 
 var idx = 0
 
@@ -374,7 +374,7 @@ console.log(foo1 === foo2) // true
 ##### Lazy Singleton Constructor
 ```javascript
 import iniettore from 'iniettore'
-import { LAZY, SINGLETON, CONSTRUCTOR } from 'iniettore/lib/options'
+import { LAZY, SINGLETON, CONSTRUCTOR } from 'iniettore'
 
 var idx = 0
 
@@ -403,7 +403,7 @@ Eager singletons gets destroyed when the corresponding context is destoroyed.
 
 ```javascript
 import iniettore from 'iniettore'
-import { EAGER, SINGLETON, PROVIDER, CONSTRUCTOR, VALUE } from 'iniettore/lib/options'
+import { EAGER, SINGLETON, PROVIDER, CONSTRUCTOR, VALUE } from 'iniettore'
 
 var idx = 0
 
@@ -440,7 +440,7 @@ In order to announce that a singleton is not used anymore you can invoke `contex
 ##### Transient Singleton Provider
 ```javascript
 import iniettore from 'iniettore'
-import { TRANSIENT, SINGLETON, PROVIDER } from 'iniettore/lib/options'
+import { TRANSIENT, SINGLETON, PROVIDER } from 'iniettore'
 
 var idx = 0
 
@@ -468,7 +468,7 @@ console.log(foo1 === foo3) // false
 ##### Transient Singleton Constructor
 ```javascript
 import iniettore from 'iniettore'
-import { TRANSIENT, SINGLETON, CONSTRUCTOR } from 'iniettore/lib/options'
+import { TRANSIENT, SINGLETON, CONSTRUCTOR } from 'iniettore'
 
 var idx = 0
 
@@ -495,7 +495,7 @@ console.log(bar1 === bar3) // false
 ##### Transient singleton dependencies
 ```javascript
 import iniettore from 'iniettore'
-import { TRANSIENT, SINGLETON, CONSTRUCTOR, PROVIDER } from 'iniettore/lib/options'
+import { TRANSIENT, SINGLETON, CONSTRUCTOR, PROVIDER } from 'iniettore'
 
 var idx = 0
 
@@ -547,7 +547,7 @@ iniettore offers a simple concept of lifecycle management for singleton instance
 Given a `LAZY, SINGLETON` or `TRANSIENT, SINGLETON` instance that implements a method called `dispose():void` when the instance gets released the context will invoke it. This allow you to cleanup any hanging reference (e.g. remove event listeners) so the instance can be properly garbage collected.
 ```javascript
 import iniettore from 'iniettore'
-import { LAZY, SINGLETON, CONSTRUCTOR } from 'iniettore/lib/options'
+import { LAZY, SINGLETON, CONSTRUCTOR } from 'iniettore'
 import { EventEmitter } from 'events'
 
 class Foo {

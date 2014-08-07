@@ -30,7 +30,7 @@ class Context {
 		context.done()
 	}
 
-	get(alias, transients) {
+	get(alias) {
 		return this._logger.log(`resolving '${alias}'`, () => {
 			if (this._resolving[alias]) { throw new Error(`Circular dependency detected while resolving '${alias}'`) }
 			if (!(alias in this._mappings)) { throw new Error(`'${alias}' is not available. Has it ever been registered?.`) }
