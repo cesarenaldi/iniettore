@@ -1,6 +1,6 @@
 'use strict';
 
-import { generateMask } from './utils'
+import { generateMask, extractImplicitDependencies } from './utils'
 import { BLUEPRINT, PROVIDER } from './options'
 import { CONTEXT_ALIAS } from './constants'
 
@@ -45,7 +45,7 @@ export default function createRegistrationAPI(contribute) {
 								pending[VALUE_IDX] = createChildContextFactory(pending[VALUE_IDX])
 								pending.push(generateMask(flags))
 								pending.push([CONTEXT_ALIAS])
-								
+
 								return {
 									exports: (alias) => {
 										pending[VALUE_IDX] = createExporter(pending[VALUE_IDX], alias)
@@ -54,8 +54,8 @@ export default function createRegistrationAPI(contribute) {
 							}
 
 							pending.push(mask)
-							
-							return {								
+
+							return {
 								injecting: (...deps) => {
 									pending.push(deps)
 								}
@@ -68,6 +68,10 @@ export default function createRegistrationAPI(contribute) {
 
 		done: () => {
 			var deps = pending[DEPS_IDX] || []
+
+			if (deps.length === 0) {
+				deps = extractImplicitDependencies(pending[VALUE_IDX])
+			}
 
 			if (pending.length > 2) {
 				contribute(pending[ALIAS_IDX], pending[VALUE_IDX], pending[TYPE_IDX], deps)

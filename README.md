@@ -340,7 +340,7 @@ Singletons can be marked as: `LAZY`, `EAGER` or `TRANSIENT`.
 - [Transient singletons](#transient-singletons)
 
 #### Lazy singletons
-A mapping marked as `LAZY, SINGLETON` produce a singleton instance that gets created at the first time it is requested. It gets destroyed only when the context itself is destroyed. See [`context.dispose`](#context-dispose).
+A mapping marked as `LAZY, SINGLETON` produce a singleton instance that gets created at the first time it is requested. It gets destroyed only when the context it has been registered into gets destroyed. See [`context.dispose`](#context-dispose).
 
 ##### Lazy Singleton Provider
 ```javascript
@@ -454,7 +454,8 @@ var foo2 = rootContext.get('foo')
 console.log(foo1 === foo2) // true
 
 // assuming that we dont need foo anymore
-rootContext.relase('foo')
+rootContext.release('foo')
+rootContext.release('foo')
 
 var foo3 = rootContext.get('foo')
 console.log(foo1 === foo3) // false
@@ -482,7 +483,8 @@ var bar2 = rootContext.get('bar')
 console.log(bar1 === bar2) // true
 
 // assuming that we dont need bar anymore
-rootContext.relase('bar')
+rootContext.release('bar')
+rootContext.release('bar')
 
 var bar3 = rootContext.get('bar')
 console.log(bar1 === bar3) // false
@@ -520,9 +522,9 @@ console.log(foo1.bar === foo2.bar) // true
 
 // assuming that we don't need foo anymore
 // we have to release it as many times as it as been acquired
-rootContext.relase('foo')
+rootContext.release('foo')
 // also bar gets released
-rootContext.relase('foo') 
+rootContext.release('foo') 
 
 // when requesting foo again we receive
 // a new instance of it and a new instance of bar as well

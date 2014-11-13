@@ -1,6 +1,6 @@
 'use strict'
 
-import {ACQUIRE, RELEASE, DISPOSE} from './signals'
+import { ACQUIRE, RELEASE, DISPOSE } from './signals'
 
 export default function singletonify(create, LAZY) {
 
