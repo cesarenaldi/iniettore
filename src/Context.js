@@ -1,7 +1,7 @@
 'use strict'
 
 import { ACQUIRE, RELEASE, DISPOSE } from './signals'
-import { CONTEXT_ALIAS, CHILD_ALIAS } from './constants'
+import { CONTEXT_ALIAS } from './constants'
 import { VALUE } from './options'
 import { generateMask, noop, isEagerSingleton } from './utils'
 import resolvers from './resolvers'

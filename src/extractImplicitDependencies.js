@@ -1,5 +1,7 @@
 'use strict'
 
+import { CONTEXT_ALIAS } from './constants'
+
 var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 var ARGUMENT_NAMES = /([^\s,]+)/g;
 
@@ -17,7 +19,10 @@ export default function extractImplicitDependencies(func) {
 	if (typeof func === 'function') {
 		return getParamNames(func).reduce(function (deps, name) {
 			if (name.indexOf('$') === 0) {
-				deps.push(name.substring(1))
+				if (CONTEXT_ALIAS !== name) {
+					name = name.substring(1)
+				}
+				deps.push(name)
 			}
 			return deps
 		}, [])
