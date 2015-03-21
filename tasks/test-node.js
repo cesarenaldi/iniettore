@@ -15,7 +15,7 @@ gulp.task('test-node', function () {
 			reporter: 'progress'
 		}))
 		.on('error', function (err) {
-			gutil.log(gutil.colors.red(err.message))
+			gutil.log(gutil.colors.yellow(err.message))
 			this.emit('end')
 		})
 })

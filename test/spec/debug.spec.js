@@ -27,7 +27,7 @@ describe('Given a context with some registered mappings', function () {
 		console.log.restore()
 	})
 
-	describe('with not debug option', function () {
+	describe('with no debug option', function () {
 
 		before(function () {
 			rootContext = iniettore.create(function (map) {

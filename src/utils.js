@@ -2,6 +2,7 @@
 
 import instanciate from './instanciate'
 import singletonify from './singletonify'
+import extractImplicitDependencies from './extractImplicitDependencies'
 import { EAGER, SINGLETON, PROVIDER, CONSTRUCTOR } from './options'
 
 var EAGER_SINGLETON_PROVIDER = generateMask([EAGER, SINGLETON, PROVIDER])
@@ -55,4 +56,4 @@ export function isEagerSingleton(type) {
 
 export function noop() {}
 
-export { instanciate, singletonify }
+export { instanciate, singletonify, extractImplicitDependencies }
