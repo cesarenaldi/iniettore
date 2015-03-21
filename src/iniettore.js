@@ -3,13 +3,19 @@
 import Context from './Context'
 import Logger from './Logger'
 
-export * from './options'
+import options from './options'
 
-export function create(conf, options) {
-	var logger
+function create(conf, options) {
+	var logger;
 
-	options = options || {}
-	logger = new Logger(options)
+	options = options || {};
+	logger = new Logger(options);
 
-	return new Context(conf, logger)
+	return new Context(conf, logger);
 }
+
+export default Object.create(options, {
+	create: {
+		value: create
+	}
+})
