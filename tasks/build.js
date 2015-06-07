@@ -16,18 +16,18 @@ gulp.task('build-4-node', function () {
 })
 
 gulp.task('build-4-browser', function () {
-	return browserify('./src/iniettore.js')
-		.transform(babelify)
-		.transform({
-			NODE_ENV: 'production'
-		}, envify)
-		.bundle({
+	return browserify('./src/iniettore.js', {
 			debug: false,
 			insertGlobals: false,
 			detectGlobals: true,
 			standalone: 'iniettore',
 			noBuiltins: true
 		})
+		.transform(babelify)
+		.transform({
+			NODE_ENV: 'production'
+		}, envify)
+		.bundle()
 		.pipe(source('iniettore.js'))
 		.pipe(gulp.dest('./dist'))
 		.pipe(rename('iniettore.min.js'))

@@ -5,7 +5,7 @@
 [![NPM dependencies](https://david-dm.org/cesarenaldi/iniettore.svg)](https://david-dm.org/cesarenaldi/iniettore)
 [![Coverage Status](https://img.shields.io/coveralls/cesarenaldi/iniettore.svg)](https://coveralls.io/r/cesarenaldi/iniettore?branch=babeljs)
 
-## WARNING: APIs are going to significantly change in v2.0
+## WARNING: API is significantly changed in v2.0
 See documentation in tagged versions for previous usage.
 
 ## TODO
