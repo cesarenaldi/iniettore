@@ -3,7 +3,7 @@ module.exports = function(config) {
 
 		basePath: '.',
 
-		frameworks: ['mocha', 'chai', 'sinon', 'sinon-chai', 'es5-shim'],
+		frameworks: [ 'mocha', 'chai', 'sinon', 'sinon-chai', 'es5-shim' ],
 
 		exclude: [],
 
@@ -14,11 +14,9 @@ module.exports = function(config) {
 			watch: true
 		},
 
-		reporters: ['spec', 'coverage'],
+		reporters: [ 'spec', 'coverage' ],
 
-		coverageReporter: {
-			type: 'lcov'
-		},
+		coverageReporter: { type: 'lcovonly' },
 
 		// web server port
 		port: 9876,
@@ -29,7 +27,7 @@ module.exports = function(config) {
 
 		autoWatch: false,
 
-		browsers: ['PhantomJS'],
+		browsers: [ 'PhantomJS' ],
 
 		singleRun: true,
 	})

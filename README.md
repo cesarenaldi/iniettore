@@ -3,9 +3,9 @@
 [![Build Status](https://travis-ci.org/cesarenaldi/iniettore.svg?branch=master)](https://travis-ci.org/cesarenaldi/iniettore)
 [![GitHub version](https://badge.fury.io/gh/cesarenaldi%2Finiettore.svg)](http://badge.fury.io/gh/cesarenaldi%2Finiettore)
 [![NPM dependencies](https://david-dm.org/cesarenaldi/iniettore.svg)](https://david-dm.org/cesarenaldi/iniettore)
-[![Coverage Status](https://img.shields.io/coveralls/cesarenaldi/iniettore.svg)](https://coveralls.io/r/cesarenaldi/iniettore?branch=master)
+[![Coverage Status](https://img.shields.io/coveralls/cesarenaldi/iniettore.svg)](https://coveralls.io/r/cesarenaldi/iniettore?branch=babeljs)
 
-## WARNING: APIs are going to significantly change in v2.0
+## WARNING: API is significantly changed in v2.0
 See documentation in tagged versions for previous usage.
 
 ## TODO
@@ -122,9 +122,9 @@ var childContext = rootContext.createChild(function (map) {
 
 var question = childContext.get('question')
 
-console.log(question) 
+console.log(question)
 /*
- { 
+ {
  	question: 'What is the Answer to the Ultimate Question of Life, the Universe, and Everything?',
  	answer: 42
  }
@@ -315,7 +315,7 @@ var rootContext = iniettore.create(function (map) {
 	map('bar').to(42).as(VALUE)
 
 	// NOTE: baz is not registered here
-	map('foo').to(fooProvider).as(PROVIDER).injecting('bar', 'baz') 
+	map('foo').to(fooProvider).as(PROVIDER).injecting('bar', 'baz')
 })
 
 var transientDependencies = {
@@ -503,7 +503,7 @@ class Bar {
 }
 
 function fooProvider(bar) {
-	return { 
+	return {
 		bar,
 		method: function () {}
 	}
@@ -523,8 +523,8 @@ console.log(foo1.bar === foo2.bar) // true
 // assuming that we don't need foo anymore
 // we have to release it as many times as it as been acquired
 rootContext.release('foo')
-// also bar gets released
-rootContext.release('foo') 
+// now also bar gets released
+rootContext.release('foo')
 
 // when requesting foo again we receive
 // a new instance of it and a new instance of bar as well

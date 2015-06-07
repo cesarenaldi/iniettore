@@ -4,7 +4,7 @@ var gutil = require('gulp-util')
 
 gulp.task('test-node', function () {
 
-	require('./utils/runtime-transpiler')
+	require('babel/register')
 
 	global.expect = require('chai').expect,
 	global.sinon = require('sinon')
