@@ -12,10 +12,17 @@ export function invoke(fn, deps) {
 	return fn.apply(null, deps)
 }
 
-export function partial(func, boundArgs) {
+export function partial(func, deps) {
 	return function (...args) {
-		return func.apply(this, boundArgs.concat(args))
+		return func.apply(this, deps.concat(args))
 	}
+}
+
+export function instanciate(Ctor, deps) {
+	var instance = Object.create(Ctor.prototype);
+
+	Ctor.apply(instance, deps)
+	return instance
 }
 
 export function generateMask(flags) {
@@ -27,12 +34,5 @@ export function isEagerSingleton(type) {
 }
 
 export function noop() {}
-
-export function instanciate(Ctor, deps) {
-	var instance = Object.create(Ctor.prototype);
-
-	Ctor.apply(instance, deps)
-	return instance
-}
 
 export { extractImplicitDependencies }

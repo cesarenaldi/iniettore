@@ -3,6 +3,7 @@
 import { identity, partial, invoke, instanciate, generateMask } from './utils'
 import createSimpleMappingFactory from './createSimpleMappingFactory'
 import createSingletonMappingFactory from './createSingletonMappingFactory'
+import createPropertyMapper from './createPropertyMapper'
 import {
 	VALUE,
 	PROVIDER,
@@ -38,5 +39,5 @@ export default function createMapping(type, value, resolveDeps, releaseDeps) {
 	if ( !(type in factories) ) {
 		throw new Error('Invalid flags combination. See documentation for valid flags combinations.')
 	}
-	return factories[type].call(null, value, resolveDeps, releaseDeps)
+	return createPropertyMapper(factories[type], value, resolveDeps, releaseDeps)
 }

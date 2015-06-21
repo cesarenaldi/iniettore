@@ -1,11 +1,10 @@
 'use strict'
 
-import { ACQUIRE, RELEASE, DISPOSE } from './signals'
 import { CONTEXT_ALIAS } from './constants'
 import { VALUE } from './options'
 import { generateMask, noop, isEagerSingleton } from './utils'
 import createMapping from './createMapping'
-import createRegistrationAPI from './createRegistrationAPI';
+import createFluentInterface from './createFluentInterface';
 
 class Context {
 
@@ -24,24 +23,26 @@ class Context {
 		this._signalRelease = signalRelease || noop
 
 		this._bind(CONTEXT_ALIAS, this, VALUE, [])
-		api = createRegistrationAPI(this._bind.bind(this))
+		api = createFluentInterface(this._bind.bind(this))
 		conf(api.map.bind(api))
 		api.done()
 	}
 
 	get(alias) {
-		return this._logger.log(`resolving '${alias}'`, () => {
-			if (this._resolving[alias]) { throw new Error(`Circular dependency detected while resolving '${alias}'`) }
-			if (!(alias in this._mappings)) { throw new Error(`'${alias}' is not available. Has it ever been registered?.`) }
+		const [ name, property ] = alias.split('.')
 
-			this._resolving[alias] = true
+		return this._logger.log(`resolving '${name}'`, () => {
+			if (this._resolving[name]) { throw new Error(`Circular dependency detected while resolving '${name}'`) }
+			if (!(name in this._mappings)) { throw new Error(`'${name}' is not available. Has it ever been registered?.`) }
+
+			this._resolving[name] = true
 			try {
-				return this._mappings[alias].get()
+				return this._mappings[name].get(property)
 			} catch(err) {
-				err.message = `Failed while resolving '${alias}' due to:\n\t${err.message}`
+				err.message = `Failed while resolving '${name}' due to:\n\t${err.message}`
 				throw err
 			} finally {
-				this._resolving[alias] = false
+				this._resolving[name] = false
 			}
 		})
 	}
@@ -63,10 +64,12 @@ class Context {
 	}
 
 	release(alias) {
+		const [ name ] = alias.split('.')
+
 		try {
-			this._mappings[alias].release()
+			this._mappings[name].release()
 		} catch(err) {
-			err.message = `Failed while releasing '${alias}' due to:\n\t${err.message}`
+			err.message = `Failed while releasing '${name}' due to:\n\t${err.message}`
 			throw err
 		}
 	}

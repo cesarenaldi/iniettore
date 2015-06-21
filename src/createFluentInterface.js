@@ -21,7 +21,7 @@ function createExporter(contextFactory, exportAlias) {
 	}
 }
 
-export default function createRegistrationAPI(contribute) {
+export default function createFluentInterface(contribute) {
 	var pending = []
 
 	return {
