@@ -22,32 +22,31 @@ function createExporter(contextFactory, exportAlias) {
 }
 
 export default function createRegistrationAPI(contribute) {
-
 	var pending = []
-	var api = {
 
-		map: (alias) => {
-			api.done()
+	return {
+		map(alias) {
+			this.done()
 			pending.push(alias)
 
 			return {
-				to: (value) => {
+				to(value) {
 
 					pending.push(value)
 
 					return {
-						as: (...flags) => {
+						as(...flags) {
 							var mask = generateMask(flags)
 
 							if (mask === BLUEPRINT) {
-								// test if VALUE is a function
+								// TODO: enforve value to be a function
 								flags = [PROVIDER]
 								pending[VALUE_IDX] = createChildContextFactory(pending[VALUE_IDX])
 								pending.push(generateMask(flags))
 								pending.push([CONTEXT_ALIAS])
 
 								return {
-									exports: (alias) => {
+									exports(alias) {
 										pending[VALUE_IDX] = createExporter(pending[VALUE_IDX], alias)
 									}
 								}
@@ -56,7 +55,7 @@ export default function createRegistrationAPI(contribute) {
 							pending.push(mask)
 
 							return {
-								injecting: (...deps) => {
+								injecting(...deps) {
 									pending.push(deps)
 								}
 							}
@@ -66,7 +65,7 @@ export default function createRegistrationAPI(contribute) {
 			}
 		},
 
-		done: () => {
+		done() {
 			var deps = pending[DEPS_IDX] || []
 
 			if (deps.length === 0) {
@@ -79,6 +78,4 @@ export default function createRegistrationAPI(contribute) {
 			}
 		}
 	}
-
-	return api
 }

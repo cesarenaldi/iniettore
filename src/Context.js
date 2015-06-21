@@ -4,7 +4,7 @@ import { ACQUIRE, RELEASE, DISPOSE } from './signals'
 import { CONTEXT_ALIAS } from './constants'
 import { VALUE } from './options'
 import { generateMask, noop, isEagerSingleton } from './utils'
-import resolvers from './resolvers'
+import createMapping from './createMapping'
 import createRegistrationAPI from './createRegistrationAPI';
 
 class Context {
@@ -17,16 +17,15 @@ class Context {
 		}
 
 		this._mappings = mappings || {}
-		this._resolvers = resolvers
 		this._logger = logger
 		this._resolving = {}
 		this._pending = []
 		this._children = {}
 		this._signalRelease = signalRelease || noop
-		
+
 		this._bind(CONTEXT_ALIAS, this, VALUE, [])
 		api = createRegistrationAPI(this._bind.bind(this))
-		conf(api.map)
+		conf(api.map.bind(api))
 		api.done()
 	}
 
@@ -37,12 +36,12 @@ class Context {
 
 			this._resolving[alias] = true
 			try {
-				return this._mappings[alias](ACQUIRE)
+				return this._mappings[alias].get()
 			} catch(err) {
 				err.message = `Failed while resolving '${alias}' due to:\n\t${err.message}`
 				throw err
 			} finally {
-				this._resolving[alias] = false	
+				this._resolving[alias] = false
 			}
 		})
 	}
@@ -65,7 +64,7 @@ class Context {
 
 	release(alias) {
 		try {
-			this._mappings[alias](RELEASE)
+			this._mappings[alias].release()
 		} catch(err) {
 			err.message = `Failed while releasing '${alias}' due to:\n\t${err.message}`
 			throw err
@@ -112,7 +111,7 @@ class Context {
 			/* istanbul ignore else  */
 			if (mappings.hasOwnProperty(alias)) {
 				try {
-					mappings[alias](DISPOSE)
+					mappings[alias].dispose()
 				} catch(err) {
 					err.message = `Failed while disposing '${alias}' due to:\n\t${err.message}`
 					throw err
@@ -123,17 +122,14 @@ class Context {
 	}
 
 	_bind(alias, value, type, deps) {
-		if ( !(type in this._resolvers) ) {
-			throw new Error('Invalid flags combination. See documentation for valid flags combinations.')
-		}
-		this._mappings[alias] = this._resolvers[type].call(null, value, this._resolve.bind(this, deps), this._release.bind(this, deps))
+		this._mappings[alias] = createMapping(type, value, this._resolve.bind(this, deps), this._release.bind(this, deps))
 		if (isEagerSingleton(type)) {
 			this.get(alias)
 		}
 	}
 
 	_unbind(alias) {
-		this._mappings[alias](DISPOSE)
+		this._mappings[alias].dispose()
 		delete this._mappings[alias]
 	}
 
