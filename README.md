@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/cesarenaldi/iniettore.svg?branch=master)](https://travis-ci.org/cesarenaldi/iniettore)
 [![GitHub version](https://badge.fury.io/gh/cesarenaldi%2Finiettore.svg)](http://badge.fury.io/gh/cesarenaldi%2Finiettore)
 [![NPM dependencies](https://david-dm.org/cesarenaldi/iniettore.svg)](https://david-dm.org/cesarenaldi/iniettore)
-[![Coverage Status](https://img.shields.io/coveralls/cesarenaldi/iniettore.svg)](https://coveralls.io/r/cesarenaldi/iniettore?branch=babeljs)
+[![Coverage Status](https://coveralls.io/repos/cesarenaldi/iniettore/badge.svg?branch=master&service=github)](https://coveralls.io/github/cesarenaldi/iniettore?branch=master)
 
 ## WARNING: API is significantly changed in v2.0
 See documentation in tagged versions for previous usage.
