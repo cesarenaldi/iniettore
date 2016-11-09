@@ -83,7 +83,7 @@ describe('Given a context', function () {
 			})
 		})
 
-		describe('and the property is a write-only', function () {
+		describe('and the property is write-only', function () {
 			it('should return the getter function bound to the instance itself', function () {
 				var fooWriteOnly = rootContext.get('foo.writeOnly')
 				function testCase() { fooWriteOnly() }

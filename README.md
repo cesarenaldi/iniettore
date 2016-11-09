@@ -36,10 +36,10 @@ With exception of [eager singletons](#eager-singletons), all instances and depen
 `FUNCTION`, `PROVIDER` and `INSTANCE` mappings are the ideal solution to have DI in Functional Programming.
 
 ### Lifecycle management
-iniettore provides contexts and singleton lifecycle management.
+iniettore provides contexts and singletons lifecycle management.
 
 ### Predictable
-iniettore handles all operation in a syncronous way so at any point in time you know what is instanciated and what is not.
+iniettore handles all operation in a syncronous way so at any point in time you know what is instantiated and what is not.
 
 ## ECMA Script 5 required features
 iniettore assumes that the following ES5 features are available. If you want to use the library in a no-ES5 compatible environment please provide a polyfill. For example see [es5-shim](https://github.com/es-shims/es5-shim).
@@ -79,6 +79,12 @@ console.log(question instanceof UltimateQuestion) // true
 ```
 ## Concepts
 
+### Aliases
+iniettore uses string names to identify specific mappings and their dependencies:
+- When registering a new mapping the very first thing to do is decide the mapping name or alias.
+
+When defining your mapping dependencies you can either use the name of an existing alias or the property of an existing alias.
+
 ### Context
 A _context_ is a JS Object that contains the collection of mappings. During the creation of the context it is possible to register several mappings using the registration API provided inside the configuration function. After the context has been fully created it's only possible to request mapping from it using the query API.
 ```javascript
@@ -97,8 +103,8 @@ console.log(answer) // 42
 ```
 
 ### Child context
-Contexts can be organized in a hierarchy. Given one context query interface it's possible to create a child context and provide a separate configuration function for registering child specific mappings. The child context can access all the mappings of his parent and ancestor in the same fashion as JS execution context can access parent ones.
-A parente cannot see/use any of the mapping registered in its child contexts. A mapping registered in a child context that has the same name of a mapping in the parent context (or any of its ancestor contexts) will shadow the corresponding value in the same way that in JS a variable in a nested scope can shadows a variable defined in a "parent" scope. See [Child contexts](#child-contexts) for more details.
+Contexts can be organized in a hierarchy. Given one context query interface it's possible to create a child context and provide a separate configuration function for registering child specific mappings. The child context can access all the mappings of its parent and ancestors in the same fashion as JS execution context can access the parent execution contexts.
+A parent cannot see/use any of the mapping registered in its child contexts. A mapping registered in a child context that has the same name of a mapping in the parent context (or any of its ancestor contexts) will shadow the corresponding value in the same way that in JS a variable in a nested scope can shadows a variable defined in a "parent" scope. See [Child contexts](#child-contexts) for more details.
 
 Continuing with the previouse example:
 ```javascript
@@ -299,7 +305,7 @@ console.log(baz()) // 42
 ### Transient dependencies
 **EXPERIMENTAL FEATURE: don't abuse of it.**
 
-While requesting an alias it's possible to provide **temporary dependencies** to satisfy dependencies of the requested mapping or one of his dependency.
+While requesting an alias it's possible to provide **temporary dependencies** to satisfy dependencies of the requested mapping or one of its dependency.
 
 **Note:** Transient dependencies cannot be used to satisfy dependencies in the ancestor contexts.
 
@@ -394,7 +400,7 @@ console.log(bar1 === bar2) // true
 A mapping marked as `EAGER, SINGLETON` gets created at registration time.
 All the required dependencies must be already registered in the current context or in one of its ancestors.
 
-Eager singletons gets destroyed when the corresponding context is destoroyed.
+Eager singletons gets destroyed when the corresponding context is destroyed.
 
 ```javascript
 import iniettore from 'iniettore'
@@ -428,7 +434,7 @@ var rootContext = iniettore.create(function (map) {
 #### Transient singletons
 A mapping marked as `TRANSIENT, SINGLETON` produce a **temporary lazy singleton** instance. The instance gets created at the first time it is requested (directly or as dependency of another mapping) and gets destroyed when is not used anymore.
 
-A transient singleton allows to gurantee that at any given point in time there are no more than one instance of the respective mapping (whetever has been created using a constructor or a provider function).
+A transient singleton allows to guarantee that at any given point in time there are no more than one instance of the respective mapping (whetever has been created using a constructor or a provider function).
 
 In order to announce that a singleton is not used anymore you can invoke `context.release(name:string):void` method. The instance gets _released_ (i.e. all references to it gets removed) when `context.release` is invoked as many time as it has been requested. See examples below.
 
@@ -453,7 +459,7 @@ var foo1 = rootContext.get('foo')
 var foo2 = rootContext.get('foo')
 console.log(foo1 === foo2) // true
 
-// assuming that we dont need foo anymore
+// assuming that we don't need foo anymore
 rootContext.release('foo')
 rootContext.release('foo')
 
