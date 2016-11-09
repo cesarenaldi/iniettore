@@ -1,5 +1,3 @@
-'use strict'
-
 import iniettore from '../../src/iniettore'
 import {
 	VALUE,
@@ -29,7 +27,7 @@ describe('Given a context with a registered provider', function () {
 	describe('when requesting multiple times the corresponding alias', function () {
 
 		it('should invoke the provider function at every request with his dependencies', function () {
-			
+
 			var result
 
 			rootContext = iniettore.create(function (map) {

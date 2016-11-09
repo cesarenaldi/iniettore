@@ -1,5 +1,3 @@
-'use strict';
-
 import { generateMask, extractImplicitDependencies } from './utils'
 import { BLUEPRINT, PROVIDER } from './options'
 import { CONTEXT_ALIAS } from './constants'

@@ -1,5 +1,3 @@
-'use strict'
-
 class Logger {
 	constructor(options) {
 		this._options = options

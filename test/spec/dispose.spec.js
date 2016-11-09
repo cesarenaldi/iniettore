@@ -1,5 +1,3 @@
-'use strict'
-
 import iniettore from '../../src/iniettore'
 import {
 	VALUE,
@@ -83,7 +81,7 @@ describe('Given a context', function () {
 		})
 
 		it('should not call dispose for any non singleton dependencies', function () {
-			
+
 			var bar = rootContext.get('bar')
 
 			rootContext.get('baz')

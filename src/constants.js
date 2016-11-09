@@ -1,3 +1,1 @@
-'use strict'
-
-export var CONTEXT_ALIAS = '$context'
+export const CONTEXT_ALIAS = '$context'

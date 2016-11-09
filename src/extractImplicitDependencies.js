@@ -1,5 +1,3 @@
-'use strict'
-
 import { CONTEXT_ALIAS } from './constants'
 
 var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;

@@ -1,5 +1,3 @@
-'use strict'
-
 export default function createSingletonMappingFactory(create, isTransient = false) {
 	return function (value, resolveDeps, releaseDeps) {
 		var handlers = {}

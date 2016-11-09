@@ -1,5 +1,3 @@
-'use strict'
-
 import { CONTEXT_ALIAS } from './constants'
 import { VALUE } from './options'
 import { generateMask, noop, isEagerSingleton } from './utils'

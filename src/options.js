@@ -1,17 +1,10 @@
-'use strict'
-
-export default [
-	'VALUE',
-	'PROVIDER',
-	'CONSTRUCTOR',
-	'SINGLETON',
-	'FUNCTION',
-	'INSTANCE',
-	'TRANSIENT',
-	'BLUEPRINT',
-	'LAZY',
-	'EAGER'
-].reduce(function (options, flag, idx) {
-	options[flag] = Math.pow(2, idx)
-	return options
-}, {})
+export const VALUE = 1
+export const PROVIDER = 2
+export const CONSTRUCTOR = 4
+export const SINGLETON = 8
+export const FUNCTION = 16
+export const INSTANCE = 32
+export const TRANSIENT = 64
+export const BLUEPRINT = 128
+export const LAZY = 256
+export const EAGER = 512

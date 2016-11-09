@@ -1,5 +1,3 @@
-'use strict'
-
 const SUPPORT_CODE_INTROSPECTION = typeof Object.getOwnPropertyDescriptor === 'function'
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 

@@ -1,5 +1,3 @@
-'use strict'
-
 import iniettore from '../../src/iniettore'
 import { CONSTRUCTOR, PROVIDER, FUNCTION, VALUE } from '../../src/iniettore'
 

@@ -1,8 +1,5 @@
-'use strict'
-
 import iniettore from '../../src/iniettore'
 import { VALUE, CONSTRUCTOR, SINGLETON, TRANSIENT } from '../../src/iniettore'
-
 
 describe('Given a context with a registered constructor', function () {
 

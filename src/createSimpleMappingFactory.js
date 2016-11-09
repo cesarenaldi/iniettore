@@ -1,5 +1,3 @@
-'use strict'
-
 import { noop } from './utils'
 
 export default function createSimpleMappingFactory(func) {

@@ -16,21 +16,21 @@ import {
 	EAGER
 } from './options'
 
-var factories = {}
+const factories = {
+	[ generateMask([VALUE]) ]: createSimpleMappingFactory(identity),
+	[ generateMask([FUNCTION]) ]: createSimpleMappingFactory(partial),
+	[ generateMask([CONSTRUCTOR]) ]: createSimpleMappingFactory(instanciate),
+	[ generateMask([PROVIDER]) ]: createSimpleMappingFactory(invoke),
 
-factories[ generateMask([VALUE]) ] = createSimpleMappingFactory(identity)
-factories[ generateMask([FUNCTION]) ] = createSimpleMappingFactory(partial)
-factories[ generateMask([CONSTRUCTOR]) ] = createSimpleMappingFactory(instanciate)
-factories[ generateMask([PROVIDER]) ] = createSimpleMappingFactory(invoke)
+	[ generateMask([TRANSIENT, SINGLETON, PROVIDER]) ]: createSingletonMappingFactory(invoke, true),
+	[ generateMask([TRANSIENT, CONSTRUCTOR, SINGLETON]) ]: createSingletonMappingFactory(instanciate, true),
 
-factories[ generateMask([TRANSIENT, SINGLETON, PROVIDER]) ] = createSingletonMappingFactory(invoke, true)
-factories[ generateMask([TRANSIENT, CONSTRUCTOR, SINGLETON]) ] = createSingletonMappingFactory(instanciate, true)
+	[ generateMask([LAZY, SINGLETON, PROVIDER]) ]: createSingletonMappingFactory(invoke),
+	[ generateMask([LAZY, SINGLETON, CONSTRUCTOR]) ]: createSingletonMappingFactory(instanciate),
 
-factories[ generateMask([LAZY, SINGLETON, PROVIDER]) ] = createSingletonMappingFactory(invoke)
-factories[ generateMask([LAZY, SINGLETON, CONSTRUCTOR]) ] = createSingletonMappingFactory(instanciate)
-
-factories[ generateMask([EAGER, SINGLETON, PROVIDER])] = createSingletonMappingFactory(invoke)
-factories[ generateMask([EAGER, SINGLETON, CONSTRUCTOR]) ] = createSingletonMappingFactory(instanciate)
+	[ generateMask([EAGER, SINGLETON, PROVIDER])]: createSingletonMappingFactory(invoke),
+	[ generateMask([EAGER, SINGLETON, CONSTRUCTOR]) ]: createSingletonMappingFactory(instanciate)
+}
 
 // aliases
 factories[ generateMask([INSTANCE]) ] = factories[ generateMask([VALUE]) ]

@@ -1,5 +1,3 @@
-'use strict'
-
 import extractImplicitDependencies from './extractImplicitDependencies'
 import { EAGER, SINGLETON, PROVIDER, CONSTRUCTOR } from './options'
 
