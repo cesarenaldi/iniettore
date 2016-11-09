@@ -5,16 +5,6 @@
 [![NPM dependencies](https://david-dm.org/cesarenaldi/iniettore.svg)](https://david-dm.org/cesarenaldi/iniettore)
 [![Coverage Status](https://coveralls.io/repos/cesarenaldi/iniettore/badge.svg?branch=master&service=github)](https://coveralls.io/github/cesarenaldi/iniettore?branch=master)
 
-## WARNING: API is significantly changed in v2.0
-See documentation in tagged versions for previous usage.
-
-## TODO
-- [ ] Make singletons dispose method name configurable
-- [ ] Add instance property injection (i.e. use of pattern such `foo.prop` as injecting alias)
-- [ ] Analyze release path when `FUNCTION` or no-singleton `PROVIDER` and `CONTRUCTOR` are involved. Potential bug.
-- [ ] Adds API quick reference
-- [ ] Block contribution on context after context creation
-
 ## Table of Content
 - [Features](#features)
 - [ECMA Script 5 required features or polyfills](#ecma-script-5-required-features)
@@ -39,7 +29,7 @@ With exception of [eager singletons](#eager-singletons), all instances and depen
 iniettore provides contexts and singletons lifecycle management.
 
 ### Predictable
-iniettore handles all operation in a syncronous way so at any point in time you know what is instantiated and what is not.
+iniettore handles all operation in a synchronous way so at any point in time you know what is instantiated and what is not.
 
 ## ECMA Script 5 required features
 iniettore assumes that the following ES5 features are available. If you want to use the library in a no-ES5 compatible environment please provide a polyfill. For example see [es5-shim](https://github.com/es-shims/es5-shim).

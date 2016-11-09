@@ -1,8 +1,9 @@
 {
   "name": "iniettore",
-  "version": "2.0.1",
+  "version": "3.0.0-pre",
   "description": "A light and simple IoC container",
   "main": "lib/iniettore.js",
+  "jsnext:main": "src/iniettore.js",
   "scripts": {
     "test": "node_modules/.bin/gulp test-ci",
     "build": "node_modules/.bin/gulp default",
@@ -16,7 +17,7 @@
     "dependency injection"
   ],
   "engines": {
-    "node": ">=0.10.29"
+    "node": ">=4"
   },
   "author": {
     "name": "Cesare Naldi",
