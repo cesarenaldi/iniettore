@@ -4,12 +4,6 @@ var requireDir = require('require-dir')
 var runSequence = require('run-sequence')
 var dir = requireDir('./tasks')
 
-gulp.task('watch', function() {
-	gulp.watch(['test/spec/**/*.spec.js', 'src/**/*.js'], ['test-node'])
-})
-
-gulp.task('dev', ['watch', 'test-node'])
-
 gulp.task('send-coverage-report', function (done) {
 	gulp.src('./coverage/**/lcov.info')
 		.pipe(coveralls())

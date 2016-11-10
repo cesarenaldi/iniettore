@@ -47,7 +47,7 @@ describe('Given a context', function () {
 			})
 		})
 
-		describe('and a specified export', function () {
+		describe('and a specified export alias', function () {
 
 			before(function () {
 				function configureChildContext(map) {
@@ -62,7 +62,7 @@ describe('Given a context', function () {
 			})
 
 			describe('when requesting a copy of the blueprint', function () {
-				it('should return an instance of the export', function () {
+				it('should return an instance of the export alias', function () {
 					expect(rootContext.get('foo')).to.equal(84)
 				})
 			})

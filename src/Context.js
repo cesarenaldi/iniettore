@@ -64,11 +64,13 @@ class Context {
 	release(alias) {
 		const [ name ] = alias.split('.')
 
-		try {
-			this._mappings[name].release()
-		} catch(err) {
-			err.message = `Failed while releasing '${name}' due to:\n\t${err.message}`
-			throw err
+		if (name in this._mappings) {
+			try {
+				this._mappings[name].release()
+			} catch(err) {
+				err.message = `Failed while releasing '${name}' due to:\n\t${err.message}`
+				throw err
+			}
 		}
 	}
 

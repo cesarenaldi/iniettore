@@ -8,7 +8,7 @@
     "test": "node_modules/.bin/gulp test-ci",
     "build": "node_modules/.bin/gulp default",
     "prepublish": "node_modules/.bin/gulp build",
-    "dev": "node_modules/.bin/gulp dev"
+    "dev": "mocha --require babel/register --require test/setup.js --reporter spec --full-trace --watch './test/spec/**/*.spec.js'"
   },
   "keywords": [
     "ioc",

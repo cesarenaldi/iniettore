@@ -78,9 +78,9 @@ describe('Given a context', function () {
 			})
 		})
 
-		describe('when releasing and instance it throws an Error', function () {
+		describe('when the releasing the singleton instance', function () {
 
-			it('should catch it and throw an Error specifing the failing component', function () {
+			it('should enrich the message of any error the instance dispose method may throw', function () {
 				rootContext.get('bar')
 				function testCase() {
 					rootContext.release('bar')
@@ -91,7 +91,7 @@ describe('Given a context', function () {
 
 		describe('when disposing the context itself', function () {
 
-			it('should catch it and throw an Error specifing the failing component', function () {
+			it('should enrich the message of any error the instance dispose method may throw', function () {
 				rootContext.get('bar')
 				function testCase() {
 					rootContext.dispose()

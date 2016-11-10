@@ -1,11 +1,13 @@
 import iniettore from '../../src/iniettore'
 import {
-	VALUE,
-	PROVIDER,
 	CONSTRUCTOR,
+	EAGER,
+	INSTANCE,
+	LAZY,
+	PROVIDER,
 	SINGLETON,
 	TRANSIENT,
-	LAZY
+	VALUE
 } from '../../src/iniettore'
 
 
@@ -106,6 +108,27 @@ describe('Given a context', function () {
 					rootContext.release('foo')
 				}
 				expect(testCase).to.not.throw(TypeError)
+			})
+		})
+	})
+
+	describe('with a singleton with a dependency', function () {
+		describe('when disposing the context', function () {
+			it('should dispose all the disposable instances without throwing an error', function () {
+				const instanceA = { dispose: sinon.spy() }
+				const instanceB = { dispose: sinon.spy() }
+				function aProvider() { return instanceA }
+				function bProvider(instanceA) { return instanceB }
+
+				rootContext = iniettore
+					.create(function (map) {
+						map('instanceA').to(aProvider).as(LAZY, SINGLETON, PROVIDER)
+						map('instanceB').to(bProvider).as(EAGER, SINGLETON, PROVIDER).injecting('instanceA')
+					})
+					.dispose();
+
+				expect(instanceA.dispose).to.be.calledOnce;
+				expect(instanceB.dispose).to.be.calledOnce;
 			})
 		})
 	})

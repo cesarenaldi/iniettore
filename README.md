@@ -11,7 +11,7 @@
 - [Quick start](#quick-start)
 - [Concepts](#concepts)
 - [Advanced usage](#advanced-usage)
-- [Throubleshooting](#throubleshooting)
+- [Troubleshooting](#troubleshooting)
 
 ## Features
 - [Extreme late binding](#extreme-late-binding)
