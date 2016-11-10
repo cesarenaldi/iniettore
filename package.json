@@ -1,6 +1,6 @@
 {
   "name": "iniettore",
-  "version": "3.0.0-pre",
+  "version": "3.0.0-alpha-1",
   "description": "A light and simple IoC container",
   "main": "lib/iniettore.js",
   "jsnext:main": "src/iniettore.js",
