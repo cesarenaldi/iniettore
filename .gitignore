@@ -1,6 +1,4 @@
 node_modules/
-.tmp
-dist/
 lib/
-coverage/
+reports/
 npm-debug.log

@@ -1,14 +1,14 @@
 {
   "name": "iniettore",
-  "version": "3.0.0-alpha-1",
+  "version": "3.0.0-RC1",
   "description": "A light and simple IoC container",
   "main": "lib/iniettore.js",
-  "jsnext:main": "src/iniettore.js",
+  "module": "src/iniettore.js",
   "scripts": {
-    "test": "node_modules/.bin/gulp test-ci",
-    "build": "node_modules/.bin/gulp default",
-    "prepublish": "node_modules/.bin/gulp build",
-    "dev": "mocha --require babel/register --require test/setup.js --reporter spec --full-trace --watch './test/spec/**/*.spec.js'"
+    "dev": "jest \"src/(.*)\\.spec\\.js\"",
+    "test": "jest \"src/(.*)\\.spec\\.js\" --coverage --coverageReporters=text-lcov | coveralls",
+    "build": "babel src -d lib",
+    "prepublish": "yarn build"
   },
   "keywords": [
     "ioc",
@@ -17,7 +17,7 @@
     "dependency injection"
   ],
   "engines": {
-    "node": ">=4"
+    "node": ">=6"
   },
   "author": {
     "name": "Cesare Naldi",
@@ -30,46 +30,19 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "babel": "^5.5.4",
-    "babelify": "6.1.2",
-    "browserify": "10.2.4",
-    "browserify-istanbul": "0.2.1",
-    "chai": "2.3.0",
-    "envify": "3.4.0",
-    "es6-module-jstransform": "0.1.4",
-    "glob": "5.0.10",
-    "gulp": "3.9.0",
-    "gulp-babel": "5.1.0",
-    "gulp-browserify": "0.5.1",
-    "gulp-coveralls": "0.1.4",
-    "gulp-debug": "2.0.1",
-    "gulp-foreach": "0.1.0",
-    "gulp-karma": "0.0.4",
-    "gulp-mocha": "2.1.1",
-    "gulp-rename": "1.2.2",
-    "gulp-size": "1.2.1",
-    "gulp-streamify": "0.0.5",
-    "gulp-uglify": "1.2.0",
-    "gulp-util": "3.0.5",
-    "karma": "0.13.22",
-    "karma-chai": "0.1.0",
-    "karma-chrome-launcher": "0.1.12",
-    "karma-coverage": "0.3.1",
-    "karma-es5-shim": "0.0.4",
-    "karma-mocha": "0.1.10",
-    "karma-phantomjs-launcher": "0.2.0",
-    "karma-sinon": "1.0.4",
-    "karma-sinon-chai": "0.3.0",
-    "karma-spec-reporter": "0.0.19",
-    "mocha": "2.2.5",
-    "phantomjs": "2.1.7",
-    "require-dir": "0.3.0",
-    "run-sequence": "1.1.0",
-    "sinon": "1.14.1",
-    "sinon-chai": "2.7.0",
-    "through2": "0.6.5",
-    "tmp": "0.0.26",
-    "vinyl-source-stream": "1.1.0",
-    "watchify": "3.2.2"
+    "@babel/cli": "~7.4.3",
+    "@babel/core": "~7.4.3",
+    "@babel/preset-env": "~7.4.3",
+    "coveralls": "~3.0.3",
+    "jest": "~24.7.1",
+    "jest-extended": "~0.11.1"
+  },
+  "jest": {
+    "coverageDirectory": "./reports",
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text"
+    ]
   }
 }
