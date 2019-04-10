@@ -23,7 +23,7 @@ describe('Given a context', () => {
 
       providerStub
 
-      rootContext = iniettore.create(function(map) {
+      rootContext = iniettore.create(map => {
         map('foo')
           .to(OBJECT_DEP)
           .as(VALUE)
@@ -115,7 +115,7 @@ describe('Given a context', () => {
         }
 
         rootContext = iniettore
-          .create(function(map) {
+          .create(map => {
             map('instanceA')
               .to(aProvider)
               .as(LAZY, SINGLETON, PROVIDER)

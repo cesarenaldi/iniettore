@@ -5,9 +5,9 @@
   "main": "lib/iniettore.js",
   "module": "src/iniettore.js",
   "scripts": {
-    "dev": "jest \"src/(.*)\\.spec\\.js\"",
+    "dev": "jest \"src/(.*)\\.spec\\.js\" --watch",
     "test": "jest \"src/(.*)\\.spec\\.js\" --coverage --coverageReporters=text-lcov | coveralls",
-    "build": "babel src -d lib",
+    "build": "babel src --out-dir lib --ignore \"src/**/*.spec.js\"",
     "prepublish": "yarn build"
   },
   "keywords": [
@@ -35,7 +35,9 @@
     "@babel/preset-env": "~7.4.3",
     "coveralls": "~3.0.3",
     "jest": "~24.7.1",
-    "jest-extended": "~0.11.1"
+    "jest-extended": "~0.11.1",
+    "jest-leak-detector": "~24.7.0",
+    "weak": "~1.0.1"
   },
   "jest": {
     "coverageDirectory": "./reports",

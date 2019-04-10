@@ -7,7 +7,7 @@ export default function createSingletonMappingFactory(create, isTransient = fals
     return {
       get() {
         if (typeof instance === 'undefined') {
-          instance = create.call(this, value, resolveDeps())
+          instance = create.call(null, value, resolveDeps())
         }
         count++
         return instance

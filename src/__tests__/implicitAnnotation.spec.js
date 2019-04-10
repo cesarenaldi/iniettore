@@ -15,7 +15,7 @@ describe('Given a context', () => {
             }
           }
 
-          context = iniettore.create(function(map) {
+          context = iniettore.create(map => {
             map('foo')
               .to(foo)
               .as(VALUE)
@@ -37,7 +37,7 @@ describe('Given a context', () => {
             expect($foo).toBe(foo)
           }
 
-          context = iniettore.create(function(map) {
+          context = iniettore.create(map => {
             map('foo')
               .to(foo)
               .as(VALUE)
@@ -60,7 +60,7 @@ describe('Given a context', () => {
             expect($context).toBe(context)
           }
 
-          context = iniettore.create(function(map) {
+          context = iniettore.create(map => {
             map('foo')
               .to(foo)
               .as(VALUE)
@@ -84,7 +84,7 @@ describe('Given a context', () => {
           }
           var bar
 
-          context = iniettore.create(function(map) {
+          context = iniettore.create(map => {
             map('foo')
               .to(foo)
               .as(VALUE)

@@ -52,7 +52,7 @@ describe('Given a context with some registered mappings', () => {
   describe('with the debug option set to true', () => {
     beforeAll(() => {
       rootContext = iniettore.create(
-        function(map) {
+        map => {
           map('foo')
             .to(42)
             .as(VALUE)

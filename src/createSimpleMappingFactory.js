@@ -4,7 +4,7 @@ export default function createSimpleMappingFactory(func) {
   return function(value, resolveDeps) {
     return {
       get() {
-        return func.call(this, value, resolveDeps())
+        return func.call(null, value, resolveDeps())
       },
       release: noop,
       dispose: noop
