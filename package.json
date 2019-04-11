@@ -1,50 +1,7 @@
 {
   "name": "iniettore",
-  "version": "3.0.0-RC1",
-  "description": "A light and simple IoC container",
-  "main": "lib/iniettore.js",
-  "module": "src/iniettore.js",
-  "scripts": {
-    "dev": "jest \"src/(.*)\\.spec\\.js\" --watch",
-    "test": "jest \"src/(.*)\\.spec\\.js\" --coverage --coverageReporters=text-lcov | coveralls",
-    "build": "babel src --out-dir lib --ignore \"src/**/*.spec.js\"",
-    "prepublish": "yarn build"
-  },
-  "keywords": [
-    "ioc",
-    "di",
-    "container",
-    "dependency injection"
-  ],
-  "engines": {
-    "node": ">=6"
-  },
-  "author": {
-    "name": "Cesare Naldi",
-    "url": "https://github.com/cesarenaldi"
-  },
-  "homepage": "https://github.com/cesarenaldi/iniettore.git",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/cesarenaldi/iniettore.git"
-  },
-  "license": "ISC",
-  "devDependencies": {
-    "@babel/cli": "~7.4.3",
-    "@babel/core": "~7.4.3",
-    "@babel/preset-env": "~7.4.3",
-    "coveralls": "~3.0.3",
-    "jest": "~24.7.1",
-    "jest-extended": "~0.11.1",
-    "jest-leak-detector": "~24.7.0",
-    "weak": "~1.0.1"
-  },
-  "jest": {
-    "coverageDirectory": "./reports",
-    "coverageReporters": [
-      "json",
-      "lcov",
-      "text"
-    ]
-  }
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
 }
