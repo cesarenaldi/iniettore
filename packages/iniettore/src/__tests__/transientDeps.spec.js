@@ -1,5 +1,5 @@
-import iniettore from '../../src/iniettore'
-import { PROVIDER, VALUE } from '../../src/iniettore'
+import iniettore from '../../src'
+import { PROVIDER, VALUE } from '../../src'
 
 describe('Given a context with a registered provider', () => {
   var providerSpy = jest.fn()

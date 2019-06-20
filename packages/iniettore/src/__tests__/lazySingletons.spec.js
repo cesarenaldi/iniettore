@@ -1,5 +1,5 @@
-import iniettore from '../../src/iniettore'
-import { TRANSIENT, LAZY, PROVIDER, SINGLETON, CONSTRUCTOR, EAGER } from '../../src/iniettore'
+import iniettore from '../../src'
+import { TRANSIENT, LAZY, PROVIDER, SINGLETON, CONSTRUCTOR, EAGER } from '../../src'
 
 describe('Given a LAZY, SINGLETON, CONSTRUCTOR', () => {
   var constructorSpy = jest.fn()

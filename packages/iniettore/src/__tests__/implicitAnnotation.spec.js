@@ -1,5 +1,5 @@
-import iniettore from '../../src/iniettore'
-import { CONSTRUCTOR, PROVIDER, FUNCTION, VALUE } from '../../src/iniettore'
+import iniettore from '../../src'
+import { CONSTRUCTOR, PROVIDER, FUNCTION, VALUE } from '../../src'
 
 var foo = 42
 var context

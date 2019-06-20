@@ -1,5 +1,5 @@
-import iniettore from '../../src/iniettore'
-import { VALUE, CONSTRUCTOR, SINGLETON, TRANSIENT } from '../../src/iniettore'
+import iniettore from '../../src'
+import { VALUE, CONSTRUCTOR, SINGLETON, TRANSIENT } from '../../src'
 
 describe('Given a context with a registered constructor', () => {
   describe('when requesting the corresponding mapping name', () => {

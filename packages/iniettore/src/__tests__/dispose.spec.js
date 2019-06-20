@@ -1,5 +1,5 @@
-import iniettore from '../../src/iniettore'
-import { CONSTRUCTOR, EAGER, INSTANCE, LAZY, PROVIDER, SINGLETON, TRANSIENT, VALUE } from '../../src/iniettore'
+import iniettore from '../../src'
+import { CONSTRUCTOR, EAGER, INSTANCE, LAZY, PROVIDER, SINGLETON, TRANSIENT, VALUE } from '../../src'
 
 describe('Given a context', () => {
   var providerStub = jest.fn()

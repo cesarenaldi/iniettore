@@ -3,5 +3,35 @@
   "private": true,
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "scripts": {
+    "dev": "jest \"src/(.*)\\.spec\\.js\" --watch",
+    "test": "jest \"src/(.*)\\.spec\\.js\" --coverage --coverageReporters=text-lcov | coveralls",
+    "build": "lerna exec --concurrency 1 -- rollup --config \\$LERNA_ROOT_PATH/rollup.config.js",
+    "prepublish": "yarn build"
+  },
+  "devDependencies": {
+    "@babel/cli": "~7.4.3",
+    "@babel/core": "~7.4.3",
+    "@babel/plugin-proposal-private-methods": "~7.4.3",
+    "@babel/preset-env": "~7.4.3",
+    "coveralls": "~3.0.3",
+    "jest": "~24.7.1",
+    "jest-extended": "~0.11.1",
+    "jest-leak-detector": "~24.7.0",
+    "lerna": "^3.13.2",
+    "rollup": "~1.10.0",
+    "rollup-plugin-babel": "~4.3.2",
+    "rollup-plugin-commonjs": "~9.3.4",
+    "rollup-plugin-terser": "~4.0.4",
+    "weak": "~1.0.1"
+  },
+  "jest": {
+    "coverageDirectory": "./reports",
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text"
+    ]
+  }
 }

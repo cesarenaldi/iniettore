@@ -1,5 +1,5 @@
-import iniettore from '../../src/iniettore'
-import { VALUE, INSTANCE } from '../../src/iniettore'
+import iniettore from '../../src'
+import { VALUE, INSTANCE } from '../../src'
 
 describe('Given a context', () => {
   var rootContext

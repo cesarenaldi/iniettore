@@ -1,5 +1,5 @@
-import iniettore from '../../src/iniettore'
-import { PROVIDER, CONSTRUCTOR, SINGLETON, TRANSIENT } from '../../src/iniettore'
+import iniettore from '../../src'
+import { PROVIDER, CONSTRUCTOR, SINGLETON, TRANSIENT } from '../../src'
 
 var disposeSpy = jest.fn()
 var callSpy = jest.fn().mockReturnValue(42)

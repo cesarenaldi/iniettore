@@ -97,7 +97,6 @@ class Context {
     var id
 
     for (id in children) {
-      /* istanbul ignore else  */
       if (children.hasOwnProperty(id)) {
         children[id].dispose()
         this._releaseChild(id)
@@ -114,7 +113,6 @@ class Context {
     var alias
 
     for (alias in mappings) {
-      /* istanbul ignore else  */
       if (mappings.hasOwnProperty(alias)) {
         try {
           mappings[alias].dispose()
