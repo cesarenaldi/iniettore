@@ -2,7 +2,7 @@
   "name": "iniettore",
   "version": "3.0.0-RC1",
   "description": "A light and simple IoC container",
-  "main": "cjs/index.js",
+  "main": "cjs/iniettore.js",
   "module": "src/index.js",
   "keywords": [
     "ioc",
