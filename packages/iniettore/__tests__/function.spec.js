@@ -1,5 +1,5 @@
-import iniettore from '../../src'
-import { FUNCTION, VALUE } from '../../src'
+import iniettore from '../src'
+import { FUNCTION, VALUE } from '../src'
 
 describe('Given a context with a registered function', () => {
   describe('when the function has some dependencies', () => {

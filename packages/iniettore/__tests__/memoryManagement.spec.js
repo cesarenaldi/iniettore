@@ -1,6 +1,6 @@
 import LeakDetector from 'jest-leak-detector'
-import iniettore from '../../src'
-import { CONSTRUCTOR, LAZY, PROVIDER, SINGLETON, TRANSIENT } from '../../src'
+import iniettore from '../src'
+import { CONSTRUCTOR, LAZY, PROVIDER, SINGLETON, TRANSIENT } from '../src'
 
 describe('Given a context', () => {
   describe('with a TRANSIENT, SINGLETON mapping', () => {

@@ -1,5 +1,5 @@
-import iniettore from '../../src'
-import { VALUE, PROVIDER } from '../../src'
+import iniettore from '../src'
+import { VALUE, PROVIDER } from '../src'
 
 describe('Given a context with a registered provider', () => {
   var rootContext

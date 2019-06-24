@@ -1,5 +1,5 @@
-import iniettore from '../../src'
-import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../../src'
+import iniettore from '../src'
+import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../src'
 
 function noop() {}
 

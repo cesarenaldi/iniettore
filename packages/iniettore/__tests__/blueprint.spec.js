@@ -1,5 +1,5 @@
-import iniettore from '../../src'
-import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT, BLUEPRINT } from '../../src'
+import iniettore from '../src'
+import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT, BLUEPRINT } from '../src'
 
 describe('Given a context', () => {
   var VALUE_A = { value: 'a' }

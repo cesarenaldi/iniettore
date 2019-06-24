@@ -5,8 +5,8 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "jest \"src/(.*)\\.spec\\.js\" --watch",
-    "test": "jest \"src/(.*)\\.spec\\.js\" --coverage --coverageReporters=text-lcov | coveralls",
+    "dev": "jest \"(.*)\\.spec\\.js\" --watch",
+    "test": "jest \"(.*)\\.spec\\.js\" --coverage --coverageReporters=text-lcov | coveralls",
     "build": "lerna exec --concurrency 1 -- rollup --config \\$LERNA_ROOT_PATH/rollup.config.js",
     "prepublish": "yarn build"
   },

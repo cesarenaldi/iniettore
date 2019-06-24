@@ -1,5 +1,5 @@
-import iniettore from '../../src'
-import { TRANSIENT, PROVIDER, SINGLETON, CONSTRUCTOR } from '../../src'
+import iniettore from '../src'
+import { TRANSIENT, PROVIDER, SINGLETON, CONSTRUCTOR } from '../src'
 
 describe('Given a TRANSIENT, SINGLETON, CONSTRUCTOR mapping', () => {
   describe('when requesting it', () => {

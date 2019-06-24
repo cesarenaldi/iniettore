@@ -1,5 +1,5 @@
-import iniettore from '../../src'
-import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../../src'
+import iniettore from '../src'
+import { VALUE, CONSTRUCTOR, PROVIDER, SINGLETON, TRANSIENT } from '../src'
 
 describe('Given iniettore', () => {
   describe('when creating a new context without a contribution function', () => {

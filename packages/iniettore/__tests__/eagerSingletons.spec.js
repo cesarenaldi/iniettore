@@ -1,5 +1,5 @@
-import iniettore from '../../src'
-import { PROVIDER, SINGLETON, CONSTRUCTOR, EAGER, VALUE } from '../../src'
+import iniettore from '../src'
+import { PROVIDER, SINGLETON, CONSTRUCTOR, EAGER, VALUE } from '../src'
 
 describe('Given a provider and a contructor', () => {
   var provider = jest.fn()
