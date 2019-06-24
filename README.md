@@ -1,4 +1,8 @@
-# ![Iniettore](https://github.com/cesarenaldi/iniettore/raw/master/logo.png) Iniettore &middot;  [![Build Status](https://travis-ci.org/cesarenaldi/iniettore.svg?branch=master)](https://travis-ci.org/cesarenaldi/iniettore) [![GitHub version](https://badge.fury.io/gh/cesarenaldi%2Finiettore.svg)](http://badge.fury.io/gh/cesarenaldi%2Finiettore) [![NPM dependencies](https://david-dm.org/cesarenaldi/iniettore.svg)](https://david-dm.org/cesarenaldi/iniettore) [![Coverage Status](https://coveralls.io/repos/cesarenaldi/iniettore/badge.svg?branch=master&service=github)](https://coveralls.io/github/cesarenaldi/iniettore?branch=master)
+<p align="center">
+  <img alt="Iniettore" src="https://github.com/cesarenaldi/iniettore/raw/master/logo.png" />
+</p>
+
+# Iniettore &middot;  [![Build Status](https://travis-ci.org/cesarenaldi/iniettore.svg?branch=master)](https://travis-ci.org/cesarenaldi/iniettore) [![GitHub version](https://badge.fury.io/gh/cesarenaldi%2Finiettore.svg)](http://badge.fury.io/gh/cesarenaldi%2Finiettore) [![NPM dependencies](https://david-dm.org/cesarenaldi/iniettore.svg)](https://david-dm.org/cesarenaldi/iniettore) [![Coverage Status](https://coveralls.io/repos/cesarenaldi/iniettore/badge.svg?branch=master&service=github)](https://coveralls.io/github/cesarenaldi/iniettore?branch=master)
 
 Iniettore is a JavaScript library to help developer assemble their applications.
 
