@@ -2,6 +2,7 @@ module.exports = {
   ignore: ['node_modules/**/*'],
   plugins: ['@babel/plugin-proposal-private-methods'],
   presets: [
+    '@babel/preset-flow',
     [
       '@babel/preset-env',
       {

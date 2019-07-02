@@ -1,10 +1,17 @@
+/**
+ * @flow
+ */
 import Context from './Context'
 import Logger from './Logger'
 
 export * from './options'
 
+export { default as context } from './context.v2'
+export * from './handlers'
+export * from './bindings'
+
 export default {
-  create(conf, options) {
+  create(conf: any, options: any) {
     var logger
 
     options = options || {}
