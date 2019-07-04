@@ -9,8 +9,7 @@ const noop = () => void 0
 
 export function provider<T>(func: () => T): BindingDescriptor<T> {
   return {
-    get: func,
-    free: noop
+    get: func
   }
 }
 
@@ -30,8 +29,12 @@ export function singleton<T>(func: () => T): BindingDescriptor<T> {
     free() {
       count--
       if (count == 0) {
-        instance = undefined
+        this.destroy()
       }
+    },
+    destroy() {
+      count = 0
+      instance = undefined
     }
   }
 }

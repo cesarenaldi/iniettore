@@ -1,6 +1,3 @@
-/**
- * @flow
- */
 import { context, free, get, singleton, provider } from '../src'
 
 describe('Given a context', () => {
@@ -22,6 +19,30 @@ describe('Given a context', () => {
 
         const instance = get(rootContext.bar)
         expect(instance).toBeInstanceOf(Bar)
+      })
+    })
+  })
+
+  describe('with a singleton binding', () => {
+    describe('and a provider binding which depends on an instance of the singleton binding', () => {
+      describe('when releasing all instances created via the provider binding', () => {
+        it('should release the singleton instance as well', () => {
+          const dateFactory = jest.fn(() => new Date())
+          class Event {
+            constructor(date) {}
+          }
+          const rootContext = context(() => ({
+            date: singleton(dateFactory),
+            event: provider(() => new Event(get(rootContext.date)))
+          }))
+          get(rootContext.event)
+          free(rootContext.event)
+          dateFactory.mockClear()
+
+          get(rootContext.event)
+
+          expect(dateFactory).toHaveBeenCalledTimes(1)
+        })
       })
     })
   })

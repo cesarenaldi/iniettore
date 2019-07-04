@@ -3,11 +3,9 @@
  */
 import createBinding from './createBinding'
 
-import type { Binding, BindingDescriptor } from './types'
+import type { Binding, BindingDescriptor, Context } from './types'
 
-type ConvertToBinding = <T>(BindingDescriptor<T>) => Binding<T>
-
-export default function<O: {}>(contextFactory: () => O): $ObjMap<O, ConvertToBinding> {
+export default function<O: {}>(contextFactory: () => O): Context<O> {
   const ctx = contextFactory()
 
   // https://github.com/facebook/flow/issues/2221 and cry with me!

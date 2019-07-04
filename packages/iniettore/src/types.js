@@ -4,7 +4,8 @@
 
 export type BindingDescriptor<T> = {|
   get: () => T,
-  free: () => void
+  free?: () => void,
+  destroy?: () => void
 |}
 
 export type Binding<T> = {|
@@ -12,5 +13,9 @@ export type Binding<T> = {|
   dependencies: Array<Binding<any>>,
   addDependency: (Binding<any>) => void,
   acquire: () => T,
-  release: () => void
+  release: () => void,
+  dispose: () => void
 |}
+
+type ConvertToBinding = <T>(BindingDescriptor<T>) => Binding<T>
+export type Context<T> = $ObjMap<T, ConvertToBinding>

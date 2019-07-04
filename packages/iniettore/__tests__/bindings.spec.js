@@ -1,6 +1,3 @@
-/**
- * @flow
- */
 import { context, provider, singleton, get, free } from '../src'
 
 describe('Given a context', () => {
@@ -28,22 +25,6 @@ describe('Given a context', () => {
         const foo2 = get(rootContext.foo)
 
         expect(foo1).toBe(foo2)
-      })
-    })
-
-    describe('when the provided function returns an instance of a defined class', () => {
-      class Bar {
-        static hello() {}
-      }
-
-      it('should ensure such instance constructor does have the static methods/properties of the original class', () => {
-        const rootContext = context(() => ({
-          bar: singleton(() => new Bar())
-        }))
-
-        const instance = get(rootContext.bar)
-
-        expect(instance.constructor).toHaveProperty('hello')
       })
     })
 
@@ -81,22 +62,6 @@ describe('Given a context', () => {
         expect(foo1).toBeInstanceOf(Foo)
         expect(foo2).toBeInstanceOf(Foo)
         expect(foo1).not.toBe(foo2)
-      })
-    })
-
-    describe('when the provided function returns an instance of a defined class', () => {
-      class Bar {
-        static hello() {}
-      }
-
-      it('should ensure such instance constructor does have the static methods/properties of the original class', () => {
-        const rootContext = context(() => ({
-          bar: provider(() => new Bar())
-        }))
-
-        const instance = get(rootContext.bar)
-
-        expect(instance.constructor).toHaveProperty('hello')
       })
     })
   })

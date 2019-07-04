@@ -24,12 +24,21 @@ function createBinding<T>(name: string, descriptor: BindingDescriptor<T>): Bindi
 
     release() {
       this.dependencies.map(free)
-      descriptor.free()
+      if (descriptor.free) {
+        descriptor.free()
+      }
+    },
+
+    dispose() {
+      this.dependencies.map(free)
+      if (descriptor.destroy) {
+        descriptor.destroy()
+      }
     }
   }
 }
 
-const rootBinding = createBinding('__root__', { get() {}, free() {} })
+const rootBinding = createBinding('__root__', { get() {} })
 const traversingStack = [rootBinding]
 
 export default createBinding
