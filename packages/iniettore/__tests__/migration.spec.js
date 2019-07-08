@@ -1,4 +1,4 @@
-import { context, get, provider, singleton, free } from '../src'
+import { container, get, provider, singleton, free } from '../src'
 
 describe('Given the iniettore v4.x interface', () => {
   describe('when migrating from v3.x interface', () => {
@@ -12,11 +12,11 @@ describe('Given the iniettore v4.x interface', () => {
       `, () => {
       class Foo {}
 
-      const rootContext = context(() => ({
+      const context = container(() => ({
         foo: provider(() => new Foo())
       }))
 
-      const foo = get(rootContext.foo)
+      const foo = get(context.foo)
 
       expect(foo).toBeInstanceOf(Foo)
     })
@@ -26,22 +26,22 @@ describe('Given the iniettore v4.x interface', () => {
           class Bar {
             static hello() {}
           }
-          const rootContext = context(() => ({
+          const context = container(() => ({
             bar: provider(() => new Bar())
           }))
 
-          const bar = get(rootContext.bar)
+          const bar = get(context.bar)
 
           instance.constructor.hello === Bar.hello // true
       `, () => {
       class Bar {
         static hello() {}
       }
-      const rootContext = context(() => ({
+      const context = container(() => ({
         bar: provider(() => new Bar())
       }))
 
-      const instance = get(rootContext.bar)
+      const instance = get(context.bar)
 
       expect(instance.constructor.hello).toBe(Bar.hello)
     })
@@ -56,11 +56,11 @@ describe('Given the iniettore v4.x interface', () => {
       `, () => {
       class Bar {}
       const bar = new Bar()
-      const rootContext = context(() => ({
+      const context = container(() => ({
         bar: provider(() => bar)
       }))
 
-      expect(get(rootContext.bar)).toBe(bar)
+      expect(get(context.bar)).toBe(bar)
     })
 
     it(`should provide alternative solution to LAZY, SINGLETON mappings:
@@ -72,7 +72,7 @@ describe('Given the iniettore v4.x interface', () => {
           })
       `, () => {
       class Bar {}
-      const rootContext = context(() => {
+      const context = container(() => {
         let bar
 
         return {
@@ -84,18 +84,18 @@ describe('Given the iniettore v4.x interface', () => {
           })
         }
       })
-      const bar1 = get(rootContext.bar) // acquire a first time
+      const bar1 = get(context.bar) // acquire a first time
 
-      free(rootContext.bar) // release once (this should cause a release of the actual instance)
+      free(context.bar) // release once (this should cause a release of the actual instance)
 
-      const bar2 = get(rootContext.bar) // acquire a second time
+      const bar2 = get(context.bar) // acquire a second time
 
       expect(bar1).toBe(bar2)
     })
 
     it(`should provide alternative solution to transient dependencies:
 
-          const rootContext = iniettore.create(map => {
+          const context = iniettore.create(map => {
             map('aDependency')
               .to(...)
               .as(...);
@@ -106,17 +106,17 @@ describe('Given the iniettore v4.x interface', () => {
               .injecting('aDependency', 'transientDependency')
           })
 
-          const myInstance = rootContext
+          const myInstance = context
             .using({ transientDependency: 42 })
             .get('myMapping')
       `, () => {
       const barProvider = jest.fn((aDependency, transientDependency) => ({}))
-      const rootContext = context(() => ({
+      const context = container(() => ({
         baz: provider(() => true),
-        bar: provider(() => barProvider.bind(null, get(rootContext.baz)))
+        bar: provider(() => barProvider.bind(null, get(context.baz)))
       }))
 
-      const bar = get(rootContext.bar)(42)
+      const bar = get(context.bar)(42)
 
       expect(barProvider).toHaveBeenCalledWith(true, 42)
     })
@@ -128,20 +128,20 @@ describe('Given the iniettore v4.x interface', () => {
       }, {})
     }
 
-    it.only(`should provide alternative solution to child containers:
-          const rootContext = iniettore.create(map => {
+    it(`should provide alternative solution to child containers:
+          const context = iniettore.create(map => {
             map(foo).to(...).as(...)
           })
 
-          const childCOntext = rootContext.createChild(...)
+          const childCOntext = context.createChild(...)
 
           // child.get('foo') instance of mapping defined in parent container
       `, () => {
-      const rootContext = context(() => ({
+      const context = container(() => ({
         number: provider(() => 42)
       }))
-      const childContext = context(() => ({
-        ...branch(rootContext)
+      const childContext = container(() => ({
+        ...branch(context)
       }))
 
       expect(get(childContext.number)).toBe(42)

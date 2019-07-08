@@ -1,0 +1,30 @@
+{
+  "name": "iniettore-inception",
+  "version": "3.0.0-RC1",
+  "description": "Adds hierarchical capabilities to iniettore DI containers",
+  "keywords": [
+    "di",
+    "ioc",
+    "container",
+    "dependency",
+    "injection"
+  ],
+  "author": {
+    "name": "Cesare Naldi",
+    "url": "https://github.com/cesarenaldi"
+  },
+  "homepage": "https://github.com/cesarenaldi/iniettore.git",
+  "license": "ISC",
+  "main": "cjs/iniettore-inception.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cesarenaldi/iniettore.git",
+    "directory": "packages/iniettore-inception"
+  },
+  "bugs": {
+    "url": "https://github.com/cesarenaldi/iniettore/issues"
+  },
+  "peerDependencies": {
+    "iniettore": "^3.0.0-RC1"
+  }
+}

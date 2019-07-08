@@ -1,4 +1,4 @@
-import { context, free, get, singleton, provider } from '../src'
+import { container, free, get, singleton, provider } from '../src'
 
 describe('Given a context', () => {
   describe('with 2 provider bindings, one of which depends on the other one', () => {
@@ -12,12 +12,12 @@ describe('Given a context', () => {
         }
         const BarConstructorSpy = jest.spyOn(Bar, 'constructor')
 
-        const rootContext = context(() => ({
+        const context = container(() => ({
           foo: provider(pretendFooFactory),
-          bar: provider(() => new Bar(get(rootContext.foo)))
+          bar: provider(() => new Bar(get(context.foo)))
         }))
 
-        const instance = get(rootContext.bar)
+        const instance = get(context.bar)
         expect(instance).toBeInstanceOf(Bar)
       })
     })
@@ -31,15 +31,15 @@ describe('Given a context', () => {
           class Event {
             constructor(date) {}
           }
-          const rootContext = context(() => ({
+          const context = container(() => ({
             date: singleton(dateFactory),
-            event: provider(() => new Event(get(rootContext.date)))
+            event: provider(() => new Event(get(context.date)))
           }))
-          get(rootContext.event)
-          free(rootContext.event)
+          get(context.event)
+          free(context.event)
           dateFactory.mockClear()
 
-          get(rootContext.event)
+          get(context.event)
 
           expect(dateFactory).toHaveBeenCalledTimes(1)
         })

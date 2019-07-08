@@ -2,7 +2,7 @@
   "name": "iniettore",
   "version": "3.0.0-RC1",
   "description": "A light and simple IoC container",
-  "main": "cjs/iniettore.js",
+  "main": "src/index.js",
   "module": "src/index.js",
   "keywords": [
     "ioc",
@@ -11,7 +11,7 @@
     "dependency injection"
   ],
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "author": {
     "name": "Cesare Naldi",

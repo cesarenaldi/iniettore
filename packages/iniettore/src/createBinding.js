@@ -2,7 +2,7 @@
  * @flow
  */
 import { free } from './handlers'
-import type { Binding, BindingDescriptor } from './types'
+import type { Binding, BindingDescriptor } from 'types'
 
 function createBinding<T>(name: string, descriptor: BindingDescriptor<T>): Binding<T> {
   return {

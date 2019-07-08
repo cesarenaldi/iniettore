@@ -3,7 +3,7 @@
  */
 
 import { free } from './handlers'
-import type { BindingDescriptor } from './types'
+import type { BindingDescriptor } from 'types'
 
 const noop = () => void 0
 

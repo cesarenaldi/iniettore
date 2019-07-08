@@ -1,13 +1,17 @@
 import LeakDetector from 'jest-leak-detector'
-import { context, free, get, singleton, provider } from '../src'
+import { container, free, get, singleton, provider } from '../src'
 
 describe('Given a context', () => {
   describe('with a resolved singleton binding', () => {
     describe('when releasing the entire context', () => {
       it('should release the singleton instance stored within the context', () => {
-        class Bar {}
+        class Bar {
+          foo() {
+            return 42
+          }
+        }
         let detector: LeakDetector
-        let rootContext = context(() => ({
+        let context = container(() => ({
           bar: singleton(() => {
             const instance = new Bar()
             detector = new LeakDetector(instance)
@@ -15,11 +19,11 @@ describe('Given a context', () => {
           })
         }))
 
-        get(rootContext.bar)
-        get(rootContext.bar)
+        get(context.bar)
+        get(context.bar)
 
-        free(rootContext)
-        rootContext = null
+        free(context)
+        context = null
 
         expect(detector.isLeaking()).toBe(false)
       })
