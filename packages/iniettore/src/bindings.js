@@ -5,8 +5,6 @@
 import { free } from './handlers'
 import type { BindingDescriptor } from 'types'
 
-const noop = () => void 0
-
 export function provider<T>(func: () => T): BindingDescriptor<T> {
   return {
     get: func
@@ -14,7 +12,6 @@ export function provider<T>(func: () => T): BindingDescriptor<T> {
 }
 
 export function singleton<T>(func: () => T): BindingDescriptor<T> {
-  let count = 0
   let instance
 
   return {
@@ -22,18 +19,14 @@ export function singleton<T>(func: () => T): BindingDescriptor<T> {
       if (typeof instance === 'undefined') {
         instance = func.call(null)
       }
-
-      count++
       return instance
     },
-    free() {
-      count--
-      if (count == 0) {
+    free(dependents) {
+      if (dependents == 0) {
         this.destroy()
       }
     },
     destroy() {
-      count = 0
       instance = undefined
     }
   }

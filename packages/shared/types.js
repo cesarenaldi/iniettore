@@ -4,13 +4,13 @@
 
 export type BindingDescriptor<T> = {|
   get: () => T,
-  free?: () => void,
+  free?: (dependents: number) => void,
   destroy?: () => void
 |}
 
 export type Binding<T> = {|
-  name: string,
-  dependencies: Array<Binding<any>>,
+  // name: string,
+  // dependencies: Array<Binding<any>>,
   addDependency: (Binding<any>) => void,
   acquire: () => T,
   release: () => void,

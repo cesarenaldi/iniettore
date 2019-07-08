@@ -1,4 +1,4 @@
-import { container } from 'iniettore'
+// import { container } from 'iniettore'
 import { child, fork } from '../src'
 import { get } from 'http'
 

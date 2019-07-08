@@ -5,13 +5,12 @@ import { free } from './handlers'
 import type { Binding, BindingDescriptor } from 'types'
 
 function createBinding<T>(name: string, descriptor: BindingDescriptor<T>): Binding<T> {
+  const dependencies = []
+  let dependents = 0
+
   return {
-    name,
-
-    dependencies: [],
-
     addDependency<T>(binding: Binding<T>): void {
-      this.dependencies.push(binding)
+      dependencies.push(binding)
     },
 
     acquire(): T {
@@ -19,18 +18,21 @@ function createBinding<T>(name: string, descriptor: BindingDescriptor<T>): Bindi
       traversingStack.push(this)
       const instance = descriptor.get()
       traversingStack.pop()
+      dependents++
       return instance
     },
 
     release() {
-      this.dependencies.map(free)
+      dependents--
+      dependencies.map(free)
       if (descriptor.free) {
-        descriptor.free()
+        descriptor.free(dependents)
       }
     },
 
     dispose() {
-      this.dependencies.map(free)
+      dependents = 0
+      dependencies.map(free)
       if (descriptor.destroy) {
         descriptor.destroy()
       }
