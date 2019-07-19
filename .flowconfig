@@ -2,6 +2,7 @@
 
 [include]
 packages/shared
+
 [libs]
 
 [lints]

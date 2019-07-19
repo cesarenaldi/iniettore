@@ -46,4 +46,19 @@ describe('Given a context', () => {
       })
     })
   })
+
+  describe('with a nasty circular dependency', () => {
+    describe('when acquiring an instance of a binding involved in such circular dependency', () => {
+      it('should throw an infomative error regarding the problem at hand', () => {
+        class Foo {}
+        class Bar {}
+        const context = container(() => ({
+          foo: provider(() => new Foo(get(context.bar))),
+          bar: provider(() => new Bar(get(context.foo)))
+        }))
+
+        expect(() => get(context.foo)).toThrow(/^Circular dependency detected while resolving 'foo'/)
+      })
+    })
+  })
 })

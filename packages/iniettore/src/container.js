@@ -11,8 +11,8 @@ export default function<O: {}>(contextFactory: () => O): Context<O> {
   // https://github.com/facebook/flow/issues/2221 and cry with me!
   const entries = ((Object.entries(descriptors): any): Array<[string, BindingDescriptor<any>]>)
 
-  return entries.reduce((ctx, [name, descriptor]) => {
-    ctx[name] = createBinding(name, descriptor)
-    return ctx
+  return entries.reduce((context, [name, descriptor]) => {
+    context[name] = createBinding(name, descriptor)
+    return context
   }, {})
 }

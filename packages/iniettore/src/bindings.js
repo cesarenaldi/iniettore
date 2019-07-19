@@ -22,7 +22,7 @@ export function singleton<T>(func: () => T): BindingDescriptor<T> {
       return instance
     },
     free(dependents) {
-      if (dependents == 0) {
+      if (dependents === 0) {
         this.destroy()
       }
     },

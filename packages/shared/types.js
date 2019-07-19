@@ -9,8 +9,6 @@ export type BindingDescriptor<T> = {|
 |}
 
 export type Binding<T> = {|
-  // name: string,
-  // dependencies: Array<Binding<any>>,
   addDependency: (Binding<any>) => void,
   acquire: () => T,
   release: () => void,
