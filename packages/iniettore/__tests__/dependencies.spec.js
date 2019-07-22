@@ -1,3 +1,4 @@
+import LeakDetector from 'jest-leak-detector'
 import { container, free, get, singleton, provider } from '../src'
 
 describe('Given a context', () => {
@@ -43,6 +44,35 @@ describe('Given a context', () => {
 
           expect(dateFactory).toHaveBeenCalledTimes(1)
         })
+      })
+    })
+  })
+
+  describe('with some materialized bindings', () => {
+    describe('when releasing one of such bindings', () => {
+      it('should remove the dependency bindings from the internal list of dependencies', () => {
+        const dateFactory = () => new Date()
+        const customBindingDescriptorFreeSpy = jest.fn()
+        const customBindingDescriptor = fn => ({
+          get: jest.fn(fn),
+          free: customBindingDescriptorFreeSpy
+        })
+        class Event {
+          constructor(date) {}
+        }
+        const context = container(() => ({
+          date: customBindingDescriptor(dateFactory),
+          event: singleton(() => new Event(get(context.date)))
+        }))
+
+        get(context.event)
+        free(context.event)
+
+        customBindingDescriptorFreeSpy.mockClear()
+        get(context.event)
+        free(context.event) // if invokes customBindingDescriptorFreeSpy more than one we have a leak
+
+        expect(customBindingDescriptorFreeSpy).toHaveBeenCalledTimes(1)
       })
     })
   })

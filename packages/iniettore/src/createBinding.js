@@ -6,8 +6,13 @@ import lowPriorityWarning from '../../shared/lowPriorityWarning'
 import createTraversingStack from './createTraversingStack'
 import { free } from './handlers'
 
+function clearDependencies(dependencies) {
+  dependencies.map(free)
+  return []
+}
+
 function createBinding<T>(name: string, descriptor: BindingDescriptor<T>): Binding<T> {
-  const dependencies = []
+  let dependencies = []
   let dependents = 0
 
   return {
@@ -28,14 +33,14 @@ function createBinding<T>(name: string, descriptor: BindingDescriptor<T>): Bindi
 
     release() {
       dependents--
-      dependencies.map(free) // to be fixed, 2+ iterations and it will pollute massively
+      dependencies = clearDependencies(dependencies)
       if (descriptor.free) {
         descriptor.free(dependents)
       }
     },
 
     dispose() {
-      dependencies.map(free) // to be fixed, 2+ iterations and it will pollute massivelys
+      dependencies = clearDependencies(dependencies)
       lowPriorityWarning(dependents > 0, `Binding ${name} disposed with potentially ${dependents} dependends`)
       dependents = 0
       if (descriptor.destroy) {
