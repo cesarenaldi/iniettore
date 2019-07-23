@@ -65,4 +65,43 @@ describe(`Given 2 contexts: A and B
       })
     })
   })
+
+  describe('when requesting an instance from a binding in context B which shadows a binding with the same name in context A', () => {
+    it('should resolve the instance via the binding registered in the context B', () => {
+      class Bar {}
+      class SuperBar {}
+      let contextA = container(() => ({
+        bar: singleton(() => new Bar())
+      }))
+      let contextB = container(() => ({
+        bar: singleton(() => new SuperBar())
+      }))
+
+      const bar = get(contextB.bar)
+
+      expect(bar).toBeInstanceOf(SuperBar)
+    })
+  })
+
+  describe('when requesting an instance from a singleton binding registered in the context B', () => {
+    describe('which depends on another singleton binding registered in the "parent context" A', () => {
+      const PARENT_INSTANCE = {}
+      const CHILD_INSTANCE = {}
+      const parentProviderStub = jest.fn().mockReturnValue(PARENT_INSTANCE)
+      const chilProviderStub = jest.fn().mockReturnValue(CHILD_INSTANCE)
+
+      it('should create singleton instances in the respective contexts', () => {
+        const contextA = container(() => ({
+          bar: singleton(parentProviderStub)
+        }))
+        const contextB = container(() => ({
+          foo: singleton(() => chilProviderStub(get(contextA.bar)))
+        }))
+        const foo = get(contextB.foo)
+
+        expect(foo).toBe(CHILD_INSTANCE)
+        expect(get(contextA.bar)).toBe(PARENT_INSTANCE)
+      })
+    })
+  })
 })

@@ -2,7 +2,7 @@ import { container, get, provider, singleton, free } from '../src'
 
 describe('Given the iniettore v4.x interface', () => {
   describe('when migrating from v3.x interface', () => {
-    it(`should provide an alternative to:
+    it(`should provide an alternative to CONSTRUCTOR mappings:
 
           iniettore.create(map => {
             map('foo')
@@ -128,14 +128,15 @@ describe('Given the iniettore v4.x interface', () => {
       }, {})
     }
 
-    it(`should provide alternative solution to child containers:
+    it(`should provide alternative solution to inheritance of mappings (not recommended in v4.x):
+
           const context = iniettore.create(map => {
             map(foo).to(...).as(...)
           })
 
-          const childCOntext = context.createChild(...)
+          const childContext = context.createChild(...)
 
-          // child.get('foo') instance of mapping defined in parent container
+          // child.get('foo') instance of mapping defined in parent context
       `, () => {
       const context = container(() => ({
         number: provider(() => 42)
@@ -145,6 +146,22 @@ describe('Given the iniettore v4.x interface', () => {
       }))
 
       expect(get(childContext.number)).toBe(42)
+    })
+
+    it(`should provide alternative solution to $context special built-in mapping:
+
+          const context = iniettore.create(map => {
+            map(foo).to(...).as(...).injecting('$context')
+          })
+      `, () => {
+      const factorySpy = jest.fn(ctx => new Date())
+      const context = container(() => ({
+        eventDate: provider(() => factorySpy(context))
+      }))
+
+      get(context.eventDate)
+
+      expect(factorySpy).toHaveBeenCalledWith(context)
     })
   })
 })
