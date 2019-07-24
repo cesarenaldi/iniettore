@@ -163,5 +163,40 @@ describe('Given the iniettore v4.x interface', () => {
 
       expect(factorySpy).toHaveBeenCalledWith(context)
     })
+
+    it(`should provide alternative solution to blueprint:
+
+          function configureChildContext(map) {
+            map('baz')
+              .to(blueprintProviderStub)
+              .as(TRANSIENT, SINGLETON, PROVIDER)
+              .injecting('bar')
+          }
+
+          const context = iniettore.create(map => {
+            map('bar')
+              .to(VALUE_A)
+              .as(VALUE)
+            map('foo')
+              .to(configureChildContext)
+              .as(BLUEPRINT)
+              .exports('baz')
+          })
+
+          // context.get('foo')
+            `, () => {
+      const context = container(() => ({
+        bar: provider(() => new Number()),
+        foo: provider(() => {
+          const childContext = container(() => ({
+            baz: provider(() => new Date())
+          }))
+
+          return get(childContext.baz)
+        })
+      }))
+
+      expect(get(context.foo)).toBeInstanceOf(Date)
+    })
   })
 })

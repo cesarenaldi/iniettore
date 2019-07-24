@@ -5,19 +5,21 @@
 import { free } from './handlers'
 import type { BindingDescriptor } from 'types'
 
+const noop = (T: any) => void 0
+
 export function provider<T>(func: () => T): BindingDescriptor<T> {
   return {
     get: func
   }
 }
 
-export function singleton<T>(func: () => T): BindingDescriptor<T> {
+export function singleton<T>(materialize: () => T, dispose: T => void = noop): BindingDescriptor<T> {
   let instance
 
   return {
     get() {
       if (typeof instance === 'undefined') {
-        instance = func.call(null)
+        instance = materialize.call(null)
       }
       return instance
     },
@@ -27,7 +29,10 @@ export function singleton<T>(func: () => T): BindingDescriptor<T> {
       }
     },
     destroy() {
-      instance = undefined
+      if (instance) {
+        dispose(instance)
+        instance = undefined
+      }
     }
   }
 }

@@ -21,6 +21,10 @@ npm install iniettore --save
 yarn add iniettore
 ```
 
+### Breaking changes
+- Removed support form implicit annotations
+- Property injection (undocumented feature)
+
 ### Simple usage
 
 ```javascript

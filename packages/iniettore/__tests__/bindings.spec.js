@@ -45,6 +45,20 @@ describe('Given a context', () => {
         const foo3 = get(context.foo)
         expect(foo1).not.toBe(foo3)
       })
+
+      it('should use the optional 2nd argument callback to support any custom dispose logic', () => {
+        const fooInstance = {}
+        const disposeFoo = jest.fn()
+        const context = container(() => ({
+          foo: singleton(() => fooInstance, disposeFoo)
+        }))
+
+        get(context.foo)
+        free(context.foo)
+
+        const foo3 = get(context.foo)
+        expect(disposeFoo).toHaveBeenCalledWith(fooInstance)
+      })
     })
   })
 

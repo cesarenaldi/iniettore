@@ -3,3 +3,4 @@ cjs/
 lib/
 reports/
 npm-debug.log
+.DS_Store

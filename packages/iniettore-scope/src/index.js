@@ -4,7 +4,7 @@ import { get, free } from 'iniettore'
  * scope(context)(get => {
  *    const foo = get(context.foo);
  *
- *    foo
+ *    // use foo
  * })
  */
 
