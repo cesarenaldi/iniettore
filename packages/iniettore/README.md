@@ -54,9 +54,16 @@ console.log(question instanceof UltimateQuestion) // true
 
 ## Concepts
 
-### Aliases
+### Binding
 
-iniettore uses string names to identify specific mappings and their dependencies:
+Iniettore defines as _binding_ an object which represent an instance of the entity it's bound to. It's up to the end user to defined such entity and the correct strategy to instantiate it.
+
+#### Materialized binding
+
+Out of the box Iniettore provides 2 types of binding initalization strategies:
+- **provider** which can be used in any scenario you are happy with a new instance of the entity involved to be created when the binding
+
+I binding object is and needs to be opaque to the end user. This is done in order to provide future improvement to the library as well as a clear extensibility strategy to the core Iniettore features.
 
 - When registering a new mapping the very first thing to do is decide the mapping name or alias.
 
