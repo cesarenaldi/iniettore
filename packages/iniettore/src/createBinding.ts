@@ -3,21 +3,21 @@ import lowPriorityWarning from '../../shared/lowPriorityWarning'
 import createTraversingStack from './createTraversingStack'
 import { free } from './handlers'
 
-function clearDependencies(dependencies: Array<Binding<any>>): Array<Binding<any>> {
+function clearDependencies (dependencies: Array<Binding<any>>): Array<Binding<any>> {
   dependencies.map(free)
   return []
 }
 
-function createBinding<T>(name: string, descriptor: BindingDescriptor<T>): Binding<BindingDescriptor<T>> {
+function createBinding<T> (name: string, descriptor: BindingDescriptor<T>): Binding<BindingDescriptor<T>> {
   let dependencies: Array<Binding<any>> = []
   let dependents = 0
 
   return {
-    addDependency<T>(binding: Binding<BindingDescriptor<T>>): void {
+    addDependency<T> (binding: Binding<BindingDescriptor<T>>): void {
       dependencies.push(binding)
     },
 
-    acquire(): T {
+    acquire (): T {
       if (traversingStack.includes(this)) {
         throw new Error(`Circular dependency detected while resolving '${name}'`)
       }
@@ -28,7 +28,7 @@ function createBinding<T>(name: string, descriptor: BindingDescriptor<T>): Bindi
       return instance
     },
 
-    release() {
+    release () {
       dependents--
       dependencies = clearDependencies(dependencies)
       if (descriptor.free) {
@@ -36,7 +36,7 @@ function createBinding<T>(name: string, descriptor: BindingDescriptor<T>): Bindi
       }
     },
 
-    dispose() {
+    dispose () {
       dependencies = clearDependencies(dependencies)
       lowPriorityWarning(dependents > 0, `Binding ${name} disposed with potentially ${dependents} dependends`)
       dependents = 0

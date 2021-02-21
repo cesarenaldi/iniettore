@@ -92,12 +92,12 @@ describe('Given the iniettore v4.x interface', () => {
         bar: provider(() => (v: number) => barProvider(get(context.baz), v))
       }))
 
-      const bar = get(context.bar)(42)
+      get(context.bar)(42)
 
       expect(barProvider).toHaveBeenCalledWith(true, 42)
     })
 
-    function branch(ctx: Context<ContainerDescriptor>): ContainerDescriptor {
+    function branch (ctx: Context<ContainerDescriptor>): ContainerDescriptor {
       return Object.entries(ctx).reduce((bindings, [name, binding]) => {
         bindings[name] = provider(() => get(binding))
         return bindings
@@ -162,7 +162,7 @@ describe('Given the iniettore v4.x interface', () => {
           // context.get('foo')
             `, () => {
       const context = container(() => ({
-        bar: provider(() => new Number()),
+        bar: provider(() => new Number()), // eslint-disable-line no-new-wrappers
         foo: provider(() => {
           const childContext = container(() => ({
             baz: provider(() => new Date())

@@ -37,7 +37,7 @@ describe('Given a context', () => {
 
         // acquire twice
         const foo1 = get(context.foo)
-        const foo2 = get(context.foo)
+        const foo2 = get(context.foo) // eslint-disable-line no-unused-vars
 
         // release twice
         free(context.foo)
@@ -57,7 +57,7 @@ describe('Given a context', () => {
         get(context.foo)
         free(context.foo)
 
-        const foo3 = get(context.foo)
+        const foo3 = get(context.foo) // eslint-disable-line no-unused-vars
         expect(disposeFoo).toHaveBeenCalledWith(fooInstance)
       })
     })

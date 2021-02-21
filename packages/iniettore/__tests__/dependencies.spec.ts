@@ -1,4 +1,3 @@
-import LeakDetector from 'jest-leak-detector'
 import { container, free, get, singleton, provider } from '../src'
 
 describe('Given a context', () => {
@@ -7,7 +6,7 @@ describe('Given a context', () => {
       it('should resolve the dependency', () => {
         const pretendFooFactory = jest.fn(() => 42)
         class Bar {
-          constructor(foo: number) {
+          constructor (foo: number) {
             expect(foo).toEqual(42)
           }
         }
@@ -29,7 +28,7 @@ describe('Given a context', () => {
         it('should release the singleton instance as well', () => {
           const dateFactory = jest.fn(() => new Date())
           class Event {
-            constructor(date) {}
+            constructor (date: Date) {} // eslint-disable-line no-useless-constructor
           }
           const context = container(() => ({
             date: singleton(dateFactory),
@@ -57,7 +56,7 @@ describe('Given a context', () => {
           free: customBindingDescriptorFreeSpy
         })
         class Event {
-          constructor(date) {}
+          constructor (date: Date) {} // eslint-disable-line no-useless-constructor
         }
         const context = container(() => ({
           date: customBindingDescriptor(dateFactory),
@@ -80,10 +79,10 @@ describe('Given a context', () => {
     describe('when acquiring an instance of a binding involved in such circular dependency', () => {
       it('should throw an infomative error regarding the problem at hand', () => {
         class Foo {
-          constructor(bar: Bar) {}
+          constructor (bar: Bar) {} // eslint-disable-line no-useless-constructor
         }
         class Bar {
-          constructor(foo: Foo) {}
+          constructor (foo: Foo) {} // eslint-disable-line no-useless-constructor
         }
         const context = container(() => ({
           foo: provider(() => new Foo(get(context.bar))),

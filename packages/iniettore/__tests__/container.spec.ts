@@ -9,7 +9,7 @@ describe('Given a context', () => {
     describe('when releasing the entire context', () => {
       it('should release the singleton instance stored within the context', async () => {
         class Bar {
-          foo() {
+          foo () {
             return 42
           }
         }
@@ -52,12 +52,12 @@ describe(`Given 2 contexts: A and B
       it("should warn that there is a binding whose dependents hasn't been released", () => {
         class Bar {}
         class Foo {
-          constructor(bar: Bar) {}
+          constructor (bar: Bar) {} // eslint-disable-line no-useless-constructor
         }
-        let contextA = container(() => ({
+        const contextA = container(() => ({
           bar: singleton(() => new Bar())
         }))
-        let contextB = container(() => ({
+        const contextB = container(() => ({
           foo: singleton(() => new Foo(get(contextA.bar)))
         }))
 
@@ -74,10 +74,10 @@ describe(`Given 2 contexts: A and B
     it('should resolve the instance via the binding registered in the context B', () => {
       class Bar {}
       class SuperBar {}
-      let contextA = container(() => ({
+      const contextA = container(() => ({ // eslint-disable-line no-unused-vars
         bar: singleton(() => new Bar())
       }))
-      let contextB = container(() => ({
+      const contextB = container(() => ({
         bar: singleton(() => new SuperBar())
       }))
 
