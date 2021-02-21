@@ -7,11 +7,10 @@ describe('Given a context', () => {
       it('should resolve the dependency', () => {
         const pretendFooFactory = jest.fn(() => 42)
         class Bar {
-          constructor(foo) {
+          constructor(foo: number) {
             expect(foo).toEqual(42)
           }
         }
-        const BarConstructorSpy = jest.spyOn(Bar, 'constructor')
 
         const context = container(() => ({
           foo: provider(pretendFooFactory),
@@ -80,8 +79,12 @@ describe('Given a context', () => {
   describe('with a nasty circular dependency', () => {
     describe('when acquiring an instance of a binding involved in such circular dependency', () => {
       it('should throw an infomative error regarding the problem at hand', () => {
-        class Foo {}
-        class Bar {}
+        class Foo {
+          constructor(bar: Bar) {}
+        }
+        class Bar {
+          constructor(foo: Foo) {}
+        }
         const context = container(() => ({
           foo: provider(() => new Foo(get(context.bar))),
           bar: provider(() => new Bar(get(context.foo)))

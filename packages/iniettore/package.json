@@ -11,7 +11,7 @@
     "dependency injection"
   ],
   "engines": {
-    "node": ">=8"
+    "node": ">=12"
   },
   "author": {
     "name": "Cesare Naldi",

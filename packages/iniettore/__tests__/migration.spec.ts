@@ -1,3 +1,4 @@
+import { ContainerDescriptor, Context } from '../../shared/types'
 import { container, get, provider, singleton, free } from '../src'
 
 describe('Given the iniettore v4.x interface', () => {
@@ -19,31 +20,6 @@ describe('Given the iniettore v4.x interface', () => {
       const foo = get(context.foo)
 
       expect(foo).toBeInstanceOf(Foo)
-    })
-
-    it(`should ensure instances created via a constructor do preserve static methods/properties of the original class:
-
-          class Bar {
-            static hello() {}
-          }
-          const context = container(() => ({
-            bar: provider(() => new Bar())
-          }))
-
-          const bar = get(context.bar)
-
-          instance.constructor.hello === Bar.hello // true
-      `, () => {
-      class Bar {
-        static hello() {}
-      }
-      const context = container(() => ({
-        bar: provider(() => new Bar())
-      }))
-
-      const instance = get(context.bar)
-
-      expect(instance.constructor.hello).toBe(Bar.hello)
     })
 
     it(`should provide alternative solution to EAGER, SINGLETON mappings:
@@ -110,10 +86,10 @@ describe('Given the iniettore v4.x interface', () => {
             .using({ transientDependency: 42 })
             .get('myMapping')
       `, () => {
-      const barProvider = jest.fn((aDependency, transientDependency) => ({}))
+      const barProvider = jest.fn((aDependency: boolean, transientDependency: number) => ({}))
       const context = container(() => ({
         baz: provider(() => true),
-        bar: provider(() => barProvider.bind(null, get(context.baz)))
+        bar: provider(() => (v: number) => barProvider(get(context.baz), v))
       }))
 
       const bar = get(context.bar)(42)
@@ -121,7 +97,7 @@ describe('Given the iniettore v4.x interface', () => {
       expect(barProvider).toHaveBeenCalledWith(true, 42)
     })
 
-    function branch(ctx) {
+    function branch(ctx: Context<ContainerDescriptor>): ContainerDescriptor {
       return Object.entries(ctx).reduce((bindings, [name, binding]) => {
         bindings[name] = provider(() => get(binding))
         return bindings

@@ -5,6 +5,7 @@ describe('Given a context', () => {
     describe('when acquiring for the first time an instance of such binding', () => {
       it('should use the provided function to create an instance of the desired object', () => {
         const factorySpy = jest.fn()
+
         const context = container(() => ({
           foo: singleton(factorySpy)
         }))

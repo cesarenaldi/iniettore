@@ -1,22 +1,19 @@
-/**
- * @flow
- */
-import type { Binding, BindingDescriptor, Context } from 'types'
+import { Binding, BindingDescriptor } from '../../shared/types'
 import lowPriorityWarning from '../../shared/lowPriorityWarning'
 import createTraversingStack from './createTraversingStack'
 import { free } from './handlers'
 
-function clearDependencies(dependencies) {
+function clearDependencies(dependencies: Array<Binding<any>>): Array<Binding<any>> {
   dependencies.map(free)
   return []
 }
 
-function createBinding<T>(name: string, descriptor: BindingDescriptor<T>): Binding<T> {
-  let dependencies = []
+function createBinding<T>(name: string, descriptor: BindingDescriptor<T>): Binding<BindingDescriptor<T>> {
+  let dependencies: Array<Binding<any>> = []
   let dependents = 0
 
   return {
-    addDependency<T>(binding: Binding<T>): void {
+    addDependency<T>(binding: Binding<BindingDescriptor<T>>): void {
       dependencies.push(binding)
     },
 

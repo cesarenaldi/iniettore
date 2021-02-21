@@ -1,9 +1,5 @@
-/**
- * @flow
- */
-
 import { free } from './handlers'
-import type { BindingDescriptor } from 'types'
+import { BindingDescriptor } from '../../shared/types'
 
 const noop = (T: any) => void 0
 
@@ -13,8 +9,8 @@ export function provider<T>(func: () => T): BindingDescriptor<T> {
   }
 }
 
-export function singleton<T>(materialize: () => T, dispose: T => void = noop): BindingDescriptor<T> {
-  let instance
+export function singleton<T>(materialize: () => T, dispose: (T) => void = noop): BindingDescriptor<T> {
+  let instance: T
 
   return {
     get() {

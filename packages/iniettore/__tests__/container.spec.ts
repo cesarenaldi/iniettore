@@ -1,18 +1,19 @@
 import LeakDetector from 'jest-leak-detector'
-import { container, free, get, singleton, provider } from '../src'
+import { container, free, get, singleton } from '../src'
+import lowPriorityWarning from '../../shared/lowPriorityWarning'
 
-const lowPriorityWarning = jest.mock('../../shared/lowPriorityWarning')
+jest.mock('../../shared/lowPriorityWarning')
 
 describe('Given a context', () => {
   describe('with a resolved singleton binding', () => {
     describe('when releasing the entire context', () => {
-      it('should release the singleton instance stored within the context', () => {
+      it('should release the singleton instance stored within the context', async () => {
         class Bar {
           foo() {
             return 42
           }
         }
-        let detector
+        let detector: LeakDetector
         let context = container(() => ({
           bar: singleton(() => {
             const instance = new Bar()
@@ -27,7 +28,7 @@ describe('Given a context', () => {
         free(context)
         context = null
 
-        expect(detector.isLeaking()).toBe(false)
+        expect(await detector.isLeaking()).toBe(false)
       })
     })
   })
@@ -47,10 +48,12 @@ describe(`Given 2 contexts: A and B
           +----+----+
   `, () => {
   describe('where context B has a materialized binding that depends on a binding defined in context A', () => {
-    describe('when release the context A', () => {
-      it("should detect that there is a binding whose dependents hasn't been released", () => {
+    describe('when releasing the context A', () => {
+      it("should warn that there is a binding whose dependents hasn't been released", () => {
         class Bar {}
-        class Foo {}
+        class Foo {
+          constructor(bar: Bar) {}
+        }
         let contextA = container(() => ({
           bar: singleton(() => new Bar())
         }))
@@ -61,7 +64,8 @@ describe(`Given 2 contexts: A and B
         get(contextB.foo) // resolve foo
 
         free(contextA)
-        expect(lowPriorityWarning).toHaveBeenCalledWith(expect.any(String))
+
+        expect(lowPriorityWarning).toHaveBeenCalledWith(true, expect.any(String))
       })
     })
   })

@@ -1,7 +1,4 @@
-/**
- * @flow
- */
-import type { Binding } from 'types'
+import { Binding } from '../../shared/types'
 
 export default function createTraversingStack() {
   const stack: Set<Binding<any>> = new Set()
