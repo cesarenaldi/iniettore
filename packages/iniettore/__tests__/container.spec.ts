@@ -1,5 +1,5 @@
 import LeakDetector from 'jest-leak-detector'
-import { container, free, get, singleton } from '../src'
+import { container, Context, free, get, singleton } from '../src'
 import lowPriorityWarning from '../src/lowPriorityWarning'
 
 jest.mock('../src/lowPriorityWarning')
@@ -13,22 +13,17 @@ describe('Given a context', () => {
             return 42
           }
         }
-        let detector: LeakDetector
-        let context = container(() => ({
-          bar: singleton(() => {
-            const instance = new Bar()
-            detector = new LeakDetector(instance)
-            return instance
-          })
+        let context: Context<{ bar: Bar}> | null = container(() => ({
+          bar: singleton(() => new Bar())
         }))
 
-        get(context.bar)
+        const detector = new LeakDetector(get(context.bar))
         get(context.bar)
 
         free(context)
         context = null
 
-        expect(await detector.isLeaking()).toBe(false)
+        expect(await detector?.isLeaking()).toBe(false)
       })
     })
   })

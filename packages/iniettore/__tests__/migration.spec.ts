@@ -1,4 +1,4 @@
-import { ContainerDescriptor, Context } from '../src/types'
+import { ContainerDescriptor, Context, ContextFrom } from '../src/types'
 import { container, get, provider, singleton, free } from '../src'
 
 describe('Given the iniettore v4.x interface', () => {
@@ -22,7 +22,7 @@ describe('Given the iniettore v4.x interface', () => {
       expect(foo).toBeInstanceOf(Foo)
     })
 
-    it(`should provide alternative solution to EAGER, SINGLETON mappings:
+    it(`should provide an alternative solution to EAGER, SINGLETON mappings:
 
           iniettore.create(map => {
             map('foo')
@@ -39,7 +39,7 @@ describe('Given the iniettore v4.x interface', () => {
       expect(get(context.bar)).toBe(bar)
     })
 
-    it(`should provide alternative solution to LAZY, SINGLETON mappings:
+    it(`should provide an alternative solution to LAZY, SINGLETON mappings:
 
           iniettore.create(map => {
             map('bar')
@@ -49,7 +49,7 @@ describe('Given the iniettore v4.x interface', () => {
       `, () => {
       class Bar {}
       const context = container(() => {
-        let bar
+        let bar: Bar
 
         return {
           bar: singleton(() => {
@@ -69,7 +69,7 @@ describe('Given the iniettore v4.x interface', () => {
       expect(bar1).toBe(bar2)
     })
 
-    it(`should provide alternative solution to transient dependencies:
+    it(`should provide an alternative solution to transient dependencies:
 
           const context = iniettore.create(map => {
             map('aDependency')
@@ -97,7 +97,7 @@ describe('Given the iniettore v4.x interface', () => {
       expect(barProvider).toHaveBeenCalledWith(true, 42)
     })
 
-    function branch (ctx: Context<ContainerDescriptor>): ContainerDescriptor {
+    function branch (ctx: ContextFrom<ContainerDescriptor>): ContainerDescriptor {
       const bindings = {} as ContainerDescriptor
       for (const name in ctx) {
         if (Object.prototype.hasOwnProperty.call(ctx, name)) {
@@ -107,7 +107,7 @@ describe('Given the iniettore v4.x interface', () => {
       return bindings
     }
 
-    it(`should provide alternative solution to inheritance of mappings (not recommended in v4.x):
+    it(`should provide an alternative solution to inheritance of mappings (not recommended in v4.x):
 
           const context = iniettore.create(map => {
             map(foo).to(...).as(...)
@@ -127,14 +127,14 @@ describe('Given the iniettore v4.x interface', () => {
       expect(get(childContext.number)).toBe(42)
     })
 
-    it(`should provide alternative solution to $context special built-in mapping:
+    it(`should provide an alternative solution to $context special built-in mapping:
 
           const context = iniettore.create(map => {
             map(foo).to(...).as(...).injecting('$context')
           })
       `, () => {
-      const factorySpy = jest.fn(ctx => new Date())
-      const context = container(() => ({
+      const factorySpy = jest.fn((_: any) => new Date())
+      const context: Context<{ eventDate: Date }> = container(() => ({
         eventDate: provider(() => factorySpy(context))
       }))
 
@@ -143,7 +143,7 @@ describe('Given the iniettore v4.x interface', () => {
       expect(factorySpy).toHaveBeenCalledWith(context)
     })
 
-    it(`should provide alternative solution to blueprint:
+    it(`should provide an alternative solution to blueprint:
 
           function configureChildContext(map) {
             map('baz')

@@ -1,18 +1,19 @@
-import { container, free, get, singleton, provider } from '../src'
+import { Context, container, free, get, singleton, provider } from '../src'
+import { BindingDescriptor } from '../src/types'
 
 describe('Given a context', () => {
   describe('with 2 provider bindings, one of which depends on the other one', () => {
     describe('when acquiring an instance of such binding', () => {
       it('should resolve the dependency', () => {
-        const pretendFooFactory = jest.fn(() => 42)
         class Bar {
           constructor (foo: number) {
             expect(foo).toEqual(42)
           }
         }
-        const context = container(() => ({
-          foo: provider(pretendFooFactory),
-          bar: provider<Bar>(() => new Bar(get(context.foo)))
+
+        const context: Context<{ foo: number, bar: Bar }> = container(() => ({
+          foo: provider(() => 42),
+          bar: provider(() => new Bar(get(context.foo)))
         }))
 
         const instance = get(context.bar)
@@ -30,7 +31,7 @@ describe('Given a context', () => {
           class Event {
             constructor (date: Date) {} // eslint-disable-line no-useless-constructor
           }
-          const context = container(() => ({
+          const context: Context<{ date: Date, event: Event }> = container(() => ({
             date: singleton(dateFactory),
             event: provider(() => new Event(get(context.date)))
           }))
@@ -51,14 +52,14 @@ describe('Given a context', () => {
       it('should remove the dependency bindings from the internal list of dependencies', () => {
         const dateFactory = () => new Date()
         const customBindingDescriptorFreeSpy = jest.fn()
-        const customBindingDescriptor = fn => ({
-          get: jest.fn(fn),
+        const customBindingDescriptor = (fn: typeof dateFactory): BindingDescriptor<ReturnType<typeof dateFactory>> => ({
+          get: fn,
           free: customBindingDescriptorFreeSpy
         })
         class Event {
           constructor (date: Date) {} // eslint-disable-line no-useless-constructor
         }
-        const context = container(() => ({
+        const context: Context<{ date: Date, event: Event }> = container(() => ({
           date: customBindingDescriptor(dateFactory),
           event: singleton(() => new Event(get(context.date)))
         }))
@@ -84,7 +85,7 @@ describe('Given a context', () => {
         class Bar {
           constructor (foo: Foo) {} // eslint-disable-line no-useless-constructor
         }
-        const context = container(() => ({
+        const context: Context<{ foo: Foo, bar: Bar }> = container(() => ({
           foo: provider(() => new Foo(get(context.bar))),
           bar: provider(() => new Bar(get(context.foo)))
         }))

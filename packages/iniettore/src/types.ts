@@ -17,4 +17,6 @@ export type ContainerDescriptor = {
   [name:string]: BindingDescriptor<unknown>
 }
 
-export type Context<T extends ContainerDescriptor> = { [K in keyof T]: Binding<T[K]> }
+export type ContextFrom<T extends ContainerDescriptor> = { [K in keyof T]: Binding<T[K]> }
+
+export type Context<T> = {[K in keyof T]: Binding<BindingDescriptor<T[K]>>}
