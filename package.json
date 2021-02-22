@@ -9,6 +9,7 @@
     "lint": "eslint src/**/*.js",
     "test": "jest \"(.*)\\.spec\\.js\" --coverage --coverageReporters=text-lcov | coveralls",
     "build": "lerna exec --concurrency 1 -- rollup --config \\$LERNA_ROOT_PATH/rollup.config.js",
+    "build:all": "rollup --config ./rollup.config.js",
     "prepublish": "yarn build"
   },
   "devDependencies": {
@@ -18,6 +19,7 @@
     "@babel/preset-env": "~7.12.16",
     "@babel/preset-flow": "^7.12.13",
     "@babel/preset-typescript": "^7.12.17",
+    "@rollup/plugin-typescript": "^8.2.0",
     "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",

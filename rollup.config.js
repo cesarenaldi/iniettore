@@ -1,31 +1,30 @@
-import commonjs from 'rollup-plugin-commonjs'
-import babel from 'rollup-plugin-babel'
-import { terser } from 'rollup-plugin-terser'
+import ts from '@rollup/plugin-typescript'
+import typescript from 'typescript'
 
-export default {
-  input: 'src/index.js',
+export default [
+  'iniettore'
+].map(name => ({
+  input: `packages/${name}/src/index.ts`,
   output: {
-    file: 'cjs/' + process.env.LERNA_PACKAGE_NAME + '.js',
+    file: `packages/${name}/dist/${name}.js`,
     intro: `/**
- * ${process.env.LERNA_PACKAGE_NAME}
+ * ${name}
  * Build time: ${new Date().toISOString()}
  * @preserve
  */\n`,
     format: 'cjs',
     strict: false,
+    sourcemap: true,
     exports: 'named'
   },
   treeshake: true,
   plugins: [
-    commonjs(),
-    babel({
-      configFile: process.env.LERNA_ROOT_PATH + '/babel.config.js',
-      exclude: 'node_modules/**'
-    }),
-    terser({
-      output: {
-        comments: /@preserve/
-      }
+    ts({
+      typescript
+      // https://github.com/ezolenko/rollup-plugin-typescript2/issues/37
+      // include: [
+      //   './packages/shared/**/*.ts'
+      // ]
     })
   ]
-}
+}))

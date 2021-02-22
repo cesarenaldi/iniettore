@@ -1,5 +1,5 @@
 node_modules/
-cjs/
+dist/
 lib/
 reports/
 npm-debug.log

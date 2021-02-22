@@ -1,4 +1,4 @@
-import { Binding } from '../../shared/types'
+import { Binding } from './types'
 
 export default function createTraversingStack () {
   const stack: Set<Binding<any>> = new Set()

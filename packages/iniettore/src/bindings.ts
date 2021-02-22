@@ -1,4 +1,4 @@
-import { BindingDescriptor } from '../../shared/types'
+import { BindingDescriptor } from './types'
 
 const noop = (T: any) => undefined
 
@@ -8,26 +8,28 @@ export function provider<T> (func: () => T): BindingDescriptor<T> {
   }
 }
 
-export function singleton<T> (materialize: () => T, dispose: (T) => void = noop): BindingDescriptor<T> {
-  let instance: T
+export function singleton<T> (materialize: () => T, dispose: (t: T) => void = noop): BindingDescriptor<T> {
+  let instance: T | undefined
+
+  function destroy () {
+    if (instance) {
+      dispose(instance)
+      instance = undefined
+    }
+  }
 
   return {
     get () {
-      if (typeof instance === 'undefined') {
+      if (instance === undefined) {
         instance = materialize()
       }
       return instance
     },
-    free (dependents) {
+    free (dependents: number) {
       if (dependents === 0) {
-        this.destroy()
+        destroy()
       }
     },
-    destroy () {
-      if (instance) {
-        dispose(instance)
-        instance = undefined
-      }
-    }
+    destroy
   }
 }

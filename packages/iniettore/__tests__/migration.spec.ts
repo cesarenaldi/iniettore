@@ -1,4 +1,4 @@
-import { ContainerDescriptor, Context } from '../../shared/types'
+import { ContainerDescriptor, Context } from '../src/types'
 import { container, get, provider, singleton, free } from '../src'
 
 describe('Given the iniettore v4.x interface', () => {
@@ -98,10 +98,13 @@ describe('Given the iniettore v4.x interface', () => {
     })
 
     function branch (ctx: Context<ContainerDescriptor>): ContainerDescriptor {
-      return Object.entries(ctx).reduce((bindings, [name, binding]) => {
-        bindings[name] = provider(() => get(binding))
-        return bindings
-      }, {})
+      const bindings = {} as ContainerDescriptor
+      for (const name in ctx) {
+        if (Object.prototype.hasOwnProperty.call(ctx, name)) {
+          bindings[name] = provider(() => get(ctx[name]))
+        }
+      }
+      return bindings
     }
 
     it(`should provide alternative solution to inheritance of mappings (not recommended in v4.x):

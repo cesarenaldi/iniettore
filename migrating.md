@@ -2,7 +2,7 @@
 
 Complete rewrite
 
-Rationala
+Rationale
 - too much magic
 - broken interfaces (see blueprint)
 - type support
@@ -14,4 +14,3 @@ Rationala
 - lazy singletons...all singletons managed by iniettore are transient
 - eager singleton not managed by the library
 
-## 

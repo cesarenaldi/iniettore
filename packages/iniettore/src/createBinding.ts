@@ -1,5 +1,5 @@
-import { Binding, BindingDescriptor } from '../../shared/types'
-import lowPriorityWarning from '../../shared/lowPriorityWarning'
+import { Binding, BindingDescriptor } from './types'
+import lowPriorityWarning from './lowPriorityWarning'
 import createTraversingStack from './createTraversingStack'
 import { free } from './handlers'
 

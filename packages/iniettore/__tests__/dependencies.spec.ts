@@ -10,13 +10,13 @@ describe('Given a context', () => {
             expect(foo).toEqual(42)
           }
         }
-
         const context = container(() => ({
           foo: provider(pretendFooFactory),
-          bar: provider(() => new Bar(get(context.foo)))
+          bar: provider<Bar>(() => new Bar(get(context.foo)))
         }))
 
         const instance = get(context.bar)
+
         expect(instance).toBeInstanceOf(Bar)
       })
     })

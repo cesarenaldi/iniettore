@@ -1,4 +1,4 @@
-import { Binding, BindingDescriptor, Context } from '../../shared/types'
+import { Binding, BindingDescriptor, Context } from './types'
 
 export function get<T> (binding: Binding<BindingDescriptor<T>>): T {
   return binding.acquire()

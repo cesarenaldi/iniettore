@@ -1,6 +1,5 @@
+import { ContainerDescriptor, Context } from './types'
 import createBinding from './createBinding'
-
-import { ContainerDescriptor, Context } from '../../shared/types'
 
 const hasOwnProperty = Object.prototype.hasOwnProperty
 

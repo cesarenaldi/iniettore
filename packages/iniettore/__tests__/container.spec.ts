@@ -1,8 +1,8 @@
 import LeakDetector from 'jest-leak-detector'
 import { container, free, get, singleton } from '../src'
-import lowPriorityWarning from '../../shared/lowPriorityWarning'
+import lowPriorityWarning from '../src/lowPriorityWarning'
 
-jest.mock('../../shared/lowPriorityWarning')
+jest.mock('../src/lowPriorityWarning')
 
 describe('Given a context', () => {
   describe('with a resolved singleton binding', () => {
