@@ -6,11 +6,11 @@ const hasOwnProperty = Object.prototype.hasOwnProperty
 export default function container<T extends ContainerDescriptor> (describeContainer: () => T): Context<T> {
   const descriptors = describeContainer()
 
-  const n = {} as Context<T>
-  for (const k in descriptors) {
-    if (hasOwnProperty.call(descriptors, k)) {
-      n[k] = createBinding(k, descriptors[k])
+  const ctx = {} as Context<T>
+  for (const name in descriptors) {
+    if (hasOwnProperty.call(descriptors, name)) {
+      ctx[name] = createBinding(name, descriptors[name])
     }
   }
-  return n
+  return ctx
 }
