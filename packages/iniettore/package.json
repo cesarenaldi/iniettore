@@ -2,8 +2,12 @@
   "name": "iniettore",
   "version": "3.0.0-RC1",
   "description": "A light and simple IoC container",
-  "main": "src/index.js",
-  "module": "src/index.js",
+  "main": "dist/iniettore.js",
+  "module": "dist/iniettore.esm.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "ioc",
     "di",
