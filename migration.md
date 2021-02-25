@@ -1,4 +1,4 @@
-# Migrating from 3.x
+# From 3.x to 4.x
 
 Complete rewrite
 
