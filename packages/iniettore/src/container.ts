@@ -8,6 +8,7 @@ export default function container<T extends ContainerDescriptor> (describe: () =
 
   const ctx = {} as ContextFrom<T>
   for (const name in descriptors) {
+    /* istanbul ignore else */
     if (hasOwnProperty.call(descriptors, name)) {
       ctx[name] = createBinding(name, descriptors[name])
     }
