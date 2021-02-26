@@ -8,7 +8,7 @@
     "clean": "lerna exec --concurrency 1 -- rimraf -rf dist",
     "dev": "jest \"(.*)\\.spec\\.ts\" --watch",
     "lint": "eslint src/**/*.js",
-    "test": "jest \"(.*)\\.spec\\.js\" --coverage --coverageReporters=text-lcov | coveralls",
+    "test": "jest \"(.*)\\.spec\\.ts\" --coverage --coverageReporters=text-lcov | coveralls",
     "build": "yarn run clean && yarn run build:all",
     "build:all": "rollup --config ./rollup.config.js",
     "prepublish": "yarn build"

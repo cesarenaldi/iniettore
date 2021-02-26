@@ -17,6 +17,8 @@ module.exports = {
     '@typescript-eslint',
     'jest'
   ],
-  rules: {
-  }
+  rules: {},
+  ignorePatterns: [
+    '**/dist/*'
+  ]
 }
