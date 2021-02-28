@@ -1,5 +1,5 @@
 {
-  "name": "iniettore-project",
+  "name": "iniettore",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -7,11 +7,10 @@
   "scripts": {
     "clean": "lerna exec --concurrency 1 -- rimraf -rf dist",
     "dev": "jest \"(.*)\\.spec\\.ts\" --watch",
+    "lerna:init": "lerna bootstrap --ignore-scripts && lerna link --force-local",
     "lint": "eslint src/**/*.js",
-    "test": "jest \"(.*)\\.spec\\.ts\" --coverage --coverageReporters=text-lcov | coveralls",
-    "build": "yarn run clean && yarn run build:all",
-    "build:all": "rollup --config ./rollup.config.js",
-    "prepublish": "yarn build"
+    "postinstall": "yarn lerna:init",
+    "test": "jest \"(.*)\\.spec\\.ts\" --coverage --coverageReporters=text-lcov | coveralls"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.2.0",
@@ -33,6 +32,7 @@
     "rollup": "~2.39.0",
     "rollup-plugin-terser": "~7.0.2",
     "ts-jest": "^26.5.1",
+    "tslib": "^2.1.0",
     "typescript": "^4.1.5",
     "weak-napi": "^2.0.2"
   },

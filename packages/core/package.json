@@ -1,18 +1,28 @@
 {
-  "name": "iniettore",
+  "name": "@iniettore/core",
   "version": "3.0.0-RC1",
   "description": "A light and simple IoC container",
-  "main": "dist/iniettore.js",
-  "module": "dist/iniettore.esm.js",
-  "types": "dist/types/index.d.ts",
+  "main": "dist/core.js",
+  "module": "dist/core.esm.js",
+  "types": "dist/types/core.d.ts",
+  "scripts": {
+    "build": "rollup --config ./rollup.config.js"
+  },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE.md",
+    "README.md"
   ],
   "keywords": [
-    "ioc",
-    "di",
+    "architecture",
+    "clean",
     "container",
-    "dependency injection"
+    "dependency",
+    "di",
+    "injection",
+    "inversion",
+    "ioc",
+    "solid"
   ],
   "engines": {
     "node": ">=12"
@@ -28,7 +38,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/cesarenaldi/iniettore.git",
-    "directory": "packages/iniettore"
+    "directory": "packages/core"
   },
   "license": "ISC"
 }

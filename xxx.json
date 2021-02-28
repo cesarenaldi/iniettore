@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./packages",
+    "paths": {
+      "@iniettore/core": ["core/src"],
+      "@iniettore/inception": ["inception/src"],
+      "@iniettore/*": ["*/src"]
+    }
+  },
+  "references": [
+    {
+      "path": "./packages/core/tsconfig.build.json"
+    },
+    {
+      "path": "./packages/inception/tsconfig.build.json"
+    }
+  ]
+}

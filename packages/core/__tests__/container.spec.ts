@@ -5,7 +5,7 @@ import lowPriorityWarning from '../src/lowPriorityWarning'
 jest.mock('../src/lowPriorityWarning')
 
 describe('Given a context', () => {
-  describe('with a resolved singleton binding', () => {
+  describe('with a materialized singleton binding', () => {
     describe('when releasing the entire context', () => {
       it('should release the singleton instance stored within the context', async () => {
         class Bar {

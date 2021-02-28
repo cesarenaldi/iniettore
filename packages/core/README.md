@@ -82,6 +82,8 @@ const context: CustomContext = container(() => ({
 }))
 ```
 
+  **WARNING** [v4 providers have different behaviour to pre-v4 providers] TBD
+
 ### Request instances
 
 Requesting an instance of the `HeroService` will end up in creating an instance of the `ConsoleLogger` which will be provided to the `HeroService` constructor.

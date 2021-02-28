@@ -1,6 +1,6 @@
 import { BindingDescriptor } from './types'
 
-const noop = (T: any) => undefined
+const noop = () => undefined
 
 export function provider<T> (func: () => T): BindingDescriptor<T> {
   return {

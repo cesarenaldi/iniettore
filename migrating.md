@@ -1,72 +1,29 @@
 Migrating to v4
 ---
 
+## Deprecated
+- eager singletons
+- implicit dependency argument notation
+- property mapper
+- lazy singletons...all singletons managed by iniettore are transient
+- eager singleton not managed by the library
 
+## Values and Instances
 
-Creates a new context.
-## Prior version
-
-Compare to previous version of iniettore, some of the concepts have been simplified and generalized. Because of this the Iniettore interface footprint is significantly smaller.
-See below some common scenarios.
-
-- [Migrating to v4](#migrating-to-v4)
-- [Prior version](#prior-version)
-  - [Eager singletons](#eager-singletons)
-  - [Functions](#functions)
-  - [Providers](#providers)
-  - [Constructors](#constructors)
-  - [Child contexts](#child-contexts)
-  - [Blueprints](#blueprints)
-  - [Transient dependencies](#transient-dependencies)
-  - [Service locator](#service-locator)
-  - [Singletons](#singletons)
-    - [Lazy singletons](#lazy-singletons)
-      - [Lazy Singleton Provider](#lazy-singleton-provider)
-      - [Lazy Singleton Constructor](#lazy-singleton-constructor)
-    - [Eager singletons](#eager-singletons-1)
-    - [Transient singletons](#transient-singletons)
-      - [Transient Singleton Provider](#transient-singleton-provider)
-      - [Transient Singleton Constructor](#transient-singleton-constructor)
-      - [Transient singleton dependencies](#transient-singleton-dependencies)
-  - [Lifecycle](#lifecycle)
-    - [`instance.dispose`](#instancedispose)
-    - [`context.dispose`](#contextdispose)
-
-### Eager singletons
-
-At times one might need to define a binding as a proxy for an instance that is defined well before the Iniettore context is created.
-
-In the snipper below you can see 2 examples of how one can achieve that.
-
-```typescript
-import { get, container } from 'iniettore'
-
-const ANSWER = 42
-
-const context = container(() => {
-
-  answer: provider(() => 42),
-
-  drone
-})
-
-
-
-```
-
-In a previous documentation this was
+### Before
+In pre-v4 versions one doulc define a binding for a value and instance types like so:
 
 ```javascript
 import iniettore from 'iniettore'
 import { VALUE, INSTANCE } from 'iniettore'
 
-var drone = {
+const drone = {
   fly: function() {
     /*...*/
   }
 }
 
-var rootContext = iniettore.create(function(map) {
+const rootContext = iniettore.create(function(map) {
   map('answer')
     .to(42)
     .as(VALUE)
@@ -74,15 +31,58 @@ var rootContext = iniettore.create(function(map) {
     .to(drone)
     .as(INSTANCE)
 })
-
-var answer = rootContext.get('answer')
-
-console.log(rootContext.get('drone') === drone) // true
 ```
 
-### Functions
+There is no difference between `VALUE` and `INSTANCE`. The reason to have 2 different flags was just to provide better semantic when reading the mappings.
 
-You can register a function into the context and specify the its dependencies. When requesting the function you will get a partial application of it with all dependencies already satisfied.
+This was a quirk of the previous interface. **With iniettore v4 it's not longer necessary to register values into the context.**
+
+### After
+If you need to inject a value or an instance just pass them to them in into your constructors or factory functions:
+
+
+```typescript
+import { get, container } from 'iniettore'
+
+const ANSWER = 42
+
+class Question {
+  constructor (answer: number) { /* ... */ }
+}
+
+const context = container(() => {
+
+  question: provider(() => new Question(ANSWER)),
+
+  drone
+})
+```
+
+Alternatively you can use provider ans singleton bindings like in the example below:
+
+```typescript
+import { get, container } from 'iniettore'
+
+const ANSWER = 42
+
+const drone = {
+  fly: function() {
+    /*...*/
+  }
+}
+
+const context = container(() => {
+
+  answer: provider(() => ANSWER),
+
+  drone: singleton(() => drone),
+})
+```
+
+## Functions
+### Before
+
+In pre-v4 it was possible to define a mapping as a function and if dependencies where specified this would have resulted in a partial application of the provided function being registered into the context.
 
 ```javascript
 import iniettore from 'iniettore'
@@ -92,7 +92,7 @@ function fooFunction(bar, baz) {
   console.log(bar, baz)
 }
 
-var rootContext = iniettore.create(function(map) {
+const rootContext = iniettore.create(function(map) {
   map('bar')
     .to('BAR')
     .as(VALUE)
@@ -102,71 +102,104 @@ var rootContext = iniettore.create(function(map) {
     .injecting('bar')
 })
 
-var foo = rootContext.get('foo') // foo is a partial application of the original function
+const foo = rootContext.get('foo') // foo is a partial application of the original function
 
 foo(42) // BAR, 42
 ```
 
-### Providers
+### After
 
-Providers are generic functions that returns object or values specific for your application domain. A factory function can be seen as a special use case of the provider pattern.
+The simplified interface of iniettore v4 gives all the freedom one need to achieve the same without having to bloat the interface footprint.
 
-Every request will invoke the provider function and return a new value. The returned value depends on the nature of the registered provider function.
+```typescript
+import { container, get, provider } from 'iniettore'
 
-```javascript
-import iniettore from 'iniettore'
-import { PROVIDER } from 'iniettore'
-
-var idx = 0
-
-function fooProvider(bar) {
-  idx++
-
-  return { idx, bar }
+function fooFunction(bar, baz) {
+  console.log(bar, baz)
 }
 
-var rootContext = iniettore.create(function(map) {
-  map('bar')
-    .to(42)
-    .as(VALUE)
-  map('foo')
-    .to(fooProvider)
-    .as(PROVIDER)
-    .injecting('bar')
-})
+const context = container(() => ({
+  bar: provider(() => 42),
 
-console.log(rootContext.get('foo')) // { idx: 1, bar: 42 }
-console.log(rootContext.get('foo')) // { idx: 2, bar: 42 }
+  foo: provider(() => fooFunction.bind(null, get(context.bar)))
+}))
+
 ```
 
-### Constructors
+In the example above we use `Function.prototype.bind` to perfom a partial application of the provided function but feel free to use any other technique you are confident with.
 
-You can register constructors specifying the constructor dependencies. Every request will receive a new instance of the specified constructor.
-
-**Note:** no setters injection is supported at the moment.
+## Providers and Constructors
+### Before
+In pre-v4 there was a clear distinction between provider functions and 
+constructors. It was iniettore responsibility to invoke providers and to instantiate constructors (i.e. use `new` operator).
 
 ```javascript
 import iniettore from 'iniettore'
-import { CONSTRUCTOR } from 'iniettore'
+import { CONSTRUCTOR, PROVIDER } from 'iniettore'
 
-var idx = 0
+class Bar {}
 
-class Bar {
-  constructor() {
-    this.idx = ++idx
+let idx = 0
+function fooProvider() {
+  return {
+    idx: ++idx
   }
 }
 
-var rootContext = iniettore.create(function(map) {
+const rootContext = iniettore.create(function(map) {
   map('bar')
     .to(Bar)
     .as(CONSTRUCTOR)
-})
 
-console.log(rootContext.get('bar')) // { idx: 1 }
-console.log(rootContext.get('bar')) // { idx: 2 }
+  map('foo')
+    .to(fooProvider)
+    .as(PROVIDER)
+})
 ```
 
+### After
+
+Use the _provider_ binding if you need a new instance every time the binding is requested.
+
+```typescript
+import { container, provider } from 'iniettore'
+
+class Bar {}
+
+let idx = 0
+function factory() {
+  return {
+    idx: ++idx
+  }
+}
+
+var context = container(() => ({
+  item: provider(factory),
+
+  bar: provider(() => new Bar())
+}))
+```
+
+Use the _singleton_ binding if you need only one instance to exist regardless of the consumers:
+
+```typescript
+import { container, singleton } from 'iniettore'
+
+class Bar {}
+
+let idx = 0
+function factory() {
+  return {
+    idx: ++idx
+  }
+}
+
+var context = container(() => ({
+  item: singleton(factory),
+
+  bar: singleton(() => new Bar())
+}))
+```
 ### Child contexts
 
 Containers can be organized in a hierarchy. Given a context you can create a child context invoking `context.createChild(configure :Function) :Object` and providing the configuration function.

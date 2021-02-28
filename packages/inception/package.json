@@ -1,13 +1,27 @@
 {
-  "name": "iniettore-inception",
+  "name": "@iniettore/inception",
   "version": "3.0.0-RC1",
   "description": "Adds hierarchical capabilities to iniettore DI containers",
+  "main": "dist/inception.js",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "build": "rollup --config ./rollup.config.js"
+  },
+  "files": [
+    "dist",
+    "LICENSE.md",
+    "README.md"
+  ],
   "keywords": [
-    "di",
-    "ioc",
+    "architecture",
+    "clean",
     "container",
     "dependency",
-    "injection"
+    "di",
+    "injection",
+    "inversion",
+    "ioc",
+    "solid"
   ],
   "author": {
     "name": "Cesare Naldi",
@@ -15,16 +29,18 @@
   },
   "homepage": "https://github.com/cesarenaldi/iniettore.git",
   "license": "ISC",
-  "main": "cjs/iniettore-inception.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/cesarenaldi/iniettore.git",
-    "directory": "packages/iniettore-inception"
+    "directory": "packages/inception"
   },
   "bugs": {
     "url": "https://github.com/cesarenaldi/iniettore/issues"
   },
   "peerDependencies": {
-    "iniettore": "^3.0.0-RC1"
+    "@iniettore/core": "^3.0.0-RC1"
+  },
+  "devDependencies": {
+    "@iniettore/core": "^3.0.0-RC1"
   }
 }

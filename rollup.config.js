@@ -2,7 +2,7 @@ import ts from '@rollup/plugin-typescript'
 import typescript from 'typescript'
 
 export default [
-  'iniettore'
+  'core'
 ].map(name => ({
   input: `packages/${name}/src/index.ts`,
   output: [
@@ -36,7 +36,7 @@ export default [
     ts({
       typescript,
 
-      tsconfig: `packages/${name}/tsconfig.json`
+      tsconfig: `packages/${name}/tsconfig.build.json`
 
       // rootDir: `packages/${name}/src`,
       // outDir: `packages/${name}/dist`,
