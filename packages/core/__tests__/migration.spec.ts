@@ -22,7 +22,7 @@ describe('Given the iniettore v4.x interface', () => {
       expect(foo).toBeInstanceOf(Foo)
     })
 
-    it(`should provide an alternative solution to EAGER, SINGLETON mappings:
+    it.skip(`should provide an alternative solution to EAGER, SINGLETON mappings:
 
           iniettore.create(map => {
             map('foo')
@@ -86,7 +86,7 @@ describe('Given the iniettore v4.x interface', () => {
             .using({ transientDependency: 42 })
             .get('myMapping')
       `, () => {
-      const barProvider = jest.fn((aDependency: boolean, transientDependency: number) => ({}))
+      const barProvider = jest.fn((_a: boolean, _b: number) => ({}))
       const context = container(() => ({
         baz: provider(() => true),
         bar: provider(() => (v: number) => barProvider(get(context.baz), v))
