@@ -34,7 +34,8 @@
     "directory": "packages/react"
   },
   "scripts": {
-    "build": "tsc -b tsconfig.build.json"
+    "build": "tsc -b tsconfig.build.json",
+    "clean": "tsc -b tsconfig.build.json --clean"
   },
   "bugs": {
     "url": "https://github.com/cesarenaldi/iniettore/issues"

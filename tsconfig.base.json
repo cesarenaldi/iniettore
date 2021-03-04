@@ -6,7 +6,7 @@
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
-    "module": "ESNext",
+    "module": "commonjs",
     "moduleResolution": "Node",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
