@@ -1,5 +1,5 @@
+import { BindingDescriptor } from '@iniettore/common'
 import { Context, container, free, get, singleton, provider } from '../src'
-import { BindingDescriptor } from '../src/types'
 
 describe('Given a context', () => {
   describe('with 2 provider bindings, one of which depends on the other one', () => {

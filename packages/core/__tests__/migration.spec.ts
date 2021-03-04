@@ -1,4 +1,4 @@
-import { ContainerDescriptor, Context, ContextFrom } from '../src/types'
+import { ContainerDescriptor, Context, ContextFrom } from '@iniettore/common'
 import { container, get, provider, singleton, free } from '../src'
 
 describe('Given the iniettore v4.x interface', () => {
