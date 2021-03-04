@@ -1,14 +1,12 @@
 import ts from '@rollup/plugin-typescript'
-import pkg from './package.json'
-// import ts from 'rollup-plugin-typescript2'
 import typescript from 'typescript'
 
 export default {
   input: 'src/index.ts',
   output: {
-    file: 'dist/core.js',
+    file: 'dist/index.js',
     intro: `/**
- * @iniettore/core
+ * @iniettore/common
  * Build time: ${new Date().toISOString()}
  * @preserve
  */\n`,
@@ -23,9 +21,5 @@ export default {
       typescript,
       tsconfig: './tsconfig.build.json'
     })
-  ],
-  external: [
-    ...Object.keys(pkg.dependencies || {}),
-    ...Object.keys(pkg.peerDependencies || {})
   ]
 }

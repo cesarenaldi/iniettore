@@ -6,8 +6,8 @@
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -15,11 +15,7 @@
     "sourceMap": true,
     "strict": true,
     "target": "es2017",
-    "lib": ["es2017"],
-    "baseUrl": "./packages",
-    "paths": {
-      "@iniettore/core": ["core/src"],
-      "@iniettore/inception": ["inception/src"]
-    }
-  }
+    "lib": ["es2017"]
+  },
+  "exclude": ["node_modules"]
 }

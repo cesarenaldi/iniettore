@@ -5,3 +5,4 @@ reports/
 npm-debug.log
 .DS_Store
 .rollup.cache
+tsconfig.build.tsbuildinfo

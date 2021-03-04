@@ -1,14 +1,14 @@
-import ts from '@rollup/plugin-typescript'
+// import ts from '@rollup/plugin-typescript'
 import pkg from './package.json'
-// import ts from 'rollup-plugin-typescript2'
+import ts from 'rollup-plugin-typescript2'
 import typescript from 'typescript'
 
 export default {
-  input: 'src/index.ts',
+  input: 'src/index.tsx',
   output: {
-    file: 'dist/core.js',
+    file: 'dist/react.js',
     intro: `/**
- * @iniettore/core
+ * @iniettore/react
  * Build time: ${new Date().toISOString()}
  * @preserve
  */\n`,

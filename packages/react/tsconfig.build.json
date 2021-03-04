@@ -5,14 +5,12 @@
     "declarationMap": true,
     "outDir": "./dist",
     "rootDir": "./src",
+    "jsx": "react"
   },
   "include": ["src"],
   "references": [
     {
       "path": "../common/tsconfig.build.json"
-    },
-    {
-      "path": "../core/tsconfig.build.json"
     }
   ]
 }

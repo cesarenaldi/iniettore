@@ -6,9 +6,10 @@
   ],
   "scripts": {
     "clean": "lerna exec --concurrency 1 -- rimraf -rf dist",
-    "dev": "jest \"(.*)\\.spec\\.ts\" --watch",
+    "build": "lerna run build",
+    "dev": "jest \"(.*)\\.spec\\.(ts|tsx)\" --watch",
     "lerna:init": "lerna bootstrap --ignore-scripts && lerna link --force-local",
-    "lint": "eslint src/**/*.js",
+    "lint": "eslint src/**/*.{ts,tsx}",
     "postinstall": "yarn lerna:init",
     "test": "jest \"(.*)\\.spec\\.ts\" --coverage --coverageReporters=text-lcov | coveralls"
   },
@@ -31,6 +32,7 @@
     "rimraf": "^3.0.2",
     "rollup": "~2.39.0",
     "rollup-plugin-terser": "~7.0.2",
+    "rollup-plugin-typescript2": "^0.30.0",
     "ts-jest": "^26.5.1",
     "tslib": "^2.1.0",
     "typescript": "^4.1.5",

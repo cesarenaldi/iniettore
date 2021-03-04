@@ -1,0 +1,56 @@
+{
+  "name": "@iniettore/react",
+  "version": "3.0.0-RC1",
+  "description": "React bindings for Iniettore Dependency Injection Container",
+  "keywords": [
+    "react",
+    "iniettore",
+    "dependency",
+    "injection",
+    "inversion",
+    "ioc",
+    "typescript"
+  ],
+  "author": "Cesare Naldi <naldi.cesare@gmail.com>",
+  "homepage": "https://github.com/cesarenaldi/iniettore#readme",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.yarnpkg.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cesarenaldi/iniettore.git",
+    "directory": "packages/react"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json"
+  },
+  "bugs": {
+    "url": "https://github.com/cesarenaldi/iniettore/issues"
+  },
+  "devDependencies": {
+    "@iniettore/core": "^3.0.0-RC1",
+    "@testing-library/react": "^11.2.5",
+    "@types/react": "^17.0.2",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "peerDependencies": {
+    "@iniettore/core": "^3.0.0-RC1",
+    "react": "^17.0.1"
+  },
+  "dependencies": {
+    "@iniettore/common": "^3.0.0-RC1"
+  }
+}

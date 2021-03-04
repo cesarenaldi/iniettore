@@ -1,5 +1,5 @@
 {
-  "name": "@iniettore/core",
+  "name": "@iniettore/common",
   "version": "3.0.0-RC1",
   "description": "A light and simple IoC container",
   "main": "dist/index.js",
@@ -42,9 +42,10 @@
   },
   "license": "ISC",
   "devDependencies": {
+    "@iniettore/core": "^3.0.0-RC1",
     "react-dom": "^17.0.1"
   },
-  "dependencies": {
-    "@iniettore/common": "^3.0.0-RC1"
+  "peerDependencies": {
+    "@iniettore/core": "^3.0.0-RC1"
   }
 }

@@ -2,14 +2,14 @@
   "name": "@iniettore/inception",
   "version": "3.0.0-RC1",
   "description": "Adds hierarchical capabilities to iniettore DI containers",
-  "main": "dist/inception.js",
-  "types": "dist/types/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rollup --config ./rollup.config.js"
+    "build": "tsc -b tsconfig.build.json"
   },
   "files": [
     "dist",
-    "LICENSE.md",
+    "LICENSE",
     "README.md"
   ],
   "keywords": [
@@ -21,7 +21,8 @@
     "injection",
     "inversion",
     "ioc",
-    "solid"
+    "solid",
+    "typescript"
   ],
   "author": {
     "name": "Cesare Naldi",
@@ -41,6 +42,10 @@
     "@iniettore/core": "^3.0.0-RC1"
   },
   "devDependencies": {
-    "@iniettore/core": "^3.0.0-RC1"
+    "@iniettore/core": "^3.0.0-RC1",
+    "react-dom": "^17.0.1"
+  },
+  "dependencies": {
+    "@iniettore/common": "^3.0.0-RC1"
   }
 }

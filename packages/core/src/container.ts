@@ -1,4 +1,4 @@
-import { ContainerDescriptor, ContextFrom } from './types'
+import { ContainerDescriptor, ContextFrom } from '@iniettore/common'
 import createBinding from './createBinding'
 
 const hasOwnProperty = Object.prototype.hasOwnProperty

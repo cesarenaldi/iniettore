@@ -1,4 +1,4 @@
-import { Binding, BindingDescriptor, ContextFrom } from './types'
+import { Binding, BindingDescriptor, ContextFrom } from '@iniettore/common'
 
 export function get<T> (binding: Binding<BindingDescriptor<T>>): T {
   return binding.acquire()

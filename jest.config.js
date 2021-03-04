@@ -1,13 +1,17 @@
+// @ts-check
+/** @type {import('@jest/types').Config.InitialOptions} */
 module.exports = {
   preset: 'ts-jest',
   globals: {
     'ts-jest': {
       tsconfig: {
-        strictBindCallApply: true
+        strictBindCallApply: true,
+        esModuleInterop: true,
+        jsx: 'react-jsx'
       }
     }
   },
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   coverageDirectory: './reports',
   coverageReporters: [
     'json',

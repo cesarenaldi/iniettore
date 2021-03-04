@@ -1,4 +1,4 @@
-import { BindingDescriptor } from './types'
+import { BindingDescriptor } from '@iniettore/common'
 
 const noop = () => undefined
 

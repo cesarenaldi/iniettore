@@ -1,7 +1,9 @@
-import { Binding, BindingDescriptor } from './types'
+import { Binding, BindingDescriptor } from '@iniettore/common'
 import lowPriorityWarning from './lowPriorityWarning'
 import createTraversingStack from './createTraversingStack'
 import { free } from './handlers'
+
+const traversingStack = createTraversingStack()
 
 function clearDependencies (dependencies: Array<Binding<any>>): Array<Binding<any>> {
   dependencies.map(free)
@@ -46,7 +48,5 @@ function createBinding<T> (name: string, descriptor: BindingDescriptor<T>): Bind
     }
   }
 }
-
-const traversingStack = createTraversingStack()
 
 export default createBinding
