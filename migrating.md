@@ -82,7 +82,7 @@ const context = container(() => {
 ## Functions
 ### Before
 
-In pre-v4 it was possible to define a mapping as a function and if dependencies where specified this would have resulted in a partial application of the provided function being registered into the context.
+In pre-v4 it was possible to define a mapping as a function. When also dependencies were specified this would have resulted in a [partial application](https://en.wikipedia.org/wiki/Partial_application) being registered into the context.
 
 ```javascript
 import iniettore from 'iniettore'
@@ -109,7 +109,7 @@ foo(42) // BAR, 42
 
 ### After
 
-The simplified interface of iniettore v4 gives all the freedom one need to achieve the same without having to bloat the interface footprint.
+The simplified interface of iniettore v4 gives all the freedom one need to achieve the same without having to require special treatments.
 
 ```typescript
 import { container, get, provider } from 'iniettore'
@@ -180,7 +180,7 @@ var context = container(() => ({
 }))
 ```
 
-Use the _singleton_ binding if you need only one instance to exist regardless of the consumers:
+Use the _singleton_ binding if you need only one instance to exist regardless of how many other 
 
 ```typescript
 import { container, singleton } from 'iniettore'
@@ -200,11 +200,18 @@ var context = container(() => ({
   bar: singleton(() => new Bar())
 }))
 ```
-### Child contexts
+## Child contexts
+### Before
 
-Containers can be organized in a hierarchy. Given a context you can create a child context invoking `context.createChild(configure :Function) :Object` and providing the configuration function.
+Iniettore pre-v4 have an explicit way to create a context hierarchy. This was achieved via the `context.createChild(fn)`.
 
-A child context can make use all the mappings of the parent context and ancestor contexts.
+Child contexts used to serve two purposes:
+- let a child context inherit mappings defined in their parent context.
+- bind the lifecycle of a child context to the lifecycle of their parent context. If the parent context were to be destroyed, the child context would have been destroyed as well.
+
+**NOTE:** This second aspect was poorly documented so there is a chance you might not have taken advantage of this aspects in your usage of iniettore.
+
+A typical usage of Child contexts in pre-v4 could have looked like the following example.
 
 ```javascript
 import iniettore from 'iniettore'
@@ -237,9 +244,92 @@ console.log(childContext.get('bar')) // 84
 console.log(childContext.get('foo')) // { bar: 84, baz: 'pluto' }
 ```
 
-### Blueprints
+### After
 
-Blueprint is effectively **a convenient way to register a child context factory**. The mapping value is the configuration function for the child context. Every time you request the blueprint mapping name you will get a new child context.
+Iniettore v4 does NOT have an explicit method/function to create child contexts. Because of this the developer does have more options in the way they decide to organize their dependencies.
+
+#### Consume parent dependencies
+
+```typescript
+import { container, Context, singleton, provider } from 'iniettore'
+
+const appContext = container(() => ({
+  logger: singleton(() => new ConsoleLogger())
+}))
+
+const requestContext = container(() => ({
+  hero: provider(() => new HeroService(get(appContext.logger)))
+}))
+
+```
+
+#### Child context factory
+
+The example below shows hot it's possible to create a _contexts provider_ with bindings that depends on the parent context bindings.
+
+```typescript
+import { container, Context, get, free, singleton, provider } from 'iniettore'
+
+type AppContext = Context<{ logger: Logger, requestContext: Context<unknown> }>
+
+const appContext: AppContext = container(() => ({
+  logger: singleton(() => new ConsoleLogger()),
+
+  requestContext: provider(() => createRequestContext(appContext))
+}))
+
+function createRequestContext(appContext: AppContext) {
+  return container(() => ({
+    hero: provider(() => new HeroService(get(appContext.logger)))
+  }))
+}
+
+// Example usage:
+const requestContext = get(appContext.requestContext)
+
+// use requestContext
+
+free(appContext.requestContext)
+```
+
+#### Singleton child context
+
+```typescript
+import { container, Context, get, free, singleton } from 'iniettore'
+
+type AppContext = Context<{ logger: Logger, requestContext: Context<unknown> }>
+
+const appContext: AppContext = container(() => ({
+  logger: singleton(() => new ConsoleLogger()),
+
+  heroSectionContext: singleton(
+    () => createHeroSectionContext(appContext),
+
+    // NOTE: We use the singleton binding 2nd callback
+    // to clear the child context when no longer needed
+    heroSectionContext => free(heroSectionContext)
+  )
+}))
+
+function createHeroSectionContext(appContext: AppContext) {
+  return container(() => ({
+    hero: provider(() => new HeroService(get(appContext.logger)))
+  }))
+}
+
+// Example usage:
+const heroSectionContext = get(appContext.heroSectionContext)
+
+// use heroSectionContext
+
+free(appContext.heroSectionContext)
+```
+
+## Blueprints
+
+### Before
+
+Blueprint was **a convenient way to register a child context factory** in iniettore pre-v4. The mapping value is the configuration function for the child context. Every time you request the blueprint mapping name you will get a new child context.
 
 ```javascript
 import iniettore from 'iniettore'
@@ -266,7 +356,13 @@ console.log(childContext.get('bar')) // 42
 console.log(childContext.get('baz')) // pluto
 ```
 
-In case you are interested in only one mapping in the child context you can specify the exported alias. See example below.
+### After
+
+Iniettore v4 does not have special method/functions to define child context factory.
+A careful reader might have notices though that in a previous example we already shown how to create a child context factory using `provider` and `container`. See [here](#child-context-factory).
+### What about `exports`?
+
+Some might remember that in pre-v4 it was possible to create a Blueprint and declare which binding was the main export of the created child contexts. See example below as a refresher
 
 ```javascript
 import iniettore from 'iniettore'
@@ -298,13 +394,50 @@ var baz = rootContext.get('foo')
 console.log(baz()) // 42
 ```
 
-### Transient dependencies
+This was going against the hierarchical nature of iniettore contexts. A child context might use some parent context bindings but the opposite was not possible (by design). The Blueprint `exports` was kinda introducing a logical dependency between the parent context and the details of the child context. This because one must know the name of the child context binding to export in the definition of the parent context blueprint binding.
 
-**EXPERIMENTAL FEATURE: don't abuse of it.**
+Iniettore v4 does not provide special methods/functions to create a blueprint, so it should not be with a surprise that it's not possible to define a "default export" of a child context.
 
-While requesting an alias it's possible to provide **temporary dependencies** to satisfy dependencies of the requested mapping or one of its dependency.
+Said that, one could still achieve something very similar. See example below.
 
-**Note:** Transient dependencies cannot be used to satisfy dependencies in the ancestor contexts.
+
+```typescript
+import { container, Context, get, free, singleton, provider } from 'iniettore'
+
+type RequestHandler = (req: Request, res: response) => void
+
+function requestHandler(hero: HeroService, req: Request, res: Response): void { /* ... */ }
+
+type ReqContext = Context<{ hero: HeroService, requestContext: Context<unknown> }>
+
+function createRequestHandler(appContext: AppContext): RequestHandler {
+  const requestContext: ReqContext = container(() => ({
+    hero: provider(() => new HeroService(get(appContext.logger))),
+
+    handler: provider(() => requestHandler.bind(null, get(requestContext.hero)))
+  }))
+
+  // akin to pre-v4 blueprint exports
+  return get(requestContext.handler)
+}
+
+
+
+type AppContext = Context<{ logger: Logger, requestHandler: RequestHandler }>
+
+const appContext: AppContext = container(() => ({
+  logger: singleton(() => new ConsoleLogger()),
+
+  requestHandler: provider(() => createRequestHandler(appContext))
+}))
+```
+
+## Transient dependencies
+
+### Before
+
+In iniettore pre-v4 there was this concept if **temporary dependencies** (or transient dependencies). See below a refresher.
+
 
 ```javascript
 import iniettore from 'iniettore'
@@ -334,11 +467,24 @@ var foo = rootContext.using(transientDependencies).get('foo')
 console.log(foo) // { bar: 42, baz: 'pluto' }
 ```
 
-### Service locator
+### After
 
-TBC
+In iniettore v4 everything is much simpler! Just use a function and do a partial application like in the [Functions](#functions) After example.
 
-### Singletons
+## Singletons
+
+Iniettore pre-v4 had 3 types of singletons: Lazy, Eager, and Transient.
+
+### Lazy singletons
+
+In iniettore pre-v4 a Lazy Singleton mapping is able to produce a singleton instance that gets created at the first time it's requested. The instance gets destroyed only when the context it has been registered into gets destroyed.
+
+**BREAKING CHANGE:** Iniettore v4 does NOT have a way to define a singleton with the lifecycle described above.
+
+### Eager singletons
+
+gets created at registration time.
+- **Transient singletons** - a **temporary lazy singleton** instance. The instance gets created at the first time it is requested (directly or as dependency of another mapping) and gets destroyed when is not used anymore.
 
 Constructors and Providers can also be marked as singletons. A function registered as `SINGLETON, PROVIDER` will be used as singleton instance factory. A constructor registered as `SINGLETON, CONSTRUCTOR` will be used to create only once instance of the constructor type.
 

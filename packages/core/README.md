@@ -41,7 +41,7 @@ Iniettore contexts can be organized in a hierarchy so to accommodate different a
 
 ## Getting Started
 
-We will go over the fundamentals using an example. See below.
+We will go over the fundamentals using an example. See below a typical dependency scenario.
 
 ```typescript
 
