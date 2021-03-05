@@ -11,7 +11,7 @@
     "dev": "jest \"(.*)\\.spec\\.(ts|tsx)\" --watch",
     "lerna:init": "lerna bootstrap --ignore-scripts && lerna link --force-local",
     "lint": "eslint src/**/*.{ts,tsx}",
-    "postinstall": "yarn lerna:init",
+    "postinstall": "yarn lerna:init && yarn build",
     "test": "jest \"(.*)\\.spec\\.ts\" --coverage --coverageReporters=text-lcov | coveralls"
   },
   "devDependencies": {
