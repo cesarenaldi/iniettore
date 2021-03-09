@@ -1,8 +1,8 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { render } from '@testing-library/react'
 import { container, get, provider } from '@iniettore/core'
 
-import { IniettoreContext, Provider } from '../src'
+import { ContextProvider as IniettoreContextProvider, useContext as useIniettoreContext } from '../src'
 
 describe('Given an iniettore context', () => {
   describe('when injected into an React context via the iniettore Provider', () => {
@@ -11,10 +11,8 @@ describe('Given an iniettore context', () => {
         num: provider(() => 42)
       }))
 
-      type ContextProps = typeof context
-
       function TestAsserter () {
-        const ctx: ContextProps = useContext(IniettoreContext) as ContextProps
+        const ctx = useIniettoreContext<{ num: number }>()
 
         expect(get(ctx.num)).toEqual(expect.any(Number))
 
@@ -22,9 +20,9 @@ describe('Given an iniettore context', () => {
       }
 
       render(
-        <Provider context={context}>
+        <IniettoreContextProvider context={context}>
           <TestAsserter />
-        </Provider>
+        </IniettoreContextProvider>
       )
     })
   })

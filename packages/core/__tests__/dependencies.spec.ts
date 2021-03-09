@@ -29,7 +29,7 @@ describe('Given a context', () => {
         it('should release the singleton instance as well', () => {
           const dateFactory = jest.fn(() => new Date())
           class Event {
-            constructor (date: Date) {} // eslint-disable-line no-useless-constructor
+            constructor (_: Date) {} // eslint-disable-line no-useless-constructor
           }
           const context: Context<{ date: Date, event: Event }> = container(() => ({
             date: singleton(dateFactory),
@@ -57,7 +57,7 @@ describe('Given a context', () => {
           free: customBindingDescriptorFreeSpy
         })
         class Event {
-          constructor (date: Date) {} // eslint-disable-line no-useless-constructor
+          constructor (_: Date) {} // eslint-disable-line no-useless-constructor
         }
         const context: Context<{ date: Date, event: Event }> = container(() => ({
           date: customBindingDescriptor(dateFactory),
@@ -80,10 +80,10 @@ describe('Given a context', () => {
     describe('when acquiring an instance of a binding involved in such circular dependency', () => {
       it('should throw an infomative error regarding the problem at hand', () => {
         class Foo {
-          constructor (bar: Bar) {} // eslint-disable-line no-useless-constructor
+          constructor (_: Bar) {} // eslint-disable-line no-useless-constructor
         }
         class Bar {
-          constructor (foo: Foo) {} // eslint-disable-line no-useless-constructor
+          constructor (_: Foo) {} // eslint-disable-line no-useless-constructor
         }
         const context: Context<{ foo: Foo, bar: Bar }> = container(() => ({
           foo: provider(() => new Foo(get(context.bar))),
