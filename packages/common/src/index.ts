@@ -13,10 +13,8 @@ export type Binding<T extends UnspecifiedBindingDescriptor> = {
   dispose: () => void
 }
 
-export type ContainerDescriptor = {
-  [name:string]: BindingDescriptor<unknown>
+export type ContainerDescriptor<T extends {}> = {
+  [K in keyof T]: BindingDescriptor<T[K]>
 }
 
-export type ContextFrom<T extends ContainerDescriptor> = { [K in keyof T]: Binding<T[K]> }
-
-export type Context<T extends {}> = {[K in keyof T]: Binding<BindingDescriptor<T[K]>>}
+export type Context<T> = {[K in keyof ContainerDescriptor<T>]: Binding<ContainerDescriptor<T>[K]>}

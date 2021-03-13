@@ -1,4 +1,4 @@
-import { ContainerDescriptor, Context, ContextFrom } from '@iniettore/common'
+import { ContainerDescriptor, Context } from '@iniettore/common'
 import { container, get, provider, singleton, free } from '../src'
 
 describe('Given the iniettore v4.x interface', () => {
@@ -97,8 +97,8 @@ describe('Given the iniettore v4.x interface', () => {
       expect(barProvider).toHaveBeenCalledWith(true, 42)
     })
 
-    function branch (ctx: ContextFrom<ContainerDescriptor>): ContainerDescriptor {
-      const bindings = {} as ContainerDescriptor
+    function branch<T> (ctx: Context<T>): ContainerDescriptor<T> {
+      const bindings = {} as ContainerDescriptor<T>
       for (const name in ctx) {
         if (Object.prototype.hasOwnProperty.call(ctx, name)) {
           bindings[name] = provider(() => get(ctx[name]))

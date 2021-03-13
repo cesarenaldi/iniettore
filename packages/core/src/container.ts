@@ -1,12 +1,12 @@
-import { ContainerDescriptor, ContextFrom } from '@iniettore/common'
+import { Context, ContainerDescriptor } from '@iniettore/common'
 import createBinding from './createBinding'
 
 const hasOwnProperty = Object.prototype.hasOwnProperty
 
-export default function container<T extends ContainerDescriptor> (describe: () => T): ContextFrom<T> {
+export default function container<T> (describe: () => ContainerDescriptor<T>): Context<T> {
   const descriptors = describe()
 
-  const ctx = {} as ContextFrom<T>
+  const ctx = {} as Context<T>
   for (const name in descriptors) {
     /* istanbul ignore else */
     if (hasOwnProperty.call(descriptors, name)) {

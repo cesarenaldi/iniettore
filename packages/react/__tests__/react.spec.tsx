@@ -1,16 +1,13 @@
 import React from 'react'
 import { render } from '@testing-library/react'
-import { container, get, provider } from '@iniettore/core'
+import { Context } from '@iniettore/common'
+import { get, provider } from '@iniettore/core'
 
-import { ContextProvider as IniettoreContextProvider, useContext as useIniettoreContext } from '../src'
+import { Container, useContext as useIniettoreContext } from '../src'
 
-describe('Given an iniettore context', () => {
-  describe('when injected into an React context via the iniettore Provider', () => {
-    it('should be available for children via the React Context API', () => {
-      const context = container(() => ({
-        num: provider(() => 42)
-      }))
-
+describe('Given a React app', () => {
+  describe('when using the <Container /> component', () => {
+    it('should create a new Iniettore Context and make it available to the children via React Context', () => {
       function TestAsserter () {
         const ctx = useIniettoreContext<{ num: number }>()
 
@@ -20,9 +17,39 @@ describe('Given an iniettore context', () => {
       }
 
       render(
-        <IniettoreContextProvider context={context}>
+        <Container
+          describe={() => ({
+            num: provider(() => 42)
+          })}
+        >
           <TestAsserter />
-        </IniettoreContextProvider>
+        </Container>
+      )
+    })
+
+    it('should allow to access bindings from an Iniettore Context injected higher up in the render tree', () => {
+      function TestAsserter () {
+        const ctx = useIniettoreContext<{ sqr: number }>()
+
+        expect(get(ctx.sqr)).toEqual(expect.any(Number))
+
+        return null
+      }
+
+      render(
+        <Container
+          describe={() => ({
+            num: provider(() => 42)
+          })}
+        >
+          <Container
+            describe={({ num }: Context<{ num: number }>) => ({
+              sqr: provider(() => get(num) ** 2)
+            })}
+          >
+              <TestAsserter />
+          </Container>
+        </Container>
       )
     })
   })

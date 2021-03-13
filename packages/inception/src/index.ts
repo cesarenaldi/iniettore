@@ -1,7 +1,7 @@
-import { ContainerDescriptor, BindingDescriptor, ContextFrom } from '@iniettore/common'
+import { ContainerDescriptor, BindingDescriptor, Context } from '@iniettore/common'
 import { container } from '@iniettore/core'
 
-export function child<T extends ContainerDescriptor> (create: () => T): BindingDescriptor<ContextFrom<T>> {
+export function child<T extends ContainerDescriptor<T>> (create: () => T): BindingDescriptor<Context<T>> {
   return {
     get () {
       return container(create)
