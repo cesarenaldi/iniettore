@@ -1,4 +1,4 @@
-# `iniettore`
+# `@iniettore/core`
 
 Iniettore is a minimalistic Dependency Injection Container for JavaScript applications.
 
@@ -12,12 +12,13 @@ Iniettore v4 is a complete rewrite which comes with a brand new minimalistic int
 Using npm:
 
 ```bash
-npm install iniettore --save
+npm install @iniettore/core --save
 ```
 
 Using Yarn:
+
 ```bash
-yarn add iniettore
+yarn add @iniettore/core
 ```
 
 ## Basic Concepts
@@ -46,19 +47,19 @@ We will go over the fundamentals using an example. See below a typical dependenc
 ```typescript
 
 interface Logger {
-    log(msg: string): void
+  log(msg: string): void
 }
 
 class ConsoleLogger implements Logger {
-    log(msg: string) {
-        console.log(msg)
-    }
+  log(msg: string) {
+    console.log(msg)
+  }
 }
 
 class HeroService {
-    constructor (readonly logger: Logger) {}
+  constructor (readonly logger: Logger) {}
 
-    fightBaddie () { /* ... */ }
+  fightBaddie () { /* ... */ }
 }
 ```
 We will instruct Iniettore to create a `HeroService` instance and provide a `ConsoleLogger` instance via constructor injection.

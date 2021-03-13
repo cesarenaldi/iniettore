@@ -477,87 +477,19 @@ Iniettore pre-v4 had 3 types of singletons: Lazy, Eager, and Transient.
 
 ### Lazy singletons
 
-In iniettore pre-v4 a Lazy Singleton mapping is able to produce a singleton instance that gets created at the first time it's requested. The instance gets destroyed only when the context it has been registered into gets destroyed.
+In iniettore pre-v4 a Lazy Singleton mapping was designed to produce a singleton instance when requested the first time. The instance gets destroyed only when the context it has been registered into gets destroyed.
 
 **BREAKING CHANGE:** Iniettore v4 does NOT have a way to define a singleton with the lifecycle described above.
 
 ### Eager singletons
 
-gets created at registration time.
-- **Transient singletons** - a **temporary lazy singleton** instance. The instance gets created at the first time it is requested (directly or as dependency of another mapping) and gets destroyed when is not used anymore.
+#### Before
 
-Constructors and Providers can also be marked as singletons. A function registered as `SINGLETON, PROVIDER` will be used as singleton instance factory. A constructor registered as `SINGLETON, CONSTRUCTOR` will be used to create only once instance of the constructor type.
+In iniettore pre-v4 an Eager Singleton mapping was designed to produce a singleton instance at registration time. The instance gets destroyed when the corresponding context is destroyed.
 
-Singletons can be marked as: `LAZY`, `EAGER` or `TRANSIENT`.
+This implied that all the required dependencies must be registered in the context or in one of its ancestors.
 
-- [Lazy singletons](#persistent-singletons)
-- [Eager singletons](#eager-singletons)
-- [Transient singletons](#transient-singletons)
-
-#### Lazy singletons
-
-A mapping marked as `LAZY, SINGLETON` produce a singleton instance that gets created at the first time it is requested. It gets destroyed only when the context it has been registered into gets destroyed. See [`context.dispose`](#context-dispose).
-
-##### Lazy Singleton Provider
-
-```javascript
-import iniettore from 'iniettore'
-import { LAZY, SINGLETON, PROVIDER } from 'iniettore'
-
-var idx = 0
-
-function fooProvider() {
-  return {
-    id: ++idx
-  }
-}
-
-var rootContext = iniettore.create(function(map) {
-  map('foo')
-    .to(fooProvider)
-    .as(LAZY, SINGLETON, PROVIDER)
-})
-
-var foo1 = rootContext.get('foo')
-var foo2 = rootContext.get('foo')
-
-console.log(foo1) // { idx: 1 }
-console.log(foo1 === foo2) // true
-```
-
-##### Lazy Singleton Constructor
-
-```javascript
-import iniettore from 'iniettore'
-import { LAZY, SINGLETON, CONSTRUCTOR } from 'iniettore'
-
-var idx = 0
-
-class Bar {
-  constructor() {
-    this.idx = ++idx
-  }
-}
-
-var rootContext = iniettore.create(function(map) {
-  map('bar')
-    .to(Bar)
-    .as(LAZY, SINGLETON, CONSTRUCTOR)
-})
-
-var bar1 = rootContext.get('bar')
-var bar2 = rootContext.get('bar')
-
-console.log(bar1) // { idx: 1 }
-console.log(bar1 === bar2) // true
-```
-
-#### Eager singletons
-
-A mapping marked as `EAGER, SINGLETON` gets created at registration time.
-All the required dependencies must be already registered in the current context or in one of its ancestors.
-
-Eager singletons gets destroyed when the corresponding context is destroyed.
+The example below shows an Eager Singleton Constructor and an Eager Singleton Provider.
 
 ```javascript
 import iniettore from 'iniettore'
@@ -594,6 +526,24 @@ var rootContext = iniettore.create(function(map) {
 
 // foo provider invoked: 42
 // Bar instance created: 42
+```
+
+#### After
+
+Because iniettore API are all syncronous there is no functional difference in instantiating a singleton binding during the registration or just after.
+
+Below you can see an example using the same `fooProvider` and `Bar` class of the pre-v4 example.
+
+```typescript
+import { container, Context, singleton, provider } from 'iniettore'
+
+const context = container(() => ({
+  foo: singleton(fooProvider)
+  bar: singleton(() => new Bar())
+}))
+
+const foo = get(context.foo)
+const bar = get(context.bar)
 ```
 
 #### Transient singletons
