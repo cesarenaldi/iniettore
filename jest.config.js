@@ -13,9 +13,9 @@ module.exports = {
   },
   testEnvironment: 'jsdom',
   coverageDirectory: './reports',
-  coverageReporters: [
-    'json',
-    'lcov',
-    'text'
+  collectCoverageFrom: [
+    '**/src/**',
+    '!**/dist/**',
+    '!**/node_modules/**'
   ]
 }
