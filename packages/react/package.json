@@ -1,0 +1,64 @@
+{
+  "name": "@iniettore/react",
+  "version": "4.0.0-alpha.0",
+  "description": "React bindings for Iniettore Dependency Injection Container",
+  "keywords": [
+    "browser",
+    "clean-architecture",
+    "code-splitting",
+    "container",
+    "dependency-injection",
+    "di",
+    "iniettore",
+    "inversion-of-control",
+    "ioc",
+    "node",
+    "react-native",
+    "react",
+    "solid",
+    "typescript"
+  ],
+  "author": "Cesare Naldi <naldi.cesare@gmail.com>",
+  "homepage": "https://github.com/cesarenaldi/iniettore/tree/master/packages/react#readme",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cesarenaldi/iniettore.git",
+    "directory": "packages/react"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "clean": "tsc -b tsconfig.build.json --clean"
+  },
+  "bugs": {
+    "url": "https://github.com/cesarenaldi/iniettore/issues"
+  },
+  "devDependencies": {
+    "@iniettore/core": "^4.0.0-alpha.0",
+    "@testing-library/react": "^11.2.5",
+    "@types/react": "^17.0.2",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "peerDependencies": {
+    "@iniettore/core": "^3.0.0-RC1",
+    "react": "^17.0.1"
+  },
+  "dependencies": {
+    "@iniettore/common": "^4.0.0-alpha.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

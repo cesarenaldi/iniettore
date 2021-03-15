@@ -1,0 +1,51 @@
+{
+  "name": "@iniettore/core",
+  "version": "4.0.0-alpha.0",
+  "description": "Minimalistic Dependency Injection Container",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "clean": "tsc -b tsconfig.build.json --clean"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "keywords": [
+    "browser",
+    "clean-architecture",
+    "container",
+    "dependency-injection",
+    "di",
+    "inversion-of-control",
+    "ioc",
+    "node",
+    "solid",
+    "typescript"
+  ],
+  "engines": {
+    "node": ">=12"
+  },
+  "author": {
+    "name": "Cesare Naldi",
+    "url": "https://github.com/cesarenaldi"
+  },
+  "bugs": {
+    "url": "https://github.com/cesarenaldi/iniettore/issues"
+  },
+  "homepage": "https://github.com/cesarenaldi/iniettore/tree/master/packages/core#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cesarenaldi/iniettore.git",
+    "directory": "packages/core"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@iniettore/common": "^4.0.0-alpha.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

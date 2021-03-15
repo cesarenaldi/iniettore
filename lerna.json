@@ -1,6 +1,15 @@
 {
-  "version": "3.0.0-RC1",
+  "version": "4.0.0-alpha.0",
   "npmClient": "yarn",
-  "packages": ["packages/*"],
-  "useWorkspaces": true
+  "packages": [
+    "packages/*"
+  ],
+  "useWorkspaces": true,
+  "command": {
+    "create": {
+      "license": "ISC"
+    }
+  },
+  "loglevel": "verbose",
+  "stream": true
 }

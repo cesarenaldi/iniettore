@@ -1,5 +1,8 @@
 node_modules/
-cjs/
+dist/
 lib/
 reports/
 npm-debug.log
+.DS_Store
+.rollup.cache
+tsconfig.build.tsbuildinfo

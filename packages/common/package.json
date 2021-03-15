@@ -1,0 +1,37 @@
+{
+  "name": "@iniettore/common",
+  "version": "4.0.0-alpha.0",
+  "description": "Iniettore common library",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "clean": "tsc -b tsconfig.build.json --clean"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "keywords": [],
+  "engines": {
+    "node": ">=12"
+  },
+  "author": {
+    "name": "Cesare Naldi",
+    "url": "https://github.com/cesarenaldi"
+  },
+  "bugs": {
+    "url": "https://github.com/cesarenaldi/iniettore/issues"
+  },
+  "homepage": "https://github.com/cesarenaldi/iniettore/tree/master/packages/common#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cesarenaldi/iniettore.git",
+    "directory": "packages/core"
+  },
+  "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  }
+}
