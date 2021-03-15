@@ -147,7 +147,7 @@ Singleton bindings makes no assumptions about the way you create new instances.
 
 **Returns**
 
-`Binding<T>` - opaque object that can be handled via the `get` and `free` functions (see later in the documentation).
+`BindingDescriptor<T>` - an opaque object that describe how to manage the lifecycle of the singleton instance.
 
 **Examples**
 
@@ -204,7 +204,7 @@ Provider bindings are agnostic about the logic you use to provide an instance. T
 
 **Returns**
 
-`Binding<T>` - opaque object that can be handled via the `get` and `free` functions (see later in the documentation).
+`BindingDescriptor<T>` - an opaque object that describe how to manage the lifecycle of the provider instances.
 
 **Examples**
 
@@ -226,20 +226,48 @@ const context = container(() => ({
 }))
 ```
 
-### `get(binding)`
+### `container(describe)`
 
-Creates a _singleton_ binding.
+Creates a new _context_ with the bindings specified in the `describe` function.
 
 **Parameters**
 
-- `binding: Binding<T>` - 
+- `describe: () => { [string]: BindingDescriptor<unknown> }` - a user defined function that returns an object of `BindingDescriptor<T>`.
+
+**Returns**
+
+`{ [string]: Binding<BindingDescriptor<unknown>> }`
+
+OR more conveniently:
+
+`Context<{ [string]: unknown }>`
+
+See [`Context` type](#context-type) later in this documentation.
+
+**Example**
+
+```typescript
+import { container, singleton } from 'iniettore'
+
+const context = container(() => ({
+  now: singleton(() => new Date())
+}))
+```
+
+### `get(binding)`
+
+Materialize the `T` associated with the given `Binding<BindingDescriptor<T>>`. The `get` function works both on `singleton` and `provider` bindings. In fact the `get` function is agnostic about the lifecycle of the requested instance.
+
+**Parameters**
+
+- `binding: Binding<BindingDescriptor<T>>` - 
 
 
 **Returns**
 
 `T`
 
-**Examples**
+**Example**
 
 ```typescript
 import { container, get, singleton } from 'iniettore'
@@ -261,7 +289,7 @@ Iniettore is able to figure out what singletons can be freed in the case of simp
 
 **Parameters**
 
-- `bindingOrContext: Binding<T> | Context<{ [string]: Binding<any> }>` - a `Binding<any>` object or an entire `Context<T>`.
+- `bindingOrContext: Binding<unknown> | Context<{ [string]: unknown }>` - a `Binding<T>` object or an entire `Context<T>`.
 
 **Examples**
 
@@ -293,25 +321,93 @@ data = null
 free(context)
 ```
 
+### `Context` type
 
-### `container(describe)`
+`Context` is a convenient TS Generic Object type that helps declaring the shape of an Iniettore Context.
 
-Creates a new _context_ with the bindings specified in the `describe` function.
+In any non-trivial usage of Iniettore, the `Context` is used to define the shape of an Iniettore Context so to be able to declare dependencies within the context itself (see [Getting Started](#getting-started)).
 
-**Parameters**
+#### `Context` and ISP
 
-- `describe: () => { [string]: Binding<any> }` - 
+The [Interface Segregation Principle](https://en.wikipedia.org/wiki/Interface_segregation_principle) (ISP) is one of the five [SOLID](https://en.wikipedia.org/wiki/SOLID) principles of object-oriented programming. For the purpose of this documentation we will just use the following operational definition of ISP.
 
-**Returns**
+> The ISP advises us not to depend on classes that have methods we don't use. - Clean Architecture (Robert C. Martin)
 
-`Context<{ [string]: Binding<any> }>`
+As an application grows sometimes it's wise to break it down into application modules that have clear boundaries with the main application. In some Computer Science literatures these modules are referred to as Components depending on how these are deployed/packaged. See an example components diagram that visualize this.
 
-**Examples**
+```ascii
+                          ┌──────────────┐
+                       ┌──┴─┐            │
+                       └──┬─┘            │
+                          │     Main     │
+                       ┌──┴─┐            │
+                       └──┬─┘            │
+                          └───────┬──────┘
+                                  │
+                                  │
+           ┌──────────────────────┼───────────────────────┐
+           │                      │                       │
+           │                      │                       │
+   ┌───────┴──────┐       ┌───────┴──────┐        ┌───────┴──────┐
+┌──┴─┐            │    ┌──┴─┐            │     ┌──┴─┐            │
+└──┬─┘            │    └──┬─┘            │     └──┬─┘            │
+   │  Component A │       │  Component B │        │  Component C │
+┌──┴─┐            │    ┌──┴─┐            │     ┌──┴─┐            │
+└──┬─┘            │    └──┬─┘            │     └──┬─┘            │
+   └──────────────┘       └──────────────┘        └──────────────┘
+```
 
+Each component has it's own objects and it's own internal dependency needs.
+
+It is possible to have one single Iniettore Context that defines all dependencies between indidual components objects. As an application grow it might become quite difficult to manage all such composition logic in one place.
+
+One might need to break down the composition logic into a main application Context and one sub-Context per component.
+
+Iniettore facilitate this by letting the developer create different Iniettore contexts where the individual component composition is defined and segregated.
+
+Using the components diagram above and the `Logger`, `ConsoleLogger` and `HeroService` types [defined at the beginning](#getting-started) we can explain this with an example.
+
+Let's assume that our hypothetical application has some logging constraints that require to have only one `Logger` object for the entire application. Such instance must be registered in the main Iniettore Context.
+
+**main**
 ```typescript
-import { container, singleton } from 'iniettore'
+type MainContext = Context<{ logger: Logger, hero: HeroService }>
 
-const context = container(() => ({
-  now: singleton(() => new Date())
+const mainContext: MainContext = container(() => ({
+
+  logger: singleton(() => new ConsoleLogger())
+
+  hero: provider(() => new HeroService(get(context.logger)))
+
+  /* other bindings */
 }))
 ```
+
+Let's now assume that Component A needs to log something. Let's also make clear that Component A does NOT need `HeroService`.
+
+One can use the `Context` generic type to isolate the portion of the main Iniettore Context needed by Component A.
+
+**RequireLoggerContext**
+```typescript
+type RequireLoggerContext = Context<{ logger: Logger }>
+```
+
+**component-a**
+```typescript
+
+
+function init(main: RequireLoggerContext) {
+  const componentContext: CustomContext = container(() => ({
+  
+    hero: singleton(() => new HeroService(get(main.logger)))
+  
+    /* other bindings */
+  }))
+
+  /* ... */
+}
+```
+
+The example above uses an hypothetical init function to initialize the component. This is not meant to prescribe any specific solution. It just helps with explaining how to use `Context` generic type to follow the ISP.
+
+
