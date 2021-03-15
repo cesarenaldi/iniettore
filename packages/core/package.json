@@ -14,14 +14,14 @@
     "README.md"
   ],
   "keywords": [
-    "architecture",
-    "clean",
+    "browser",
+    "clean-architecture",
     "container",
-    "dependency",
+    "dependency-injection",
     "di",
-    "injection",
-    "inversion",
+    "inversion-of-control",
     "ioc",
+    "node",
     "solid",
     "typescript"
   ],

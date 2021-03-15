@@ -1,6 +1,8 @@
 # `@iniettore/react`
 
-React bindings for [Iniettore]('../core/README.md)
+React bindings for [`@iniettore/core`]('../core/README.md)
+
+`@iniettore/react` supports large React applications that makes use of code-splitting techniques to deliver code to their clients.
 
 ## Install
 
@@ -17,7 +19,7 @@ yarn add @iniettore/react
 ```
 ## Usage
 
-We will explain how to use `@iniettore/react` binding using an example. See below a typical `Logger` interface and a concrete implementation of it (i.e. `ConsoleLogger`).
+We will explain how to use `@iniettore/react` binding via an example. See below a quite typical `Logger` interface and a concrete implementation of it (i.e. `ConsoleLogger`).
 
 **Logger.ts**
 ```typescript
@@ -31,12 +33,12 @@ import Logger from './Logger'
 
 class ConsoleLogger implements Logger {
   log(msg: string) {
-      console.log(msg)
+    console.log(msg)
   }
 }
 ```
 
-Let's then assume you have a React `App` component and a component nested quite deep in the App render tree, we will call such component `MyNestedComponent`.
+Let's then assume you have a React `App` component and a component nested quite deep in the App render tree. We will call such component `MyNestedComponent`.
 
 For the purpose of this example we will assume `MyNestedComponent` needs to log something very important on its first render.
 
@@ -82,7 +84,7 @@ export default function App () {
 }
 ```
 
-If you already using Iniettore you are probably familiar with the `container` function in the `@iniettore/core` package. If not check `@iniettore/core` documentation [here](../core/README.md).
+If you already using Iniettore you are probably familiar with the `container` function from the `@iniettore/core` package. If not you can check the `@iniettore/core` documentation [here](../core/README.md).
 
 The `container` function accepts a _describe_ callback that is meant to specify the Iniettore Context objects and their relationships.
 
@@ -118,6 +120,100 @@ export default function MyNestedComponent () {
 
   return (
     /* my component render tree */  
+  )
+}
+```
+
+### Modular React applications
+
+It's not uncommon for non-trivial React applications to make use of code-splitting and lazy loading techniques in order to optimize the way code is bundled and delivered to clients.
+
+Let's use the example of an application that has been splitted into 3 application sub-modules. See components diagram below.
+
+
+
+```ascii
+                          ┌──────────────┐
+                       ┌──┴─┐            │
+                       └──┬─┘            │
+                          │     Main     │
+                       ┌──┴─┐            │
+                       └──┬─┘            │
+                          └───────┬──────┘
+                                  │
+                                  │
+           ┌──────────────────────┼───────────────────────┐
+           │                      │                       │
+           │                      │                       │
+   ┌───────┴──────┐       ┌───────┴──────┐        ┌───────┴──────┐
+┌──┴─┐            │    ┌──┴─┐            │     ┌──┴─┐            │
+└──┬─┘            │    └──┬─┘            │     └──┬─┘            │
+   │  Component A │       │  Component B │        │  Component C │
+┌──┴─┐            │    ┌──┴─┐            │     ┌──┴─┐            │
+└──┬─┘            │    └──┬─┘            │     └──┬─┘            │
+   └──────────────┘       └──────────────┘        └──────────────┘
+```
+
+`@iniettore/react` makes the job of wiring dependencies across application sub-modules as trivial as rendering a React component.
+
+Let's assume that our hypothetical application has some logging constraints that require to have only one `Logger` object for the entire application. Such instance must be registered in the main Iniettore Context defined and injected in the `App` root component.
+
+**main/modules.ts**
+```typescript
+import { singleton } from '@iniettore/core'
+import ConsoleLogger from './ConsoleLogger'
+
+export function describe () {
+  return {
+    logger: singleton(() => new ConsoleLogger())
+  
+    /* other bindings */
+  }
+}
+```
+
+**main/App.tsx**
+```typescript
+import React from 'react'
+import { Container } from '@iniettore/react'
+import { describe } from './modules'
+
+export default function App () {
+  return (
+    <Container describe={describe}>
+      { /* render logic eventually renders <ComponentA /> */ }
+    </Container>
+  )
+}
+```
+
+Component A can be defined as a React component that uses Iniettore `<Container />` to define its own Iniettore Context for its internal wiring needs. The _describe_ function will receive a reference to the Iniettore Context injected by the `App` component.
+
+**component-a/modules.ts**
+```typescript
+import { Context, singleton } from '@iniettore/core'
+import Logger from '../Logger'
+import HeroService from './HeroService'
+
+export function describe (main: Context<{ logger: Logger }>) {
+  return {
+    hero: singleton(() => new HeroService(get(main.logger)))
+  
+    /* other bindings */
+  }
+}
+```
+
+**component-a/Root.tsx**
+```typescript
+import React from 'react'
+import { describe } from './modules'
+
+export default function Root () {
+  return (
+    <Container describe={describe}>
+      { /* Component A components */ }
+    </Container>  
   )
 }
 ```

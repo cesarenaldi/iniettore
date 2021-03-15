@@ -1,15 +1,17 @@
-Migrating to v4
----
+# Migrating to v4
 
-## Deprecated
-- eager singletons
-- implicit dependency argument notation
-- property mapper
-- lazy singletons...all singletons managed by iniettore are transient
-- eager singleton not managed by the library
+If you have an usage of Iniettore pre-v4 that is not covered by the documentation below, feel free to open an issue with an example that explain your use case and I will be happy to provide some suggestions on how to port it to use v4 API.
 
+- [Values and Instances](#values-and-instances)
+- [Functions](#functions)
+- [Providers and Constructors](#providers-and-constructors)
+- [Child contexts](#child-contexts)
+- [Blueprints](#blueprints)
+- [Transient dependencies](#transient-dependencies)
+- [Singletons](#singletons)
+- [Dispose singletons](#dispose-singletons)
+- [Dispose a whole Iniettore Context](#dispose-a-whole-iniettore-context)
 ## Values and Instances
-
 ### Before
 In pre-v4 versions one doulc define a binding for a value and instance types like so:
 
@@ -180,7 +182,7 @@ var context = container(() => ({
 }))
 ```
 
-Use the _singleton_ binding if you need only one instance to exist regardless of how many other 
+Use the _singleton_ binding if you need only one instance to exist regardless of how many times it's requested.
 
 ```typescript
 import { container, singleton } from 'iniettore'
@@ -203,13 +205,13 @@ var context = container(() => ({
 ## Child contexts
 ### Before
 
-Iniettore pre-v4 have an explicit way to create a context hierarchy. This was achieved via the `context.createChild(fn)`.
+Iniettore pre-v4 had an explicit way to create a context hierarchy. This was achieved via the `context.createChild(fn)`.
 
 Child contexts used to serve two purposes:
 - let a child context inherit mappings defined in their parent context.
 - bind the lifecycle of a child context to the lifecycle of their parent context. If the parent context were to be destroyed, the child context would have been destroyed as well.
 
-**NOTE:** This second aspect was poorly documented so there is a chance you might not have taken advantage of this aspects in your usage of iniettore.
+**NOTE:** This second aspect was poorly documented so there is a chance you might not have taken advantage of it in your usage of Iniettore.
 
 A typical usage of Child contexts in pre-v4 could have looked like the following example.
 
@@ -246,7 +248,7 @@ console.log(childContext.get('foo')) // { bar: 84, baz: 'pluto' }
 
 ### After
 
-Iniettore v4 does NOT have an explicit method/function to create child contexts. Because of this the developer does have more options in the way they decide to organize their dependencies.
+Iniettore v4 does NOT have an explicit method/function to create child contexts. Because of this the developer does have more options in the way they decide to organize their dependencies. See few examples below.
 
 #### Consume parent dependencies
 
@@ -329,7 +331,7 @@ free(appContext.heroSectionContext)
 
 ### Before
 
-Blueprint was **a convenient way to register a child context factory** in iniettore pre-v4. The mapping value is the configuration function for the child context. Every time you request the blueprint mapping name you will get a new child context.
+Blueprint was **a convenient way to register a child context factory** in Iniettore pre-v4. The mapping value was the configuration function for the child context. Every time a blueprint mapping was requested a new child context was created.
 
 ```javascript
 import iniettore from 'iniettore'
@@ -359,10 +361,10 @@ console.log(childContext.get('baz')) // pluto
 ### After
 
 Iniettore v4 does not have special method/functions to define child context factory.
-A careful reader might have notices though that in a previous example we already shown how to create a child context factory using `provider` and `container`. See [here](#child-context-factory).
-### What about `exports`?
+The careful reader might have noticed that in a previous example we already shown how to create a child context factory using `provider` and `container`. See [here](#child-context-factory).
+### What about Blueprint `exports`?
 
-Some might remember that in pre-v4 it was possible to create a Blueprint and declare which binding was the main export of the created child contexts. See example below as a refresher
+Some might remember that in pre-v4 it was possible to create a Blueprint and declare which binding was the "main export" of the created child contexts. See example below as a refresher.
 
 ```javascript
 import iniettore from 'iniettore'
@@ -394,11 +396,11 @@ var baz = rootContext.get('foo')
 console.log(baz()) // 42
 ```
 
-This was going against the hierarchical nature of iniettore contexts. A child context might use some parent context bindings but the opposite was not possible (by design). The Blueprint `exports` was kinda introducing a logical dependency between the parent context and the details of the child context. This because one must know the name of the child context binding to export in the definition of the parent context blueprint binding.
+This was going conflicting the hierarchical nature of iniettore contexts. A child context could know about some parent context bindings but the opposite was not desirable. The Blueprint `exports` was kinda introducing a logical dependency between the parent context and the details of the child context. This because one must know the name of the child context binding to export in the definition of the parent context blueprint binding.
 
-Iniettore v4 does not provide special methods/functions to create a blueprint, so it should not be with a surprise that it's not possible to define a "default export" of a child context.
+Iniettore v4 does not provide special methods/functions to create a Blueprint, so it should not be with a surprise that it's not possible to define a "default export" of a child context.
 
-Said that, one could still achieve something very similar. See example below.
+Said that, one could still achieve something very close to it. See example below.
 
 
 ```typescript
@@ -436,7 +438,7 @@ const appContext: AppContext = container(() => ({
 
 ### Before
 
-In iniettore pre-v4 there was this concept if **temporary dependencies** (or transient dependencies). See below a refresher.
+In Iniettore pre-v4 there was this concept of **temporary dependencies** (or transient dependencies). See below a refresher.
 
 
 ```javascript
@@ -477,15 +479,15 @@ Iniettore pre-v4 had 3 types of singletons: Lazy, Eager, and Transient.
 
 ### Lazy singletons
 
-In iniettore pre-v4 a Lazy Singleton mapping was designed to produce a singleton instance when requested the first time. The instance gets destroyed only when the context it has been registered into gets destroyed.
+In pre-v4 a Lazy Singleton mapping was designed to produce a singleton instance when requested the first time. The instance was destroyed only when the containing Iniettore context was destroyed.
 
-**BREAKING CHANGE:** Iniettore v4 does NOT have a way to define a singleton with the lifecycle described above.
+**BREAKING CHANGE:** Iniettore v4 does NOT have a way to define a singletons with the lifecycle described above.
 
 ### Eager singletons
 
 #### Before
 
-In iniettore pre-v4 an Eager Singleton mapping was designed to produce a singleton instance at registration time. The instance gets destroyed when the corresponding context is destroyed.
+In iniettore pre-v4 an Eager Singleton mapping was designed to produce a singleton instance at registration time. The instance was destroyed when the corresponding context was destroyed.
 
 This implied that all the required dependencies must be registered in the context or in one of its ancestors.
 
@@ -546,15 +548,11 @@ const foo = get(context.foo)
 const bar = get(context.bar)
 ```
 
-#### Transient singletons
+### Transient singletons
 
-A mapping marked as `TRANSIENT, SINGLETON` produce a **temporary lazy singleton** instance. The instance gets created at the first time it is requested (directly or as dependency of another mapping) and gets destroyed when is not used anymore.
+#### Before
 
-A transient singleton allows to guarantee that at any given point in time there are no more than one instance of the respective mapping (whetever has been created using a constructor or a provider function).
-
-In order to announce that a singleton is not used anymore you can invoke `context.release(name:string):void` method. The instance gets _released_ (i.e. all references to it gets removed) when `context.release` is invoked as many time as it has been requested. See examples below.
-
-##### Transient Singleton Provider
+In pre-v4 a mapping marked as `TRANSIENT, SINGLETON` produced a **temporary lazy singleton** instance. The instance was created at the first time it is requested (directly or as dependency of another mapping) and was destroyed when it was no longer needed. See example below.
 
 ```javascript
 import iniettore from 'iniettore'
@@ -586,99 +584,17 @@ var foo3 = rootContext.get('foo')
 console.log(foo1 === foo3) // false
 ```
 
-##### Transient Singleton Constructor
+#### After
 
-```javascript
-import iniettore from 'iniettore'
-import { TRANSIENT, SINGLETON, CONSTRUCTOR } from 'iniettore'
+Using pre-v4 terminology, all Iniettore v4 singletons are transient by default.
 
-var idx = 0
+## Dispose singletons
+### Before
+In pre-v4 a mapping defined as `LAZY, SINGLETON` or `TRANSIENT, SINGLETON` was "disposable" if it implemented a method with the following signature:
 
-class Bar {
-  constructor() {
-    this.idx = ++idx
-  }
-}
+`dispose(): void`
 
-var rootContext = iniettore.create(function(map) {
-  map('bar')
-    .to(Bar)
-    .as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-})
-
-var bar1 = rootContext.get('bar')
-var bar2 = rootContext.get('bar')
-console.log(bar1 === bar2) // true
-
-// assuming that we dont need bar anymore
-rootContext.release('bar')
-rootContext.release('bar')
-
-var bar3 = rootContext.get('bar')
-console.log(bar1 === bar3) // false
-```
-
-##### Transient singleton dependencies
-
-```javascript
-import iniettore from 'iniettore'
-import { TRANSIENT, SINGLETON, CONSTRUCTOR, PROVIDER } from 'iniettore'
-
-var idx = 0
-
-class Bar {
-  constructor() {
-    this.idx = ++idx
-  }
-}
-
-function fooProvider(bar) {
-  return {
-    bar,
-    method: function() {}
-  }
-}
-
-var rootContext = iniettore.create(function(map) {
-  map('bar')
-    .to(Bar)
-    .as(TRANSIENT, SINGLETON, CONSTRUCTOR)
-  map('foo')
-    .to(fooProvider)
-    .as(TRANSIENT, SINGLETON, PROVIDER)
-    .injecting('bar')
-})
-
-var foo1 = rootContext.get('foo')
-console.log(foo1) // { bar: { idx: 1 }, method: function () {} }
-var foo2 = rootContext.get('foo')
-console.log(foo1 === foo2) // true
-console.log(foo1.bar === foo2.bar) // true
-
-// assuming that we don't need foo anymore
-// we have to release it as many times as it as been acquired
-rootContext.release('foo')
-// now also bar gets released
-rootContext.release('foo')
-
-// when requesting foo again we receive
-// a new instance of it and a new instance of bar as well
-var foo3 = rootContext.get('foo')
-console.log(foo3) // { bar: { idx: 2 }, method: function () {} }
-console.log(foo1 === foo3) // false
-console.log(foo1.bar === foo3.bar) // false
-```
-
-### Lifecycle
-
-iniettore offers a simple concept of lifecycle management for singleton instances and contexts. Let's see what it means for instances and contexts.
-
-- [`instance.dispose`](#instancedispose)
-- [`context.dispose`](#contextdispose)
-
-#### `instance.dispose`
-
-Given a `LAZY, SINGLETON` or `TRANSIENT, SINGLETON` instance that implements a method called `dispose():void` when the instance gets released the context will invoke it. This allow you to cleanup any hanging reference (e.g. remove event listeners) so the instance can be properly garbage collected.
+When Iniettore Context figured out that it was time to dispose the instance, such method was invoked. While this was an opportunity to cleanup any hanging reference (e.g. remove event listeners), the API was clunky and prescriptive.
 
 ```javascript
 import iniettore from 'iniettore'
@@ -724,9 +640,33 @@ rootContext.release('foo')
 console.log(events.listeners('message').length) // 0
 ```
 
-#### `context.dispose`
+### After
 
+Iniettore v4 has a way more flexible approach 
+
+```typescript
+import { container, singleton } from 'iniettore'
+
+class Car {
+  start() { /* ... */ }
+  stop() { /* ... */ }
+}
+
+const context = container(() => ({
+  c: singleton(
+    () => new Car(),
+    car => car.stop()
+  )
+}))
 ```
+
+## Dispose a whole Iniettore Context
+
+### Before
+
+In pre-v4 Iniettore contexts had a `dispose(): void` method that could be used to signal that a context was non longer needed and all its mappings could free any singleton instance they might have instantiated.
+
+```javascript
 var rootContext = iniettore.create(function(map) {
   // your bindings goes here
 });
@@ -736,3 +676,22 @@ var rootContext = iniettore.create(function(map) {
 rootContext.dispose(); // invokes <instance>.dispose() on all instanciated singletons that provides such method.
 
 ```
+
+### After
+
+In Iniettore v4 it possible to achieve the same using the `free` function. See example below.
+
+```typescript
+import { container, get, singleton } from 'iniettore'
+
+const context = container(() => ({
+  createdAt: singleton(() => new Date())
+}))
+
+let date = get(context.createdAt)
+
+data = null // observe we didn't bother with to free(context.createdAt)
+free(context)
+```
+
+

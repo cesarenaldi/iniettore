@@ -80,11 +80,11 @@ const context: CustomContext = container(() => ({
 }))
 ```
 
-  **WARNING** [v4 providers have different behaviour to pre-v4 providers] TBD
+**WARNING** `provider` bindings in Iniettore v4 do behave differently than `PROVIDER` mappings in pre-v4 versions of Iniettore. See [API Reference](#providermaterialize).
 
 ### Request instances
 
-Requesting an instance of the `HeroService` will end up in creating an instance of the `ConsoleLogger` which will be provided to the `HeroService` constructor.
+Requesting an instance of the `HeroService` will end up in also creating an instance of the `ConsoleLogger` which will be provided to the `HeroService` constructor.
 
 ```typescript
 const hero = get(context.hero)
@@ -326,7 +326,7 @@ In any non-trivial usage of Iniettore, the `Context` is used to define the shape
 
 #### `Context` and ISP
 
-The [Interface Segregation Principle](https://en.wikipedia.org/wiki/Interface_segregation_principle) (ISP) is one of the five [SOLID](https://en.wikipedia.org/wiki/SOLID) principles of object-oriented programming. For the purpose of this documentation we will just use the following operational definition of ISP.
+The [Interface Segregation Principle](https://en.wikipedia.org/wiki/Interface_segregation_principle) (ISP) is one of the five [SOLID](https://en.wikipedia.org/wiki/SOLID) principles of object-oriented programming. For the purpose of this documentation we will just use a more practical definition of ISP.
 
 > The ISP advises us not to depend on classes that have methods we don't use. - Clean Architecture (Robert C. Martin)
 

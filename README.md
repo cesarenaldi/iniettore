@@ -11,7 +11,7 @@ It's platform agnostic so it can be used on many platform running JS (e.g. Node.
 **BREAKING CHANGES**
 Iniettore v4 is a complete rewrite which comes with a brand new minimalistic interface. See [migration guide](./migrating.md).
 
-## Packages
+## Documentation
 
 Please refer to individial packages documentation.
 
