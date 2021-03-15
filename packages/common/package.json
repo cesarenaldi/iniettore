@@ -30,5 +30,8 @@
     "url": "https://github.com/cesarenaldi/iniettore.git",
     "directory": "packages/core"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  }
 }
