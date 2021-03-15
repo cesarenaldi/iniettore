@@ -1,6 +1,6 @@
 {
   "name": "@iniettore/common",
-  "version": "3.0.0-RC1",
+  "version": "4.0.0",
   "description": "Iniettore common library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -30,8 +30,5 @@
     "url": "https://github.com/cesarenaldi/iniettore.git",
     "directory": "packages/core"
   },
-  "license": "ISC",
-  "devDependencies": {},
-  "peerDependencies": {},
-  "dependencies": {}
+  "license": "ISC"
 }

@@ -1,6 +1,6 @@
 {
   "name": "@iniettore/core",
-  "version": "3.0.0-RC1",
+  "version": "4.0.0",
   "description": "Minimalistic Dependency Injection Container",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -42,8 +42,7 @@
     "directory": "packages/core"
   },
   "license": "ISC",
-  "devDependencies": {},
   "dependencies": {
-    "@iniettore/common": "^3.0.0-RC1"
+    "@iniettore/common": "^4.0.0"
   }
 }
