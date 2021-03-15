@@ -19,7 +19,7 @@
     "typescript"
   ],
   "author": "Cesare Naldi <naldi.cesare@gmail.com>",
-  "homepage": "https://github.com/cesarenaldi/iniettore#readme",
+  "homepage": "https://github.com/cesarenaldi/iniettore/tree/master/packages/react#readme",
   "license": "ISC",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,8 +29,8 @@
   },
   "files": [
     "dist",
-    "README.md",
-    "LICENSE"
+    "LICENSE",
+    "README.md"
   ],
   "publishConfig": {
     "registry": "https://registry.yarnpkg.com"

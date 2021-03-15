@@ -1,7 +1,7 @@
 {
   "name": "@iniettore/common",
   "version": "3.0.0-RC1",
-  "description": "A light and simple IoC container",
+  "description": "Iniettore common library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -13,18 +13,7 @@
     "LICENSE",
     "README.md"
   ],
-  "keywords": [
-    "architecture",
-    "clean",
-    "container",
-    "dependency",
-    "di",
-    "injection",
-    "inversion",
-    "ioc",
-    "solid",
-    "typescript"
-  ],
+  "keywords": [],
   "engines": {
     "node": ">=12"
   },
@@ -35,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/cesarenaldi/iniettore/issues"
   },
-  "homepage": "https://github.com/cesarenaldi/iniettore.git",
+  "homepage": "https://github.com/cesarenaldi/iniettore/tree/master/packages/common#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/cesarenaldi/iniettore.git",

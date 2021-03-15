@@ -1,7 +1,7 @@
 {
   "name": "@iniettore/core",
   "version": "3.0.0-RC1",
-  "description": "A light and simple IoC container",
+  "description": "Minimalistic Dependency Injection Container",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -35,7 +35,7 @@
   "bugs": {
     "url": "https://github.com/cesarenaldi/iniettore/issues"
   },
-  "homepage": "https://github.com/cesarenaldi/iniettore.git",
+  "homepage": "https://github.com/cesarenaldi/iniettore/tree/master/packages/core#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/cesarenaldi/iniettore.git",
