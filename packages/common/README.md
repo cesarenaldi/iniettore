@@ -1,4 +1,4 @@
-@iniettore/common
+`@iniettore/common`
 ---
 
 This package exists to support other packages of the iniettore ecosystem.

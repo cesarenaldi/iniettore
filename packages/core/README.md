@@ -4,9 +4,6 @@ Iniettore is a minimalistic Dependency Injection Container for JavaScript applic
 
 It's platform agnostic so it can be used on many platform running JS (e.g. Node.js, browsers, React Native).
 
-**BREAKING CHANGES**
-Iniettore v4 is a complete rewrite which comes with a brand new minimalistic interface. See [migration guide](../../migrating.md).
-
 ## Install
 
 Using npm:
