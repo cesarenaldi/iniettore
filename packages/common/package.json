@@ -1,6 +1,6 @@
 {
   "name": "@iniettore/common",
-  "version": "4.0.0-4.0.0-alpha.0.0",
+  "version": "4.0.0-alpha.0",
   "description": "Iniettore common library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
