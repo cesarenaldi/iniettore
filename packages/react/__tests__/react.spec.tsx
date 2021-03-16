@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import { Context } from '@iniettore/common'
-import { get, provider } from '@iniettore/core'
+import { get, provider } from 'iniettore'
 
 import { Container, useContext as useIniettoreContext } from '../src'
 

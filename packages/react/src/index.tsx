@@ -1,5 +1,5 @@
 import React, { useContext as useReactContext, useRef } from 'react'
-import { container } from '@iniettore/core'
+import { container } from 'iniettore'
 import { Context, ContainerDescriptor } from '@iniettore/common'
 
 const root = {}

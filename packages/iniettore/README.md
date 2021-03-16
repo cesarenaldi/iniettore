@@ -1,4 +1,4 @@
-# `@iniettore/core`
+# `iniettore`
 
 Iniettore is a minimalistic Dependency Injection Container for JavaScript applications.
 
@@ -9,13 +9,13 @@ It's platform agnostic so it can be used on many platform running JS (e.g. Node.
 Using npm:
 
 ```bash
-npm install @iniettore/core --save
+npm install iniettore --save
 ```
 
 Using Yarn:
 
 ```bash
-yarn add @iniettore/core
+yarn add iniettore
 ```
 
 ## Basic Concepts
