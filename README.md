@@ -15,7 +15,7 @@ Iniettore v4 is a complete rewrite which comes with a brand new minimalistic int
 
 Please refer to individial packages documentation.
 
-- [`@iniettore/core`](packages/core) - the Iniettore core library
+- [`iniettore`](packages/iniettore) - the Iniettore core library
 - [`@iniettore/react`](packages/react) - React bindings for  Iniettore
 ## License
 

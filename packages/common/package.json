@@ -28,10 +28,12 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/cesarenaldi/iniettore.git",
-    "directory": "packages/core"
+    "directory": "packages/common"
   },
   "license": "ISC",
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "peerDependencies": {},
+  "devDependencies": {}
 }

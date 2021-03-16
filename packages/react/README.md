@@ -1,6 +1,6 @@
 # `@iniettore/react`
 
-React bindings for [`@iniettore/core`]('../core/README.md)
+React bindings for [`iniettore`]('../iniettore/README.md)
 
 `@iniettore/react` supports large React applications that makes use of code-splitting techniques to deliver code to their clients.
 
@@ -84,7 +84,7 @@ export default function App () {
 }
 ```
 
-If you already using Iniettore you are probably familiar with the `container` function from the `@iniettore/core` package. If not you can check the `@iniettore/core` documentation [here](../core/README.md).
+If you already using Iniettore you are probably familiar with the `container` function from the `iniettore` package. If not you can check the `iniettore` documentation [here](../iniettore/README.md).
 
 The `container` function accepts a _describe_ callback that is meant to specify the Iniettore Context objects and their relationships.
 
@@ -93,7 +93,7 @@ The `container` function accepts a _describe_ callback that is meant to specify 
 
 **modules.ts**
 ```typescript
-import { singleton } from '@iniettore/core'
+import { singleton } from 'iniettore'
 import ConsoleLogger from './ConsoleLogger'
 
 export function describe () {
@@ -160,7 +160,7 @@ Let's assume that our hypothetical application has some logging constraints that
 
 **main/modules.ts**
 ```typescript
-import { singleton } from '@iniettore/core'
+import { singleton } from 'iniettore'
 import ConsoleLogger from './ConsoleLogger'
 
 export function describe () {
@@ -191,7 +191,7 @@ Component A can be defined as a React component that uses Iniettore `<Container 
 
 **component-a/modules.ts**
 ```typescript
-import { Context, singleton } from '@iniettore/core'
+import { Context, singleton } from 'iniettore'
 import Logger from '../Logger'
 import HeroService from './HeroService'
 
