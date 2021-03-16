@@ -12,10 +12,17 @@ module.exports = {
     }
   },
   testEnvironment: 'jsdom',
-  coverageDirectory: './reports',
   collectCoverageFrom: [
     '**/src/**',
     '!**/dist/**',
     '!**/node_modules/**'
-  ]
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 83,
+      functions: 95,
+      lines: 95,
+      statements: 95
+    }
+  }
 }

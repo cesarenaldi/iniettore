@@ -11,7 +11,7 @@
     "lerna:init": "lerna bootstrap --ignore-scripts && lerna link --force-local",
     "lint": "eslint src/**/*.{ts,tsx}",
     "postinstall": "yarn lerna:init && yarn build",
-    "test": "jest \"(.*)\\.spec\\.ts\" --coverage --coverageReporters=text-lcov | coveralls"
+    "test": "jest \"(.*)\\.spec\\.ts\" --coverage --coverageDirectory=reports && coveralls < reports/lcov.info"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
