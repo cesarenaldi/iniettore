@@ -1,6 +1,6 @@
 {
   "name": "iniettore",
-  "version": "4.0.0-alpha.0",
+  "version": "4.0.0-4.0.0-alpha.0.0",
   "description": "Minimalistic Dependency Injection Container",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -43,7 +43,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@iniettore/common": "^4.0.0-alpha.0"
+    "@iniettore/common": "^4.0.0-4.0.0-alpha.0.0"
   },
   "publishConfig": {
     "access": "public"
