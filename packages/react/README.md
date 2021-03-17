@@ -1,6 +1,6 @@
 # `@iniettore/react`
 
-React bindings for [`iniettore`]('../iniettore/README.md)
+React bindings for [`iniettore`](../iniettore)
 
 `@iniettore/react` supports large React applications that makes use of code-splitting techniques to deliver code to their clients.
 
