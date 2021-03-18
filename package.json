@@ -7,7 +7,7 @@
   "scripts": {
     "clean:dist": "lerna exec --concurrency 1 -- rimraf -rf dist",
     "clean": "lerna clean && lerna run clean && yarn clean:dist",
-    "build": "lerna run build",
+    "build": "lerna run build --ignore react-typescript",
     "dev": "jest \"(.*)\\.spec\\.(ts|tsx)\" --watch",
     "lerna:init": "lerna bootstrap --ignore-scripts && lerna link --force-local",
     "lint": "eslint src/**/*.{ts,tsx}",
