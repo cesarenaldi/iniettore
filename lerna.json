@@ -1,9 +1,6 @@
 {
   "version": "4.0.0-alpha.0",
   "npmClient": "yarn",
-  "packages": [
-    "packages/*"
-  ],
   "useWorkspaces": true,
   "command": {
     "create": {
@@ -11,5 +8,9 @@
     }
   },
   "loglevel": "verbose",
-  "stream": true
+  "stream": true,
+  "packages": [
+    "examples/*",
+    "packages/*"
+  ]
 }

@@ -4,5 +4,5 @@ lib/
 reports/
 npm-debug.log
 .DS_Store
-.rollup.cache
+.yarn/
 tsconfig.build.tsbuildinfo
