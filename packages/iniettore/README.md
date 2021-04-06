@@ -122,12 +122,6 @@ Any internal reference to the `ConsoleLogger` instance will be deleted so that t
 
 **IMPORTANT:** It's developer responsability to notify Iniettore when an instance is no longer used.
 
-## Guides
-
-### Inject dependencies
-TBD
-### Context hierarchy
-TBD
 ## API Reference
 
 ### `singleton(materialize [, dispose])`
