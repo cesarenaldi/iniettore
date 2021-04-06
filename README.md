@@ -2,16 +2,23 @@
   <img alt="Iniettore" width="80" height="80" src="./logo.svg" />
 </p>
 
-# Iniettore &middot;  [![Build Status](https://travis-ci.org/cesarenaldi/iniettore.svg?branch=master)](https://travis-ci.org/cesarenaldi/iniettore) [![GitHub version](https://badge.fury.io/gh/cesarenaldi%2Finiettore.svg)](http://badge.fury.io/gh/cesarenaldi%2Finiettore) [![NPM dependencies](https://david-dm.org/cesarenaldi/iniettore.svg)](https://david-dm.org/cesarenaldi/iniettore) [![Coverage Status](https://coveralls.io/repos/cesarenaldi/iniettore/badge.svg?branch=master&service=github)](https://coveralls.io/github/cesarenaldi/iniettore?branch=master)
+<h3 align="center">Iniettore</h3>
 
-Iniettore is a minimalistic Dependency Injection Container for JavaScript applications.
+<p align="center">
+  Minimalistic Dependency Injection Container for JS/TS
+</p>
 
-It's platform agnostic so it can be used on many platform running JS (e.g. Node.js, browsers, React Native).
+<p align="center">
+  <a href="https://travis-ci.org/cesarenaldi/iniettore"><img alt="Build Status" src="https://travis-ci.org/cesarenaldi/iniettore.svg?branch=master" /></a>
+  <a href="https://www.npmjs.com/package/iniettore"><img alt="NPM version" src="https://img.shields.io/npm/v/iniettore" /></a>
+  <a href="https://david-dm.org/cesarenaldi/iniettore"><img alt="NPM dependencies" src="https://david-dm.org/cesarenaldi/iniettore.svg" /></a>
+  <a href="https://coveralls.io/github/cesarenaldi/iniettore?branch=master"><img alt="Coverage Status" src="https://coveralls.io/repos/cesarenaldi/iniettore/badge.svg?branch=master&service=github" /></a>
+</p>
+
+## Docs
 
 **BREAKING CHANGES**
 Iniettore v4 is a complete rewrite which comes with a brand new minimalistic interface. See [migration guide](./migrating.md).
-
-## Documentation
 
 Please refer to individial packages documentation.
 
